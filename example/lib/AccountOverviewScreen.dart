@@ -5,7 +5,7 @@ import 'package:flutter_sdk/network.dart';
 import 'package:flutter_sdk/utils/constants.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-final rlyNetwork = rlyLocalNetwork;
+final rlyNetwork = rlyMumbaiNetwork;
 
 class AccountOverviewScreen extends StatefulWidget {
   final String rlyAccount;
@@ -63,7 +63,7 @@ class _AccountOverviewScreenState extends State<AccountOverviewScreen> {
 
     final txHash = await rlyNetwork.transfer(
         transferAddress, double.parse(transferBalance),
-        metaTxMethod: MetaTxMethod.Permit);
+        metaTxMethod: MetaTxMethod.ExecuteMetaTransaction);
     printLog("Txn hash = $txHash");
 
     fetchBalance();
