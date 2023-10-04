@@ -15,17 +15,7 @@ printLog(String msg) {
   print("###@@@###---> $msg");
 }
 
-const String kEthereumNetworkUrl =
-    "https://polygon-mumbai.infura.io/v3/fc4ab81f4b824f9e9c3bdd065f765afc";
-
-Web3Client getEthClient() {
-  var apiUrl = kEthereumNetworkUrl; //Replace with your API
-  var httpClient = Client();
-  return Web3Client(apiUrl, httpClient);
-}
-
-Web3Client getEthClientForURL(String url) {
-  var apiUrl = url; //Replace with your API
+Web3Client getEthClient(String apiUrl) {
   var httpClient = Client();
   return Web3Client(apiUrl, httpClient);
 }
