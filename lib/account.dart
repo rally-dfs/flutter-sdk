@@ -4,7 +4,6 @@ import 'dart:typed_data';
 import 'package:convert/convert.dart';
 import 'package:eth_sig_util/util/utils.dart';
 import 'package:flutter_sdk/utils/constants.dart';
-import 'package:flutter_sdk/utils/constants.dart';
 
 import 'package:web3dart/web3dart.dart';
 
