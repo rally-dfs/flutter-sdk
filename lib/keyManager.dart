@@ -42,8 +42,8 @@ class KeyManagerImpl extends KeyManager {
 
   @override
   Future<String?> generateMnemonic() async {
-    String? mnemonic = await methodChannel.invokeMethod<String>("generateNewMnemonic");
-    printLog("generate mnemonic tested = $mnemonic");
+    String? mnemonic =
+        await methodChannel.invokeMethod<String>("generateNewMnemonic");
     saveMnemonic(mnemonic!);
     return mnemonic;
   }
@@ -51,24 +51,23 @@ class KeyManagerImpl extends KeyManager {
   @override
   Future<String?> getMnemonic() async {
     String? mnemonic = await methodChannel.invokeMethod<String>("getMnemonic");
-    printLog("native get mnemonic method called= $mnemonic");
     return mnemonic;
   }
 
   @override
   Future<Uint8List> makePrivateKeyFromMnemonic(String mnemonic) async {
     //TODO: ultimately this has to be done from native code
-    List<Object?>? pvtKey = await methodChannel.invokeMethod<List<Object?>>("getPrivateKeyFromMnemonic",{
-      'mnemonic':mnemonic,
+    List<Object?>? pvtKey = await methodChannel
+        .invokeMethod<List<Object?>>("getPrivateKeyFromMnemonic", {
+      'mnemonic': mnemonic,
     });
     Uint8List privateKey = intListToUint8List(pvtKey!);
-    printLog('pvtKey = ${privateKey!}');
     return privateKey;
   }
 
   Uint8List intListToUint8List(List<Object?> intList) {
     List<int> ints = [];
-    for(Object? obj in intList){
+    for (Object? obj in intList) {
       ints.add(int.parse(obj.toString()));
     }
     // Return the string of bytes as a hex string.
@@ -81,7 +80,7 @@ class KeyManagerImpl extends KeyManager {
       {KeyStorageConfig? options}) async {
     if (options == null || !options.saveToCloud) {
       // TODO: don't pass true,true. Give option to users to select
-      await methodChannel.invokeMethod("saveMnemonic",{
+      await methodChannel.invokeMethod("saveMnemonic", {
         "mnemonic": mnemonic,
         "useBlockStore": true,
         "forceBlockStore": true,

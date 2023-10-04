@@ -115,19 +115,6 @@ Future<Map<String, dynamic>> getMetatransactionEIP712Signature(
     //     "0xb0239b0afcbb5d7c36dfed696b621fc428c2ad3094c28e4a4a68a1d983cc679d",
   );
 
-  printLog("\n\nsignature from meta txn class = $signature\n\n");
-  String revoered = EthSigUtil.recoverSignature(
-    signature: signature,
-    message: TypedDataUtil.hashMessage(
-      jsonData: jsonEncode(eip712Data),
-      version: TypedDataVersion.V4,
-    ),
-  );
-
-  printLog('Signature from meta tx : $signature');
-  printLog('recovered from meta tx helper= $revoered');
-  print("public key from meta tx helper=\n${account.privateKey.address.hex}");
-
   final cleanedSignature =
       signature.startsWith('0x') ? signature.substring(2) : signature;
   // get r,s,v from signature
@@ -138,9 +125,6 @@ Future<Map<String, dynamic>> getMetatransactionEIP712Signature(
     's': signatureBytes.sublist(32, 64),
     'v': signatureBytes[64],
   };
-  printLog('r = ${rsv['r']}');
-  printLog('s = ${rsv['s']}');
-  printLog('v = ${rsv['v']}');
 
   return rsv;
 }

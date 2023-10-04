@@ -120,14 +120,4 @@ class AccountsUtil {
     final wallet = await getWallet();
     return hex.encode(wallet.privateKey.privateKey);
   }
-
-  Future<EtherAmount> getBalance() async {
-    var wallet = await getWallet();
-    if (wallet == null) {
-      throw 'No account';
-    }
-
-    Web3Client client = getEthClient();
-    return client.getBalance(wallet.privateKey.address);
-  }
 }

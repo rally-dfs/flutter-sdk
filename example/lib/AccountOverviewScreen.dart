@@ -4,9 +4,8 @@ import 'package:flutter_sdk/gsnClient/utils.dart';
 import 'package:flutter_sdk/network.dart';
 import 'package:flutter_sdk/utils/constants.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:web3dart/web3dart.dart';
 
-final RlyNetwork = RlyMumbaiNetwork;
+final rlyNetwork = rlyMumbaiNetwork;
 
 class AccountOverviewScreen extends StatefulWidget {
   final String rlyAccount;
@@ -29,7 +28,7 @@ class _AccountOverviewScreenState extends State<AccountOverviewScreen> {
       loading = true;
     });
 
-    double bal = await RlyNetwork.getBalance();
+    double bal = await rlyNetwork.getBalance();
     // EtherAmount amt = await AccountsUtil.getInstance().getBalance();
     setState(() {
       balance = bal;
@@ -43,7 +42,7 @@ class _AccountOverviewScreenState extends State<AccountOverviewScreen> {
     fetchBalance();
     // RlyNetwork.setApiKey(
     //     "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOjEzNX0.wqnX-E-KRvzqLgIBAw6RV-BT1puWuZgVdAsqxoU1nL2z8hxTkT4OlH7G6Okv9l3qRMLxMbkORg14XTko-gJW1A");
-    RlyNetwork.setApiKey(
+    rlyNetwork.setApiKey(
         "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOjkzfQ.PgErzRN88Sz07OKp9aj0cUxCap_chaqTsDzgkaIc7NMC_WSPeL4HUlmSb_spHe5N_Gk7EYsF-1QFXg-rIp7ETA");
   }
 
@@ -52,7 +51,7 @@ class _AccountOverviewScreenState extends State<AccountOverviewScreen> {
       loading = true;
     });
 
-    await RlyNetwork.claimRly();
+    await rlyNetwork.claimRly();
 
     fetchBalance();
   }
@@ -62,7 +61,7 @@ class _AccountOverviewScreenState extends State<AccountOverviewScreen> {
       loading = true;
     });
 
-    final txHash = await RlyNetwork.transfer(
+    final txHash = await rlyNetwork.transfer(
         transferAddress, double.parse(transferBalance),
         metaTxMethod: MetaTxMethod.ExecuteMetaTransaction);
     printLog("Txn hash = $txHash");
@@ -81,7 +80,7 @@ class _AccountOverviewScreenState extends State<AccountOverviewScreen> {
       loading = true;
     });
 
-    final txnId = await RlyNetwork.simpleTransfer(
+    final txnId = await rlyNetwork.simpleTransfer(
         transferAddress, double.parse(transferBalance));
     printLog('TXN ID for sending tokens = $txnId');
 

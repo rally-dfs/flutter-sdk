@@ -122,7 +122,7 @@ Future<String> relayTransaction(
   NetworkConfig config,
   GsnTransactionDetails transaction,
 ) async {
-  final web3Provider = getEthClientForURL(config.gsn.rpcUrl);
+  final web3Provider = getEthClient(config.gsn.rpcUrl);
   final updatedConfig = await updateConfig(config, transaction);
   final relayRequest = await buildRelayRequest(
     updatedConfig['transaction'],

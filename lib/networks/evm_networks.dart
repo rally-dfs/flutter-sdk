@@ -32,7 +32,7 @@ class NetworkImpl extends Network {
       throw priorDustingError;
     }
 
-    final ethers = getEthClient();
+    final ethers = getEthClient(network.gsn.rpcUrl);
 
     final claimTx = await getClaimTx(account, network, ethers);
 
@@ -48,7 +48,7 @@ class NetworkImpl extends Network {
       throw missingWalletError;
     }
 
-    final provider = getEthClientForURL(network.gsn.rpcUrl);
+    final provider = getEthClient(network.gsn.rpcUrl);
     //TODO: we have to use this provider to make this erc20 contract
     // final token = erc20(provider,tokenAddress);
     final token = erc20(tokenAddress);
@@ -106,7 +106,7 @@ class NetworkImpl extends Network {
       throw insufficientBalanceError;
     }
 
-    final provider = getEthClientForURL(network.gsn.rpcUrl);
+    final provider = getEthClient(network.gsn.rpcUrl);
 
     GsnTransactionDetails? transferTx;
     // metaTxMethod = MetaTxMethod.ExecuteMetaTransaction;
@@ -180,7 +180,7 @@ class NetworkImpl extends Network {
   @override
   Future<String> simpleTransfer(String destinationAddress, double amount,
       {String? tokenAddress, MetaTxMethod? metaTxMethod}) async {
-    Web3Client client = getEthClient();
+    Web3Client client = getEthClient(network.gsn.rpcUrl);
     final account = await AccountsUtil.getInstance().getWallet();
 
     final result = await client.sendTransaction(
