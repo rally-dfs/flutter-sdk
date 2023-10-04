@@ -24,7 +24,6 @@ class AccountsUtil {
 
   Future<String> createAccount({bool overwrite = false}) async {
     final existingWallet = await getWallet();
-    printLog('get wallet call complete');
     if (existingWallet != null && !overwrite) {
       throw 'Account already exists';
     }
@@ -35,7 +34,6 @@ class AccountsUtil {
     final newWallet = _makeWalletFromPrivateKey(pkey);
 
     _cachedWallet = newWallet;
-    printLog("Wallet address is: ${newWallet.privateKey.address.hex}");
     return newWallet.privateKey.address.hex;
   }
 
@@ -45,12 +43,10 @@ class AccountsUtil {
     }
 
     String? mnemonic = await _keyManager.getMnemonic();
-    printLog('get mnemonic tested = $mnemonic');
 
     mnemonic ??= await _keyManager.generateMnemonic();
 
     final pkey = await _keyManager.makePrivateKeyFromMnemonic(mnemonic!);
-    printLog('privateKey = $pkey');
     final wallet = _makeWalletFromPrivateKey(pkey);
 
     _cachedWallet = wallet;
@@ -59,9 +55,6 @@ class AccountsUtil {
 
   Future<String?> getAccountAddress() async {
     final wallet = await getWallet();
-    printLog('Wallet address = ${wallet.privateKey.address.hex}');
-    printLog("wallet private key = ${wallet.privateKey.privateKeyInt}");
-    printLog("bytesToHex(wallet.privateKey.privateKey) = ${bytesToHex(wallet.privateKey.privateKey)}");
     return wallet.privateKey.address.hex;
   }
 
@@ -111,13 +104,11 @@ class AccountsUtil {
 
   EthPrivateKey getCredentials(Uint8List uint8list) {
     String hexCode = "0x${bytesToHex(uint8list)}";
-    printLog("Hexcode for private key -> $hexCode");
     return EthPrivateKey.fromHex(hexCode);
   }
 
   Wallet _makeWalletFromPrivateKey(Uint8List uint8list) {
     EthPrivateKey credentials = getCredentials(uint8list);
-    printLog('credentials => 0x${bytesToHex(credentials.privateKey)}');
 
     //TODO: What is this password?
     final Wallet newWallet =
