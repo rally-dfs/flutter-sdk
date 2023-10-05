@@ -1,15 +1,9 @@
-# flutter_sdk
+The Rally Mobile SDK is a key component of the Rally Protocol that allows developers to retake control of the user experience by eliminating the reliance for end-users to complete complex blockchain operations through third party apps. By utilizing the SDK, developers gain access to the necessary tools that enable them to create familiar and native mobile UX while leveraging the benefits of blockchain technology.
 
-A new Flutter project.
+# Documentation
 
-## Getting Started
+For comprehensive documentation, see [docs.rallyprotocol.com](https://docs.rallyprotocol.com)
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
+# Supported Blockchains
 
-For help getting started with Flutter development, view the
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-
+The Rally Mobile SDK currently supports Polygon. More blockchains coming soon.

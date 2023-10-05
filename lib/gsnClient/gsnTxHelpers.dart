@@ -1,17 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:convert/convert.dart' as convertLib;
 import 'package:convert/convert.dart';
 import 'package:eth_sig_util/eth_sig_util.dart';
-import 'package:flutter_sdk/contracts/tokenFaucet.dart';
-import 'package:flutter_sdk/gsnClient/ABI/IForwarder.dart';
-import 'package:flutter_sdk/utils/constants.dart';
+import 'package:rly_network_flutter_sdk/contracts/tokenFaucet.dart';
+import 'package:rly_network_flutter_sdk/gsnClient/ABI/IForwarder.dart';
 import 'package:web3dart/crypto.dart';
 import 'package:http/http.dart';
-import 'package:flutter_sdk/gsnClient/ABI/IRelayHub.dart';
+import 'package:rly_network_flutter_sdk/gsnClient/ABI/IRelayHub.dart';
 
-import 'package:flutter_sdk/gsnClient/utils.dart';
+import 'package:rly_network_flutter_sdk/gsnClient/utils.dart';
 
 import 'package:web3dart/web3dart.dart';
 
@@ -101,8 +99,7 @@ Future<String> estimateCalldataCostForRequest(RelayRequest relayRequestOriginal,
   var relayRequestJson = relayRequest.toJson();
 
   final function = relayHub.function('relayCall');
-  printLog(
-      "BigInt.parse(maxAcceptanceBudget.substring(2), radix: 16), = ${BigInt.parse(maxAcceptanceBudget.substring(2), radix: 16)}");
+
   // Transaction.callContract(contract: contract, function: function, parameters: parameters)
   final tx = Transaction.callContract(
       contract: relayHub,
@@ -160,11 +157,6 @@ Future<String> signRequest(
   Wallet account,
   NetworkConfig config,
 ) async {
-  printLog("domain - ${domainSeparatorName}");
-  printLog("chainId - ${chainId}");
-  printLog("account - ${account.privateKey.address}");
-  printLog("config - ${config}");
-
   final cloneRequest = {
     "request": ForwardRequest(
       from: relayRequest.request.from,
@@ -266,10 +258,6 @@ Future<String> signRequest(
     ),
   );
 
-  printLog('Signature from gsn tx helper: $signature');
-  printLog('recovered from gsn tx helper= $revoered');
-  print("public key from gsn tx helper=\n${account.privateKey.address.hex}");
-
   return signature;
 }
 
@@ -322,8 +310,6 @@ Future<GsnTransactionDetails> getClaimTx(
         (maxPriorityFeePerGas);
   }
 
-  printLog("transaction data = ${tx.data}");
-  printLog("transaction data in string = ${uint8ListToHex(tx.data!)}");
   final gsnTx = GsnTransactionDetails(
     from: account.privateKey.address.toString(),
     data: uint8ListToHex(tx.data!),
@@ -405,6 +391,13 @@ BigInt parseUnits(String value, int decimals) {
       : BigInt.zero;
 
   return wholePart * base + fractionalPart;
+}
+
+double formatUnits(BigInt wei, BigInt decimals) {
+  const etherUnit = EtherUnit.gwei;
+  final balanceFormatted =
+      EtherAmount.fromBigInt(etherUnit, wei).getValueInUnit(EtherUnit.gwei);
+  return balanceFormatted;
 }
 
 class CalldataBytes {

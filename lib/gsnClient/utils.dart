@@ -1,4 +1,5 @@
-import 'dart:typed_data';
+import 'package:http/http.dart';
+import 'package:web3dart/web3dart.dart';
 
 enum RlyEnv {
   local,
@@ -23,9 +24,9 @@ class GsnTransactionDetails {
   String? gas;
 
   //should be hex
-   String maxFeePerGas;
+  String maxFeePerGas;
   //should be hex
-   String maxPriorityFeePerGas;
+  String maxPriorityFeePerGas;
   //paymaster contract address
   final String? paymasterData;
 
@@ -60,3 +61,8 @@ class GsnTransactionDetails {
 typedef PrefixedHexString = String;
 typedef Address = String;
 typedef IntString = String;
+
+Web3Client getEthClient(String apiUrl) {
+  var httpClient = Client();
+  return Web3Client(apiUrl, httpClient);
+}

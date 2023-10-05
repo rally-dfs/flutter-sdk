@@ -4,7 +4,6 @@ import 'package:convert/convert.dart';
 import 'package:ed25519_hd_key/ed25519_hd_key.dart';
 import 'package:flutter/services.dart';
 import 'package:bip39/bip39.dart' as bip39;
-import 'package:flutter_sdk/utils/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'keyStorageConfig.dart';
@@ -33,7 +32,7 @@ const WHEN_UNLOCKED = KeychainAccessibilityConstant(5);
 const WHEN_UNLOCKED_THIS_DEVICE_ONLY = KeychainAccessibilityConstant(6);
 
 class KeyManagerImpl extends KeyManager {
-  final methodChannel = const MethodChannel('flutter_sdk');
+  final methodChannel = const MethodChannel('rly_network_flutter_sdk');
 
   @override
   void deleteMnemonic() {

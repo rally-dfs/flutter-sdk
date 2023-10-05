@@ -12,7 +12,6 @@ class NetworkConfig {
   String toString() {
     return 'NetworkConfig{contracts: ${contracts.toString()}, gsn: ${gsn.toString()}, relayerApiKey: $relayerApiKey}';
   }
-
 }
 
 class Contracts {

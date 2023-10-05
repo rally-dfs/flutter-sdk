@@ -20,7 +20,7 @@ dependencies:
   url_launcher: ^6.1.12
   web3dart: ^2.7.0
 
-  flutter_sdk:
+  rly_network_flutter_sdk:
     # When depending on this package from a real application you should use:
     #   flutter_sdk: ^x.y.z
     # See https://dart.dev/tools/pub/dependencies#version-constraints

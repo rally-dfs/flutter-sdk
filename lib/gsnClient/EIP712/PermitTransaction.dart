@@ -1,11 +1,9 @@
 import 'dart:convert';
 
-import 'package:convert/convert.dart';
 import 'package:eth_sig_util/eth_sig_util.dart';
 import 'package:eth_sig_util/util/utils.dart';
-import 'package:flutter_sdk/utils/constants.dart';
 import 'package:web3dart/web3dart.dart';
-import 'package:flutter_sdk/gsnClient/gsnTxHelpers.dart';
+import 'package:rly_network_flutter_sdk/gsnClient/gsnTxHelpers.dart';
 
 import '../../contracts/erc20.dart';
 import '../../network_config/network_config.dart';
@@ -115,27 +113,12 @@ Future<Map<String, dynamic>> getPermitEIP712Signature(
     ),
   );
 
-  printLog("\n\nEIP712 data for permit = $eip712Data\n\n");
-
   // signature for metatransaction
   final String signature = EthSigUtil.signTypedData(
     jsonData: jsonEncode(eip712Data),
     version: TypedDataVersion.V4,
     privateKey: "0x${bytesToHex(account.privateKey.privateKey)}",
   );
-
-  printLog("\n\nsignature from meta txn class = $signature\n\n");
-  String revoered = EthSigUtil.recoverSignature(
-    signature: signature,
-    message: TypedDataUtil.hashMessage(
-      jsonData: jsonEncode(eip712Data),
-      version: TypedDataVersion.V4,
-    ),
-  );
-
-  printLog('Signature from meta tx : $signature');
-  printLog('recovered from meta tx helper= $revoered');
-  print("public key from meta tx helper=\n${account.privateKey.address.hex}");
 
   final cleanedSignature =
       signature.startsWith('0x') ? signature.substring(2) : signature;
@@ -151,69 +134,6 @@ Future<Map<String, dynamic>> getPermitEIP712Signature(
   return rsv;
 }
 
-Future<bool> hasPermit(
-  Wallet account,
-  double amount,
-  NetworkConfig config,
-  String contractAddress,
-  Web3Client provider,
-) async {
-  try {
-    final token = erc20(contractAddress);
-
-    final nameCall = await provider
-        .call(contract: token, function: token.function('name'), params: []);
-    final name = nameCall[0];
-    final noncesFunctionCall = await provider.call(
-        contract: token,
-        function: token.function('nonces'),
-        params: [account.privateKey.address]);
-    final nonce = noncesFunctionCall[0];
-
-    final deadline = await getPermitDeadline(provider);
-    final eip712Domain = await provider.call(
-        contract: token, function: token.function('eip712Domain'), params: []);
-
-    final salt =
-        /*5 is hardcoded here because in the erc20 json,
-    the salt appears on 5th index in outputs
-    of function eip712Domain*/
-        eip712Domain[5] as String;
-
-    final decimalAmount =
-        EtherAmount.fromBase10String(EtherUnit.ether, amount.toString());
-
-    final signature = await getPermitEIP712Signature(
-      account,
-      name,
-      contractAddress,
-      config,
-      nonce,
-      decimalAmount.getInWei,
-      deadline,
-      salt,
-    );
-
-    await provider.call(
-      contract: token,
-      function: token.function('permit'),
-      params: [
-        EthereumAddress.fromHex(account.privateKey.address.hex),
-        EthereumAddress.fromHex(config.gsn.paymasterAddress),
-        decimalAmount,
-        deadline,
-        signature['v'],
-        signature['r'],
-        signature['s'],
-      ],
-    );
-
-    return true;
-  } catch (e) {
-    return false;
-  }
-}
-
 Future<GsnTransactionDetails> getPermitTx(
   Wallet account,
   EthereumAddress destinationAddress,
@@ -222,7 +142,7 @@ Future<GsnTransactionDetails> getPermitTx(
   String contractAddress,
   Web3Client provider,
 ) async {
-  final token = erc20(contractAddress);
+  final token = erc20(EthereumAddress.fromHex(contractAddress));
   final noncesCallResult = await provider.call(
       contract: token,
       function: token.function("nonces"),

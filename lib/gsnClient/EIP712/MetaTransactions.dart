@@ -3,10 +3,9 @@ import 'dart:typed_data';
 
 import 'package:eth_sig_util/eth_sig_util.dart';
 import 'package:eth_sig_util/util/utils.dart';
-import 'package:flutter_sdk/contracts/erc20.dart';
-import 'package:flutter_sdk/gsnClient/gsnTxHelpers.dart';
-import 'package:flutter_sdk/gsnClient/utils.dart';
-import 'package:flutter_sdk/utils/constants.dart';
+import 'package:rly_network_flutter_sdk/contracts/erc20.dart';
+import 'package:rly_network_flutter_sdk/gsnClient/gsnTxHelpers.dart';
+import 'package:rly_network_flutter_sdk/gsnClient/utils.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:convert/convert.dart';
 
@@ -92,7 +91,6 @@ Future<Map<String, dynamic>> getMetatransactionEIP712Signature(
   final chainId = int.parse(config.gsn.chainId);
   String saltHexString = chainId.toRadixString(16);
   String paddedSaltHexString = '0x${saltHexString.padLeft(64, '0')}';
-  printLog("paddedSaltHexString = $paddedSaltHexString");
   // typed data for signing
   final eip712Data = getTypedMetatransaction(
     MetaTransaction(
@@ -115,6 +113,14 @@ Future<Map<String, dynamic>> getMetatransactionEIP712Signature(
     //     "0xb0239b0afcbb5d7c36dfed696b621fc428c2ad3094c28e4a4a68a1d983cc679d",
   );
 
+  String revoered = EthSigUtil.recoverSignature(
+    signature: signature,
+    message: TypedDataUtil.hashMessage(
+      jsonData: jsonEncode(eip712Data),
+      version: TypedDataVersion.V4,
+    ),
+  );
+
   final cleanedSignature =
       signature.startsWith('0x') ? signature.substring(2) : signature;
   // get r,s,v from signature
@@ -135,63 +141,6 @@ String hexZeroPad(int number, int length) {
   return '0x$paddedHexString';
 }
 
-Future<bool> hasExecuteMetaTransaction(
-  Wallet account,
-  String destinationAddress,
-  double amount,
-  NetworkConfig config,
-  String contractAddress,
-  Web3Client provider,
-) async {
-  try {
-    printLog("contractAddress from meta tx  = $contractAddress");
-    final token = erc20(contractAddress);
-    final nameCall = await provider
-        .call(contract: token, function: token.function('name'), params: []);
-    final name = nameCall[0];
-
-    final nonce = await getSenderContractNonce(
-        provider, token, account.privateKey.address);
-
-    final funCall = await provider.call(
-        contract: token, function: token.function("decimals"), params: []);
-    final decimals = funCall[0];
-    final decimalAmount =
-        parseUnits(amount.toString(), int.parse(decimals.toString()));
-
-    final data = token.function('transfer').encodeCall(
-        [EthereumAddress.fromHex(destinationAddress), decimalAmount]);
-
-    final signatureData = await getMetatransactionEIP712Signature(
-      account,
-      name,
-      contractAddress,
-      data,
-      config,
-      nonce.toInt(),
-    );
-
-    final executeMetaTransactionFunction =
-        token.function('executeMetaTransaction');
-
-    await provider.call(
-        contract: token,
-        function: executeMetaTransactionFunction,
-        params: [
-          account.privateKey.address,
-          data,
-          signatureData['r'],
-          signatureData['s'],
-          signatureData['v'],
-          {"from": account.privateKey.address}
-        ]);
-
-    return true;
-  } catch (e) {
-    return false;
-  }
-}
-
 Future<GsnTransactionDetails> getExecuteMetatransactionTx(
   Wallet account,
   String destinationAddress,
@@ -202,8 +151,8 @@ Future<GsnTransactionDetails> getExecuteMetatransactionTx(
 ) async {
   //TODO: Once things are stable, think about refactoring
   // to avoid code duplication
-  printLog("contractAddress from meta tx  = $contractAddress");
-  final token = erc20(contractAddress);
+
+  final token = erc20(EthereumAddress.fromHex(contractAddress));
 
   final nameCallResult = await provider
       .call(contract: token, function: token.function('name'), params: []);
@@ -254,7 +203,6 @@ Future<GsnTransactionDetails> getExecuteMetatransactionTx(
     data: tx.data,
     to: token.address,
   );
-  printLog("gas estimate: 0x${gas.toRadixString(16)}");
 
   final info = await provider.getBlockInformation();
 
@@ -264,11 +212,6 @@ Future<GsnTransactionDetails> getExecuteMetatransactionTx(
   if (tx == null) {
     throw 'tx not populated';
   }
-  printLog(
-      "maxPriorityFeePerGas for gsn tx is : ${maxPriorityFeePerGas.toString()}");
-
-  printLog("maxFeePerGas for gsn tx is : ${maxFeePerGas.toString()}");
-  printLog("gas: 0x${gas.toRadixString(16)}");
 
   final gsnTx = GsnTransactionDetails(
     from: account.privateKey.address.hex,
