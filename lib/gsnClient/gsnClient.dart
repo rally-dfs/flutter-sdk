@@ -30,7 +30,7 @@ Future<Map<String, dynamic>> updateConfig(
 Future<RelayRequest> buildRelayRequest(
   GsnTransactionDetails transaction,
   NetworkConfig config,
-  Wallet account,
+  EthPrivateKey account,
   Web3Client web3Provider,
 ) async {
   transaction.gas = estimateGasWithoutCallData(
@@ -44,7 +44,7 @@ Future<RelayRequest> buildRelayRequest(
       (secondsNow + config.gsn.requestValidSeconds).toString();
 
   final senderNonce = await getSenderNonce(
-    account.privateKey.address,
+    account.address,
     EthereumAddress.fromHex(config.gsn.forwarderAddress),
     web3Provider,
   );
@@ -85,7 +85,7 @@ Future<RelayRequest> buildRelayRequest(
 Future<Map<String, dynamic>> buildRelayHttpRequest(
   RelayRequest relayRequest,
   NetworkConfig config,
-  Wallet account,
+  EthPrivateKey account,
   Web3Client web3Provider,
 ) async {
   final signature = await signRequest(relayRequest,
@@ -118,7 +118,7 @@ Future<Map<String, dynamic>> buildRelayHttpRequest(
 }
 
 Future<String> relayTransaction(
-  Wallet account,
+  EthPrivateKey account,
   NetworkConfig config,
   GsnTransactionDetails transaction,
 ) async {

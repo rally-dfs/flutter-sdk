@@ -81,7 +81,7 @@ Map<String, dynamic> getTypedMetatransaction(MetaTransaction metaTransaction) {
 }
 
 Future<Map<String, dynamic>> getMetatransactionEIP712Signature(
-  Wallet account,
+  EthPrivateKey account,
   String contractName,
   String contractAddress,
   Uint8List functionSignature,
@@ -102,7 +102,7 @@ Future<Map<String, dynamic>> getMetatransactionEIP712Signature(
       // Padding the chainId with zeroes to make it 32 bytes
       verifyingContract: contractAddress,
       nonce: nonce,
-      from: account.privateKey.address.hex,
+      from: account.address.hex,
       functionSignature: functionSignature,
     ),
   );
@@ -110,7 +110,7 @@ Future<Map<String, dynamic>> getMetatransactionEIP712Signature(
   final String signature = EthSigUtil.signTypedData(
     jsonData: jsonEncode(eip712Data),
     version: TypedDataVersion.V4,
-    privateKey: "0x${bytesToHex(account.privateKey.privateKey)}",
+    privateKey: "0x${bytesToHex(account.privateKey)}",
     // privateKey:
     //     "0xb0239b0afcbb5d7c36dfed696b621fc428c2ad3094c28e4a4a68a1d983cc679d",
   );
@@ -136,7 +136,7 @@ String hexZeroPad(int number, int length) {
 }
 
 Future<bool> hasExecuteMetaTransaction(
-  Wallet account,
+  EthPrivateKey account,
   String destinationAddress,
   double amount,
   NetworkConfig config,
@@ -151,7 +151,7 @@ Future<bool> hasExecuteMetaTransaction(
     final name = nameCall[0];
 
     final nonce = await getSenderContractNonce(
-        provider, token, account.privateKey.address);
+        provider, token, account.address);
 
     final funCall = await provider.call(
         contract: token, function: token.function("decimals"), params: []);
@@ -178,12 +178,12 @@ Future<bool> hasExecuteMetaTransaction(
         contract: token,
         function: executeMetaTransactionFunction,
         params: [
-          account.privateKey.address,
+          account.address,
           data,
           signatureData['r'],
           signatureData['s'],
           signatureData['v'],
-          {"from": account.privateKey.address}
+          {"from": account.address}
         ]);
 
     return true;
@@ -193,7 +193,7 @@ Future<bool> hasExecuteMetaTransaction(
 }
 
 Future<GsnTransactionDetails> getExecuteMetatransactionTx(
-  Wallet account,
+  EthPrivateKey account,
   String destinationAddress,
   double amount,
   NetworkConfig config,
@@ -210,7 +210,7 @@ Future<GsnTransactionDetails> getExecuteMetatransactionTx(
   final name = nameCallResult.first;
 
   final nonce =
-      await getSenderContractNonce(provider, token, account.privateKey.address);
+      await getSenderContractNonce(provider, token, account.address);
   final decimals = await provider
       .call(contract: token, function: token.function('decimals'), params: []);
 
@@ -239,7 +239,7 @@ Future<GsnTransactionDetails> getExecuteMetatransactionTx(
     contract: token,
     function: token.function('executeMetaTransaction'),
     parameters: [
-      account.privateKey.address,
+      account.address,
       data,
       r,
       s,
@@ -250,7 +250,7 @@ Future<GsnTransactionDetails> getExecuteMetatransactionTx(
 
   // Estimate the gas required for the transaction
   final gas = await provider.estimateGas(
-    sender: account.privateKey.address,
+    sender: account.address,
     data: tx.data,
     to: token.address,
   );
@@ -271,7 +271,7 @@ Future<GsnTransactionDetails> getExecuteMetatransactionTx(
   printLog("gas: 0x${gas.toRadixString(16)}");
 
   final gsnTx = GsnTransactionDetails(
-    from: account.privateKey.address.hex,
+    from: account.address.hex,
     data: "0x${bytesToHex(tx.data!)}",
     value: "0",
     to: tx.to!.hex,

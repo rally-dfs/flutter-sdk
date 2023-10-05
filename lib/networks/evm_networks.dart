@@ -59,7 +59,7 @@ class NetworkImpl extends Network {
     final balanceOfCall = await provider.call(
         contract: token,
         function: token.function('balanceOf'),
-        params: [account.privateKey.address]);
+        params: [account.address]);
     final balance = balanceOfCall[0];
     return formatUnits(balance, decimals);
   }
@@ -123,7 +123,7 @@ class NetworkImpl extends Network {
           provider,
         );
       } else {
-        printLog("From address = ${account.privateKey.address.hex}");
+        printLog("From address = ${account.address.hex}");
         transferTx = await getExecuteMetatransactionTx(
           account,
           destinationAddress,
