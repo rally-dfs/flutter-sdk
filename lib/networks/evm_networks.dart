@@ -183,8 +183,12 @@ class NetworkImpl extends Network {
     Web3Client client = getEthClient(network.gsn.rpcUrl);
     final account = await AccountsUtil.getInstance().getWallet();
 
+    if(account == null) {
+      throw missingWalletError;
+    }
+
     final result = await client.sendTransaction(
-        account.privateKey,
+        account,
         Transaction(
           to: EthereumAddress.fromHex(
               '0x39cc7b9f44cf39f3fd53a91db57670096c4c3e4f'),
