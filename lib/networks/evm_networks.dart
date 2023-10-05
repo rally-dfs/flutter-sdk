@@ -20,6 +20,10 @@ class NetworkImpl extends Network {
   Future<String> claimRly() async {
     final account = await AccountsUtil.getInstance().getWallet();
 
+    if (account == null) {
+      throw "account does not exist";
+    }
+
     final existingBalance = await getBalance();
     // final existingBalance = 0;
 
@@ -50,7 +54,7 @@ class NetworkImpl extends Network {
     final balanceOfCall = await provider.call(
         contract: token,
         function: token.function('balanceOf'),
-        params: [account.address]);
+        params: [account!.address]);
     final balance = balanceOfCall[0];
     return formatUnits(balance, decimals);
   }
@@ -58,6 +62,10 @@ class NetworkImpl extends Network {
   @override
   Future<String> relay(GsnTransactionDetails tx) async {
     final account = await AccountsUtil.getInstance().getWallet();
+
+    if (account == null) {
+      throw "account does not exist";
+    }
 
     return relayTransaction(account, network, tx);
   }
@@ -72,6 +80,10 @@ class NetworkImpl extends Network {
       String destinationAddress, double amount, MetaTxMethod metaTxMethod,
       {PrefixedHexString? tokenAddress}) async {
     final account = await AccountsUtil.getInstance().getWallet();
+
+    if (account == null) {
+      throw "account does not exist";
+    }
 
     tokenAddress = tokenAddress ?? network.contracts.rlyERC20;
 

@@ -113,14 +113,6 @@ Future<Map<String, dynamic>> getMetatransactionEIP712Signature(
     //     "0xb0239b0afcbb5d7c36dfed696b621fc428c2ad3094c28e4a4a68a1d983cc679d",
   );
 
-  String revoered = EthSigUtil.recoverSignature(
-    signature: signature,
-    message: TypedDataUtil.hashMessage(
-      jsonData: jsonEncode(eip712Data),
-      version: TypedDataVersion.V4,
-    ),
-  );
-
   final cleanedSignature =
       signature.startsWith('0x') ? signature.substring(2) : signature;
   // get r,s,v from signature
@@ -141,66 +133,6 @@ String hexZeroPad(int number, int length) {
   return '0x$paddedHexString';
 }
 
-<<<<<<< HEAD
-Future<bool> hasExecuteMetaTransaction(
-  EthPrivateKey account,
-  String destinationAddress,
-  double amount,
-  NetworkConfig config,
-  String contractAddress,
-  Web3Client provider,
-) async {
-  try {
-    printLog("contractAddress from meta tx  = $contractAddress");
-    final token = erc20(contractAddress);
-    final nameCall = await provider
-        .call(contract: token, function: token.function('name'), params: []);
-    final name = nameCall[0];
-
-    final nonce = await getSenderContractNonce(
-        provider, token, account.address);
-
-    final funCall = await provider.call(
-        contract: token, function: token.function("decimals"), params: []);
-    final decimals = funCall[0];
-    final decimalAmount =
-        parseUnits(amount.toString(), int.parse(decimals.toString()));
-
-    final data = token.function('transfer').encodeCall(
-        [EthereumAddress.fromHex(destinationAddress), decimalAmount]);
-
-    final signatureData = await getMetatransactionEIP712Signature(
-      account,
-      name,
-      contractAddress,
-      data,
-      config,
-      nonce.toInt(),
-    );
-
-    final executeMetaTransactionFunction =
-        token.function('executeMetaTransaction');
-
-    await provider.call(
-        contract: token,
-        function: executeMetaTransactionFunction,
-        params: [
-          account.address,
-          data,
-          signatureData['r'],
-          signatureData['s'],
-          signatureData['v'],
-          {"from": account.address}
-        ]);
-
-    return true;
-  } catch (e) {
-    return false;
-  }
-}
-
-=======
->>>>>>> main
 Future<GsnTransactionDetails> getExecuteMetatransactionTx(
   EthPrivateKey account,
   String destinationAddress,
@@ -218,8 +150,7 @@ Future<GsnTransactionDetails> getExecuteMetatransactionTx(
       .call(contract: token, function: token.function('name'), params: []);
   final name = nameCallResult.first;
 
-  final nonce =
-      await getSenderContractNonce(provider, token, account.address);
+  final nonce = await getSenderContractNonce(provider, token, account.address);
   final decimals = await provider
       .call(contract: token, function: token.function('decimals'), params: []);
 

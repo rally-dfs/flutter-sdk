@@ -250,21 +250,6 @@ Future<String> signRequest(
     version: TypedDataVersion.V4,
   );
 
-  String revoered = EthSigUtil.recoverSignature(
-    signature: signature,
-    message: TypedDataUtil.hashMessage(
-      jsonData: jsonEncode(jsonData),
-      version: TypedDataVersion.V4,
-    ),
-  );
-
-<<<<<<< HEAD
-  printLog('Signature from gsn tx helper: $signature');
-  printLog('recovered from gsn tx helper= $revoered');
-  print("public key from gsn tx helper=\n${account.address.hex}");
-
-=======
->>>>>>> main
   return signature;
 }
 
