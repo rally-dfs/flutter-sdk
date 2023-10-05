@@ -4,7 +4,7 @@ import 'package:eth_sig_util/util/utils.dart';
 
 import 'package:web3dart/web3dart.dart';
 
-import 'keyManager.dart';
+import 'key_manager.dart';
 
 class AccountsUtil {
   static EthPrivateKey? _cachedWallet;
