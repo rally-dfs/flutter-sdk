@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 
-import 'package:convert/convert.dart';
 import 'package:eth_sig_util/util/utils.dart';
 
 import 'package:web3dart/web3dart.dart';
@@ -107,15 +106,5 @@ class AccountsUtil {
   EthPrivateKey _makeWalletFromRawPrivateKey(Uint8List uint8list) {
     String hexCode = "0x${bytesToHex(uint8list)}";
     return EthPrivateKey.fromHex(hexCode);
-  }
-
-  Future<String?> getPrivateKeyHex() async {
-    final wallet = await getWallet();
-
-    if(wallet == null) {
-      return null;
-    }
-
-    return hex.encode(wallet.privateKey);
   }
 }
