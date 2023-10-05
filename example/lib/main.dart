@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'AccountOverviewScreen.dart';
 import 'GenerateAccountScreen.dart';
 import 'LoadingScreen.dart';
-import 'package:flutter_sdk/account.dart';
+import 'package:rly_network_flutter_sdk/account.dart';
 
 class App extends StatefulWidget {
   @override

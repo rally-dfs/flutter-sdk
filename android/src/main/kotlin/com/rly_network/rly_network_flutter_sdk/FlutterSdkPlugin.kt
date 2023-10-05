@@ -31,7 +31,7 @@ class FlutterSdkPlugin: FlutterPlugin, MethodCallHandler {
   private lateinit var channel: MethodChannel
   private lateinit var flutterPluginBinding: FlutterPlugin.FlutterPluginBinding
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-    channel = MethodChannel(flutterPluginBinding.binaryMessenger, "flutter_sdk")
+    channel = MethodChannel(flutterPluginBinding.binaryMessenger, "rly_network_flutter_sdk")
     channel.setMethodCallHandler(this)
     this.flutterPluginBinding = flutterPluginBinding
     mnemonicHelper = MnemonicStorageHelper(flutterPluginBinding.applicationContext)

@@ -1,6 +1,6 @@
-import 'package:flutter_sdk/gsnClient/gsnTxHelpers.dart';
-import 'package:flutter_sdk/gsnClient/utils.dart';
-import 'package:flutter_sdk/network.dart';
+import 'package:rly_network_flutter_sdk/gsnClient/gsnTxHelpers.dart';
+import 'package:rly_network_flutter_sdk/gsnClient/utils.dart';
+import 'package:rly_network_flutter_sdk/network.dart';
 import 'package:web3dart/web3dart.dart';
 
 import '../account.dart';

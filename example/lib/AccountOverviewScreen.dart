@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sdk/account.dart';
-import 'package:flutter_sdk/gsnClient/utils.dart';
-import 'package:flutter_sdk/network.dart';
-import 'package:flutter_sdk/utils/constants.dart';
+import 'package:rly_network_flutter_sdk/account.dart';
+import 'package:rly_network_flutter_sdk/gsnClient/utils.dart';
+import 'package:rly_network_flutter_sdk/network.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 final rlyNetwork = rlyMumbaiNetwork;
@@ -63,7 +62,6 @@ class _AccountOverviewScreenState extends State<AccountOverviewScreen> {
 
     final txHash = await rlyNetwork.transfer(transferAddress,
         double.parse(transferBalance), MetaTxMethod.ExecuteMetaTransaction);
-    printLog("Txn hash = $txHash");
 
     fetchBalance();
 
@@ -81,7 +79,6 @@ class _AccountOverviewScreenState extends State<AccountOverviewScreen> {
 
     final txnId = await rlyNetwork.simpleTransfer(
         transferAddress, double.parse(transferBalance));
-    printLog('TXN ID for sending tokens = $txnId');
 
     fetchBalance();
 

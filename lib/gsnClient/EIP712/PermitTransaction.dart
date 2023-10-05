@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:eth_sig_util/eth_sig_util.dart';
 import 'package:eth_sig_util/util/utils.dart';
 import 'package:web3dart/web3dart.dart';
-import 'package:flutter_sdk/gsnClient/gsnTxHelpers.dart';
+import 'package:rly_network_flutter_sdk/gsnClient/gsnTxHelpers.dart';
 
 import '../../contracts/erc20.dart';
 import '../../network_config/network_config.dart';
@@ -118,14 +118,6 @@ Future<Map<String, dynamic>> getPermitEIP712Signature(
     jsonData: jsonEncode(eip712Data),
     version: TypedDataVersion.V4,
     privateKey: "0x${bytesToHex(account.privateKey.privateKey)}",
-  );
-
-  String revoered = EthSigUtil.recoverSignature(
-    signature: signature,
-    message: TypedDataUtil.hashMessage(
-      jsonData: jsonEncode(eip712Data),
-      version: TypedDataVersion.V4,
-    ),
   );
 
   final cleanedSignature =

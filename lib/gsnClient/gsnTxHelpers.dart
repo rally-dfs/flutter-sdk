@@ -3,13 +3,13 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:convert/convert.dart';
 import 'package:eth_sig_util/eth_sig_util.dart';
-import 'package:flutter_sdk/contracts/tokenFaucet.dart';
-import 'package:flutter_sdk/gsnClient/ABI/IForwarder.dart';
+import 'package:rly_network_flutter_sdk/contracts/tokenFaucet.dart';
+import 'package:rly_network_flutter_sdk/gsnClient/ABI/IForwarder.dart';
 import 'package:web3dart/crypto.dart';
 import 'package:http/http.dart';
-import 'package:flutter_sdk/gsnClient/ABI/IRelayHub.dart';
+import 'package:rly_network_flutter_sdk/gsnClient/ABI/IRelayHub.dart';
 
-import 'package:flutter_sdk/gsnClient/utils.dart';
+import 'package:rly_network_flutter_sdk/gsnClient/utils.dart';
 
 import 'package:web3dart/web3dart.dart';
 

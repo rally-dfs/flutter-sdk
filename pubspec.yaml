@@ -1,5 +1,5 @@
-name: flutter_sdk
-description: A new Flutter project.
+name: rly_network_flutter_sdk
+description: RLY Network Flutter SDK
 version: 0.0.1
 homepage:
 
@@ -44,10 +44,10 @@ flutter:
   plugin:
     platforms:
       android:
-        package: com.savez.flutter_sdk
+        package: com.rly_network.rly_network_flutter_sdk
         pluginClass: FlutterSdkPlugin
       ios:
-        package: com.savez.flutter_sdk
+        package: com.rly_network.rly_network_flutter_sdk
         pluginClass: FlutterSdkPlugin
 
   # To add assets to your plugin package, add an assets section, like this:

@@ -1,5 +1,5 @@
-import 'package:flutter_sdk/networks/evm_networks.dart';
-import 'package:flutter_sdk/gsnClient/utils.dart';
+import 'package:rly_network_flutter_sdk/networks/evm_networks.dart';
+import 'package:rly_network_flutter_sdk/gsnClient/utils.dart';
 
 import 'network_config/network_config_mumbai.dart';
 import 'network_config/network_config_local.dart';

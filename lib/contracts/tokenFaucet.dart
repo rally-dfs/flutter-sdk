@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutter_sdk/contracts/tokenFaucetData.dart';
+import 'package:rly_network_flutter_sdk/contracts/tokenFaucetData.dart';
 import 'package:web3dart/web3dart.dart';
 
 import '../network_config/network_config.dart';

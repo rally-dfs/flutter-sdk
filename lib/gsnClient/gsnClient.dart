@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:flutter_sdk/gsnClient/EIP712/ForwardRequest.dart';
-import 'package:flutter_sdk/gsnClient/EIP712/RelayData.dart';
-import 'package:flutter_sdk/gsnClient/utils.dart';
+import 'package:rly_network_flutter_sdk/gsnClient/EIP712/ForwardRequest.dart';
+import 'package:rly_network_flutter_sdk/gsnClient/EIP712/RelayData.dart';
+import 'package:rly_network_flutter_sdk/gsnClient/utils.dart';
 import 'package:web3dart/web3dart.dart';
-import 'package:flutter_sdk/gsnClient/gsnTxHelpers.dart';
+import 'package:rly_network_flutter_sdk/gsnClient/gsnTxHelpers.dart';
 
 import '../network_config/network_config.dart';
 import 'EIP712/RelayRequest.dart';
