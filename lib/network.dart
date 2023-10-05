@@ -7,8 +7,9 @@ import 'network_config/network_config_polygon.dart';
 
 abstract class Network {
   Future<double> getBalance({PrefixedHexString? tokenAddress});
-  Future<String> transfer(String destinationAddress, double amount,
-      {PrefixedHexString? tokenAddress, MetaTxMethod? metaTxMethod});
+  Future<String> transfer(
+      String destinationAddress, double amount, MetaTxMethod metaTxMethod,
+      {PrefixedHexString? tokenAddress});
   Future<String> simpleTransfer(String destinationAddress, double amount,
       {PrefixedHexString? tokenAddress, MetaTxMethod? metaTxMethod});
   Future<String> claimRly();

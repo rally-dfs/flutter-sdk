@@ -3,7 +3,6 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_sdk/gsnClient/EIP712/ForwardRequest.dart';
 import 'package:flutter_sdk/gsnClient/EIP712/RelayData.dart';
 import 'package:flutter_sdk/gsnClient/utils.dart';
-import 'package:flutter_sdk/utils/constants.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:flutter_sdk/gsnClient/gsnTxHelpers.dart';
 
@@ -20,9 +19,6 @@ Future<Map<String, dynamic>> updateConfig(
 
   config.gsn.relayWorkerAddress = serverConfigUpdate.relayWorkerAddress;
   setGasFeesForTransaction(transaction, serverConfigUpdate);
-
-  printLog("Config =  = $config");
-  printLog("transaction =  = $transaction");
 
   return {'config': config, 'transaction': transaction};
 }
@@ -74,8 +70,7 @@ Future<RelayRequest> buildRelayRequest(
 
   final transactionCalldataGasUsed = await estimateCalldataCostForRequest(
       relayRequest, config.gsn, web3Provider);
-  printLog(
-      "result of estimateCalldataCostForRequest =  $transactionCalldataGasUsed ");
+
   relayRequest.relayData.transactionCalldataGasUsed =
       int.parse(transactionCalldataGasUsed, radix: 16).toString();
 
@@ -90,7 +85,6 @@ Future<Map<String, dynamic>> buildRelayHttpRequest(
 ) async {
   final signature = await signRequest(relayRequest,
       config.gsn.domainSeparatorName, config.gsn.chainId, account, config);
-  printLog("signature = $signature");
   const approvalData = '0x';
 
   final relayWorkerAddress =
@@ -141,7 +135,6 @@ Future<String> relayTransaction(
     httpRequest['relayRequest'],
     httpRequest['metadata']['signature'],
   );
-  printLog("relayRequestId = $relayRequestId");
 
   // Update request metadata with relayrequestid
   httpRequest['metadata']['relayRequestId'] = relayRequestId;
@@ -151,12 +144,6 @@ Future<String> relayTransaction(
     'Authorization': 'Bearer ${config.relayerApiKey ?? ''}',
   };
 
-  printLog('httpRequest = $httpRequest');
-  printLog("Start printing http request");
-  for (MapEntry entry in httpRequest.entries) {
-    printLog("${entry.key} :-> ${entry.value}");
-  }
-  printLog("end printing http request");
   final res = await http.post(
     Uri.parse('${config.gsn.relayUrl}/relay'),
     headers:
@@ -182,11 +169,6 @@ void setGasFeesForTransaction(
 
   final paddedMaxPriority = (serverSuggestedMinPriorityFeePerGas * 1.4).round();
   transaction.maxPriorityFeePerGas = paddedMaxPriority.toString();
-  printLog(
-      "serverSuggestedMinPriorityFeePerGas = $serverSuggestedMinPriorityFeePerGas");
-  printLog("paddedMaxPriority  = $paddedMaxPriority");
-  printLog(
-      "serverConfigUpdate.maxMaxFeePerGas  = ${serverConfigUpdate.maxMaxFeePerGas}");
 
   // Special handling for mumbai because of quirk with gas estimate returned by GSN for mumbai
   if (serverConfigUpdate.chainId == '80001') {
@@ -194,7 +176,6 @@ void setGasFeesForTransaction(
   } else {
     transaction.maxFeePerGas = serverConfigUpdate.maxMaxFeePerGas;
   }
-  printLog(' transaction.maxFeePerGas =  ${transaction.maxFeePerGas}');
 }
 
 class GsnServerConfigPayload {

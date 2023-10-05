@@ -4,7 +4,6 @@ import 'package:convert/convert.dart';
 import 'package:ed25519_hd_key/ed25519_hd_key.dart';
 import 'package:flutter/services.dart';
 import 'package:bip39/bip39.dart' as bip39;
-import 'package:flutter_sdk/utils/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'keyStorageConfig.dart';
