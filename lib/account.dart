@@ -3,7 +3,6 @@ import 'dart:typed_data';
 
 import 'package:convert/convert.dart';
 import 'package:eth_sig_util/util/utils.dart';
-import 'package:flutter_sdk/utils/constants.dart';
 
 import 'package:web3dart/web3dart.dart';
 
@@ -36,17 +35,19 @@ class AccountsUtil {
     return newWallet.privateKey.address.hex;
   }
 
-  Future<Wallet> getWallet() async {
+  Future<Wallet?> getWallet() async {
     if (_cachedWallet != null) {
       return _cachedWallet!;
     }
 
     String? mnemonic = await _keyManager.getMnemonic();
 
-    mnemonic ??= await _keyManager.generateMnemonic();
+    if (mnemonic == null) {
+      return null;
+    }
 
-    final pkey = await _keyManager.makePrivateKeyFromMnemonic(mnemonic!);
-    final wallet = _makeWalletFromPrivateKey(pkey);
+    final privateKey = await _keyManager.makePrivateKeyFromMnemonic(mnemonic);
+    final wallet = _makeWalletFromPrivateKey(privateKey);
 
     _cachedWallet = wallet;
     return wallet;
@@ -54,6 +55,9 @@ class AccountsUtil {
 
   Future<String?> getAccountAddress() async {
     final wallet = await getWallet();
+    if(wallet == null) {
+      return null;
+    }
     return wallet.privateKey.address.hex;
   }
 
@@ -70,8 +74,8 @@ class AccountsUtil {
     }
   }
 
-  String signMessage(String message) {
-    final wallet = getWallet();
+  Future<String> signMessage(String message) async {
+    final wallet = await getWallet();
 
     if (wallet == null) {
       throw 'No account';
@@ -80,8 +84,8 @@ class AccountsUtil {
     // return wallet.signMessage(message);
   }
 
-  String signTransaction() {
-    final wallet = getWallet();
+  Future<String> signTransaction() async {
+    final wallet = await getWallet();
     if (wallet == null) {
       throw 'No account';
     }
@@ -89,8 +93,8 @@ class AccountsUtil {
     // return wallet.signTransaction(tx);
   }
 
-  String signHash(String hash) {
-    final wallet = getWallet();
+  Future<String> signHash(String hash) async {
+    final wallet = await getWallet();
     if (wallet == null) {
       throw 'No account';
     }
@@ -116,8 +120,13 @@ class AccountsUtil {
     return newWallet;
   }
 
-  Future<String> getPrivateKeyHex() async {
+  Future<String?> getPrivateKeyHex() async {
     final wallet = await getWallet();
+
+    if(wallet == null) {
+      return null;
+    }
+
     return hex.encode(wallet.privateKey.privateKey);
   }
 }
