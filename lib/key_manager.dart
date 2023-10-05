@@ -26,7 +26,7 @@ const WHEN_UNLOCKED = KeychainAccessibilityConstant(5);
 const WHEN_UNLOCKED_THIS_DEVICE_ONLY = KeychainAccessibilityConstant(6);
 
 class KeyManagerImpl extends KeyManager {
-  final methodChannel = const MethodChannel('flutter_sdk');
+  final methodChannel = const MethodChannel('rly_network_flutter_sdk');
 
   @override
   void deleteMnemonic() {

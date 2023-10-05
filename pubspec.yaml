@@ -1,17 +1,17 @@
-name: flutter_sdk
-description: A new Flutter project.
+name: rly_network_flutter_sdk
+description: RLY Network Flutter SDK
 version: 0.0.1
 homepage:
 
 environment:
-  sdk: '>=3.0.5 <4.0.0'
+  sdk: ">=3.0.5 <4.0.0"
   flutter: ">=3.3.0"
 
 dependencies:
   flutter:
     sdk: flutter
   plugin_platform_interface: ^2.0.2
-  web3dart: ^2.7.0
+  web3dart: ^2.6.1
   bip39: ^1.0.6
   bip39_mnemonic: ^3.0.6
   ed25519_hd_key: ^2.2.0
@@ -19,7 +19,7 @@ dependencies:
   ethereum: ^6.0.0
   shared_preferences: ^2.0.20
   eth_sig_util: ^0.0.9
-
+  http: ^1.1.0
 
 dev_dependencies:
   flutter_test:
@@ -44,10 +44,10 @@ flutter:
   plugin:
     platforms:
       android:
-        package: com.savez.flutter_sdk
+        package: com.rly_network.rly_network_flutter_sdk
         pluginClass: FlutterSdkPlugin
       ios:
-        package: com.savez.flutter_sdk
+        package: com.rly_network.rly_network_flutter_sdk
         pluginClass: FlutterSdkPlugin
 
   # To add assets to your plugin package, add an assets section, like this:

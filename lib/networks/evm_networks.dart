@@ -1,7 +1,6 @@
-import 'package:flutter_sdk/gsnClient/gsnTxHelpers.dart';
-import 'package:flutter_sdk/gsnClient/utils.dart';
-import 'package:flutter_sdk/network.dart';
-import 'package:flutter_sdk/utils/constants.dart';
+import 'package:rly_network_flutter_sdk/gsnClient/gsnTxHelpers.dart';
+import 'package:rly_network_flutter_sdk/gsnClient/utils.dart';
+import 'package:rly_network_flutter_sdk/network.dart';
 import 'package:web3dart/web3dart.dart';
 
 import '../account.dart';
@@ -21,10 +20,6 @@ class NetworkImpl extends Network {
   Future<String> claimRly() async {
     final account = await AccountsUtil.getInstance().getWallet();
 
-    if (account == null) {
-      throw missingWalletError;
-    }
-
     final existingBalance = await getBalance();
     // final existingBalance = 0;
 
@@ -42,16 +37,12 @@ class NetworkImpl extends Network {
   @override
   Future<double> getBalance({PrefixedHexString? tokenAddress}) async {
     final account = await AccountsUtil.getInstance().getWallet();
-    //if token address use it otherwise default to RLY
+
     tokenAddress = tokenAddress ?? network.contracts.rlyERC20;
-    if (account == null) {
-      throw missingWalletError;
-    }
 
     final provider = getEthClient(network.gsn.rpcUrl);
-    //TODO: we have to use this provider to make this erc20 contract
-    // final token = erc20(provider,tokenAddress);
-    final token = erc20(tokenAddress);
+
+    final token = erc20(EthereumAddress.fromHex(tokenAddress));
     final funCall = await provider.call(
         contract: token, function: token.function("decimals"), params: []);
     final decimals = funCall[0];
@@ -68,10 +59,6 @@ class NetworkImpl extends Network {
   Future<String> relay(GsnTransactionDetails tx) async {
     final account = await AccountsUtil.getInstance().getWallet();
 
-    if (account == null) {
-      throw missingWalletError;
-    }
-
     return relayTransaction(account, network, tx);
   }
 
@@ -80,23 +67,13 @@ class NetworkImpl extends Network {
     network.relayerApiKey = apiKey;
   }
 
-  double formatUnits(BigInt wei, BigInt decimals) {
-    final etherUnit = EtherUnit.gwei;
-    final balanceFormatted =
-        EtherAmount.fromBigInt(etherUnit, wei).getValueInUnit(EtherUnit.gwei);
-    return balanceFormatted;
-  }
-
   @override
-  Future<String> transfer(String destinationAddress, double amount,
-      {PrefixedHexString? tokenAddress, MetaTxMethod? metaTxMethod}) async {
+  Future<String> transfer(
+      String destinationAddress, double amount, MetaTxMethod metaTxMethod,
+      {PrefixedHexString? tokenAddress}) async {
     final account = await AccountsUtil.getInstance().getWallet();
 
     tokenAddress = tokenAddress ?? network.contracts.rlyERC20;
-
-    if (account == null) {
-      throw missingWalletError;
-    }
 
     final sourceBalance = await getBalance(tokenAddress: tokenAddress);
 
@@ -109,71 +86,32 @@ class NetworkImpl extends Network {
     final provider = getEthClient(network.gsn.rpcUrl);
 
     GsnTransactionDetails? transferTx;
-    // metaTxMethod = MetaTxMethod.ExecuteMetaTransaction;
-    if (metaTxMethod != null &&
-        (metaTxMethod == MetaTxMethod.Permit ||
-            metaTxMethod == MetaTxMethod.ExecuteMetaTransaction)) {
-      if (metaTxMethod == MetaTxMethod.Permit) {
-        transferTx = await getPermitTx(
-          account,
-          EthereumAddress.fromHex(destinationAddress),
-          amount,
-          network,
-          tokenAddress,
-          provider,
-        );
-      } else {
-        printLog("From address = ${account.address.hex}");
-        transferTx = await getExecuteMetatransactionTx(
-          account,
-          destinationAddress,
-          amount,
-          network,
-          tokenAddress,
-          provider,
-        );
-      }
-    } else {
-      final executeMetaTransactionSupported = await hasExecuteMetaTransaction(
-          account, destinationAddress, amount, network, tokenAddress, provider);
 
-      final permitSupported = await hasPermit(
+    if (metaTxMethod == MetaTxMethod.Permit) {
+      transferTx = await getPermitTx(
         account,
+        EthereumAddress.fromHex(destinationAddress),
         amount,
         network,
         tokenAddress,
         provider,
       );
-
-      if (executeMetaTransactionSupported) {
-        transferTx = await getExecuteMetatransactionTx(
-          account,
-          destinationAddress,
-          amount,
-          network,
-          tokenAddress,
-          provider,
-        );
-      } else if (permitSupported) {
-        transferTx = await getPermitTx(
-          account,
-          EthereumAddress.fromHex(destinationAddress),
-          amount,
-          network,
-          tokenAddress,
-          provider,
-        );
-      } else {
-        throw transferMethodNotSupportedError;
-      }
+    } else {
+      transferTx = await getExecuteMetatransactionTx(
+        account,
+        destinationAddress,
+        amount,
+        network,
+        tokenAddress,
+        provider,
+      );
     }
-    return relay(transferTx!);
+
+    return relay(transferTx);
   }
 
-  // This method is deprecated. Update to 'c laimRly' instead.
-// Will be removed in future library versions.
+  @override
   Future<String> registerAccount() async {
-    print("This method is deprecated. Update to 'claimRly' instead.");
     return claimRly();
   }
 
@@ -183,15 +121,14 @@ class NetworkImpl extends Network {
     Web3Client client = getEthClient(network.gsn.rpcUrl);
     final account = await AccountsUtil.getInstance().getWallet();
 
-    if(account == null) {
+    if (account == null) {
       throw missingWalletError;
     }
 
     final result = await client.sendTransaction(
         account,
         Transaction(
-          to: EthereumAddress.fromHex(
-              '0x39cc7b9f44cf39f3fd53a91db57670096c4c3e4f'),
+          to: EthereumAddress.fromHex(destinationAddress),
           gasPrice: EtherAmount.fromInt(EtherUnit.wei, 1000000),
           value: EtherAmount.fromBigInt(EtherUnit.gwei, BigInt.from(3)),
         ),

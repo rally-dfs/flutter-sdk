@@ -1,5 +1,7 @@
-group 'com.savez.flutter_sdk'
+group 'com.rly_network.rly_network_flutter_sdk'
 version '1.0-SNAPSHOT'
+
+
 
 buildscript {
     ext.kotlin_version = '1.7.10'

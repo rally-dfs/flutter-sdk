@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:eth_sig_util/util/utils.dart';
 import 'package:web3dart/credentials.dart';
 

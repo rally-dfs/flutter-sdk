@@ -5,7 +5,7 @@ import Foundation
 
 public class FlutterSdkPlugin: NSObject, FlutterPlugin {
   public static func register(with registrar: FlutterPluginRegistrar) {
-    let channel = FlutterMethodChannel(name: "flutter_sdk", binaryMessenger: registrar.messenger())
+    let channel = FlutterMethodChannel(name: "rly_network_flutter_sdk", binaryMessenger: registrar.messenger())
     let instance = FlutterSdkPlugin()
     registrar.addMethodCallDelegate(instance, channel: channel)
   }
