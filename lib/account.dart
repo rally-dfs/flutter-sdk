@@ -26,8 +26,7 @@ class AccountsUtil {
 
     final mnemonic = await _keyManager.generateMnemonic();
     _keyManager.saveMnemonic(mnemonic!);
-    final pkey = await _keyManager.makePrivateKeyFromMnemonic(mnemonic);
-    final newWallet = _makeWalletFromRawPrivateKey(pkey);
+    final newWallet = await _makeWalletFromMnemonic(mnemonic);
 
     _cachedWallet = newWallet;
     return newWallet.address.hex;
@@ -44,8 +43,7 @@ class AccountsUtil {
       return null;
     }
 
-    final privateKey = await _keyManager.makePrivateKeyFromMnemonic(mnemonic);
-    final wallet = _makeWalletFromRawPrivateKey(privateKey);
+    final wallet = await _makeWalletFromMnemonic(mnemonic);
 
     _cachedWallet = wallet;
     return wallet;
@@ -103,8 +101,10 @@ class AccountsUtil {
     // return utils.joinSignature(signingKey.signDigest(hash));
   }
 
-  EthPrivateKey _makeWalletFromRawPrivateKey(Uint8List uint8list) {
-    String hexCode = "0x${bytesToHex(uint8list)}";
+  Future<EthPrivateKey> _makeWalletFromMnemonic(String mnemonic) async {
+    Uint8List privateKey = await _keyManager.makePrivateKeyFromMnemonic(mnemonic);
+    String hexCode = "0x${bytesToHex(privateKey)}";
     return EthPrivateKey.fromHex(hexCode);
   }
+
 }
