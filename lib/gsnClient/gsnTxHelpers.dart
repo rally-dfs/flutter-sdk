@@ -154,7 +154,7 @@ Future<String> signRequest(
   RelayRequest relayRequest,
   String domainSeparatorName,
   String chainId,
-  Wallet account,
+  EthPrivateKey account,
   NetworkConfig config,
 ) async {
   final cloneRequest = {
@@ -246,7 +246,7 @@ Future<String> signRequest(
 // Sign the data using ethsigutil.signTypedData
   final signature = EthSigUtil.signTypedData(
     jsonData: jsonEncode(jsonData),
-    privateKey: "0x${bytesToHex(account.privateKey.privateKey)}",
+    privateKey: "0x${bytesToHex(account.privateKey)}",
     version: TypedDataVersion.V4,
   );
 
@@ -258,6 +258,13 @@ Future<String> signRequest(
     ),
   );
 
+<<<<<<< HEAD
+  printLog('Signature from gsn tx helper: $signature');
+  printLog('recovered from gsn tx helper= $revoered');
+  print("public key from gsn tx helper=\n${account.address.hex}");
+
+=======
+>>>>>>> main
   return signature;
 }
 
@@ -281,7 +288,7 @@ String getRelayRequestID(
 }
 
 Future<GsnTransactionDetails> getClaimTx(
-  Wallet account,
+  EthPrivateKey account,
   NetworkConfig config,
   Web3Client client,
 ) async {
@@ -293,7 +300,7 @@ Future<GsnTransactionDetails> getClaimTx(
   final tx = Transaction.callContract(
       contract: faucet, function: faucet.function('claim'), parameters: []);
   final gas = await client.estimateGas(
-    sender: account.privateKey.address,
+    sender: account.address,
     data: tx.data,
     to: faucet.address,
   );
@@ -311,7 +318,7 @@ Future<GsnTransactionDetails> getClaimTx(
   }
 
   final gsnTx = GsnTransactionDetails(
-    from: account.privateKey.address.toString(),
+    from: account.address.toString(),
     data: uint8ListToHex(tx.data!),
     value: "0",
     to: faucet.address.hex,

@@ -50,7 +50,7 @@ class NetworkImpl extends Network {
     final balanceOfCall = await provider.call(
         contract: token,
         function: token.function('balanceOf'),
-        params: [account.privateKey.address]);
+        params: [account.address]);
     final balance = balanceOfCall[0];
     return formatUnits(balance, decimals);
   }
@@ -121,8 +121,12 @@ class NetworkImpl extends Network {
     Web3Client client = getEthClient(network.gsn.rpcUrl);
     final account = await AccountsUtil.getInstance().getWallet();
 
+    if (account == null) {
+      throw missingWalletError;
+    }
+
     final result = await client.sendTransaction(
-        account.privateKey,
+        account,
         Transaction(
           to: EthereumAddress.fromHex(destinationAddress),
           gasPrice: EtherAmount.fromInt(EtherUnit.wei, 1000000),

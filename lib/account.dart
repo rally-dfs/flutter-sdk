@@ -1,15 +1,13 @@
-import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:convert/convert.dart';
 import 'package:eth_sig_util/util/utils.dart';
 
 import 'package:web3dart/web3dart.dart';
 
-import 'keyManager.dart';
+import 'key_manager.dart';
 
 class AccountsUtil {
-  static Wallet? _cachedWallet;
+  static EthPrivateKey? _cachedWallet;
   final KeyManager _keyManager;
 
   AccountsUtil(this._keyManager);
@@ -28,24 +26,24 @@ class AccountsUtil {
 
     final mnemonic = await _keyManager.generateMnemonic();
     _keyManager.saveMnemonic(mnemonic!);
-    final pkey = await _keyManager.makePrivateKeyFromMnemonic(mnemonic);
-    final newWallet = _makeWalletFromPrivateKey(pkey);
+    final newWallet = await _makeWalletFromMnemonic(mnemonic);
 
     _cachedWallet = newWallet;
-    return newWallet.privateKey.address.hex;
+    return newWallet.address.hex;
   }
 
-  Future<Wallet> getWallet() async {
+  Future<EthPrivateKey?> getWallet() async {
     if (_cachedWallet != null) {
       return _cachedWallet!;
     }
 
     String? mnemonic = await _keyManager.getMnemonic();
 
-    mnemonic ??= await _keyManager.generateMnemonic();
+    if (mnemonic == null) {
+      return null;
+    }
 
-    final pkey = await _keyManager.makePrivateKeyFromMnemonic(mnemonic!);
-    final wallet = _makeWalletFromPrivateKey(pkey);
+    final wallet = await _makeWalletFromMnemonic(mnemonic);
 
     _cachedWallet = wallet;
     return wallet;
@@ -53,7 +51,10 @@ class AccountsUtil {
 
   Future<String?> getAccountAddress() async {
     final wallet = await getWallet();
-    return wallet.privateKey.address.hex;
+    if(wallet == null) {
+      return null;
+    }
+    return wallet.address.hex;
   }
 
   void permanentlyDeleteAccount() {
@@ -69,8 +70,8 @@ class AccountsUtil {
     }
   }
 
-  String signMessage(String message) {
-    final wallet = getWallet();
+  Future<String> signMessage(String message) async {
+    final wallet = await getWallet();
 
     if (wallet == null) {
       throw 'No account';
@@ -79,8 +80,8 @@ class AccountsUtil {
     // return wallet.signMessage(message);
   }
 
-  String signTransaction() {
-    final wallet = getWallet();
+  Future<String> signTransaction() async {
+    final wallet = await getWallet();
     if (wallet == null) {
       throw 'No account';
     }
@@ -88,8 +89,8 @@ class AccountsUtil {
     // return wallet.signTransaction(tx);
   }
 
-  String signHash(String hash) {
-    final wallet = getWallet();
+  Future<String> signHash(String hash) async {
+    final wallet = await getWallet();
     if (wallet == null) {
       throw 'No account';
     }
@@ -100,23 +101,10 @@ class AccountsUtil {
     // return utils.joinSignature(signingKey.signDigest(hash));
   }
 
-  EthPrivateKey getCredentials(Uint8List uint8list) {
-    String hexCode = "0x${bytesToHex(uint8list)}";
+  Future<EthPrivateKey> _makeWalletFromMnemonic(String mnemonic) async {
+    Uint8List privateKey = await _keyManager.makePrivateKeyFromMnemonic(mnemonic);
+    String hexCode = "0x${bytesToHex(privateKey)}";
     return EthPrivateKey.fromHex(hexCode);
   }
 
-  Wallet _makeWalletFromPrivateKey(Uint8List uint8list) {
-    EthPrivateKey credentials = getCredentials(uint8list);
-
-    //TODO: What is this password?
-    final Wallet newWallet =
-        Wallet.createNew(credentials, 'password', Random.secure());
-
-    return newWallet;
-  }
-
-  Future<String> getPrivateKeyHex() async {
-    final wallet = await getWallet();
-    return hex.encode(wallet.privateKey.privateKey);
-  }
 }

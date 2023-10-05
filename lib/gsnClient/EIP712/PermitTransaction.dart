@@ -85,7 +85,7 @@ Map<String, dynamic> getTypedPermitTransaction(Permit permit) {
 }
 
 Future<Map<String, dynamic>> getPermitEIP712Signature(
-  Wallet account,
+  EthPrivateKey account,
   String contractName,
   String contractAddress,
   NetworkConfig config,
@@ -104,7 +104,7 @@ Future<Map<String, dynamic>> getPermitEIP712Signature(
       version: '1',
       chainId: chainId,
       verifyingContract: contractAddress,
-      owner: account.privateKey.address.hex,
+      owner: account.address.hex,
       spender: config.gsn.paymasterAddress,
       value: amount,
       nonce: nonce,
@@ -117,7 +117,7 @@ Future<Map<String, dynamic>> getPermitEIP712Signature(
   final String signature = EthSigUtil.signTypedData(
     jsonData: jsonEncode(eip712Data),
     version: TypedDataVersion.V4,
-    privateKey: "0x${bytesToHex(account.privateKey.privateKey)}",
+    privateKey: "0x${bytesToHex(account.privateKey)}",
   );
 
   final cleanedSignature =
@@ -135,7 +135,7 @@ Future<Map<String, dynamic>> getPermitEIP712Signature(
 }
 
 Future<GsnTransactionDetails> getPermitTx(
-  Wallet account,
+  EthPrivateKey account,
   EthereumAddress destinationAddress,
   double amount,
   NetworkConfig config,
@@ -146,7 +146,7 @@ Future<GsnTransactionDetails> getPermitTx(
   final noncesCallResult = await provider.call(
       contract: token,
       function: token.function("nonces"),
-      params: [EthereumAddress.fromHex(account.privateKey.address.hex)]);
+      params: [EthereumAddress.fromHex(account.address.hex)]);
 
   final nameCall = await provider
       .call(contract: token, function: token.function('name'), params: []);
@@ -183,7 +183,7 @@ Future<GsnTransactionDetails> getPermitTx(
   final v = signature['v'];
 
   final fromTx = token.function('transferFrom').encodeCall([
-    EthereumAddress.fromHex(account.privateKey.address.hex),
+    EthereumAddress.fromHex(account.address.hex),
     destinationAddress,
     decimalAmount,
   ]);
@@ -192,7 +192,7 @@ Future<GsnTransactionDetails> getPermitTx(
     contract: token,
     function: token.function('permit'),
     parameters: [
-      EthereumAddress.fromHex(account.privateKey.address.hex),
+      EthereumAddress.fromHex(account.address.hex),
       EthereumAddress.fromHex(config.gsn.paymasterAddress),
       decimalAmount,
       deadline,
@@ -205,7 +205,7 @@ Future<GsnTransactionDetails> getPermitTx(
   final gas = await provider.estimateGas(
     to: token.address,
     data: tx.data,
-    sender: account.privateKey.address,
+    sender: account.address,
   );
 
   final paymasterData =
@@ -219,7 +219,7 @@ Future<GsnTransactionDetails> getPermitTx(
       info.baseFeePerGas!.getInWei * BigInt.from(2) + (maxPriorityFeePerGas);
 
   final gsnTx = GsnTransactionDetails(
-    from: account.privateKey.address.hex,
+    from: account.address.hex,
     data: "0x${bytesToHex(tx.data!)}",
     value: "0",
     to: tx.to!.hex,
