@@ -15,7 +15,7 @@ class GenerateAccountScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          HeadingText(text: 'Welcome To \nThe RLY Demo App'),
+          HeadingText(text: 'Welcome To Rally Protocol Demo App'),
           RlyCard(
             child: Column(
               children: [
@@ -24,7 +24,7 @@ class GenerateAccountScreen extends StatelessWidget {
                 SizedBox(height: 24),
                 ElevatedButton(
                   onPressed: generateAccount,
-                  child: Text('Create RLY Account'),
+                  child: Text('Create EOA Account'),
                 ),
               ],
             ),

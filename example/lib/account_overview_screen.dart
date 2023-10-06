@@ -133,7 +133,7 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
                       padding: const EdgeInsets.all(12),
                       child: Column(
                         children: [
-                          const Text('Welcome to RLY',
+                          const Text('Welcome to Rally Protocol',
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 18)),
                           const SizedBox(height: 12),
@@ -167,7 +167,7 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
                           if (balance != null && balance! < 1)
                             FullWidthButton(
                               onPressed: claimRlyTokens,
-                              child: const Text('Claim RLY'),
+                              child: const Text('Claim ERC20'),
                             ),
                           const SizedBox(height: 12),
                           FullWidthButton(
@@ -176,7 +176,7 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
                           ),
                           FullWidthButton(
                             onPressed: transferTokens,
-                            child: const Text('Transfer RLY'),
+                            child: const Text('Transfer ERC20'),
                           ),
                         ],
                       ),
