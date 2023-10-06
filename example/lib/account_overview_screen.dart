@@ -85,7 +85,7 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
   }
 
   void deleteAccount() async {
-    AccountsUtil.getInstance().permanentlyDeleteAccount();
+    await AccountsUtil.getInstance().permanentlyDeleteAccount();
   }
 
   void revealMnemonic() async {

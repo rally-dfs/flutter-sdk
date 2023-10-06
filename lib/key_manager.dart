@@ -6,7 +6,7 @@ abstract class KeyManager {
   Future<String?> getMnemonic();
   Future<String?> generateMnemonic();
   void saveMnemonic(String mnemonic, {KeyStorageConfig? options});
-  void deleteMnemonic();
+  Future<void> deleteMnemonic();
   Future<Uint8List> makePrivateKeyFromMnemonic(String mnemonic);
   Future<Uint8List> getStoredPrivateKey();
 }
@@ -29,8 +29,8 @@ class KeyManagerImpl extends KeyManager {
   final methodChannel = const MethodChannel('rly_network_flutter_sdk');
 
   @override
-  void deleteMnemonic() {
-    methodChannel.invokeMethod<bool>("deleteMnemonic");
+  Future<void> deleteMnemonic() async {
+    await methodChannel.invokeMethod<bool>("deleteMnemonic");
   }
 
   @override
