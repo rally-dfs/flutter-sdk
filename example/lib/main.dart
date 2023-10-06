@@ -6,11 +6,13 @@ import 'LoadingScreen.dart';
 import 'package:rly_network_flutter_sdk/account.dart';
 
 class App extends StatefulWidget {
+  const App({super.key});
+
   @override
-  _AppState createState() => _AppState();
+  AppState createState() => AppState();
 }
 
-class _AppState extends State<App> {
+class AppState extends State<App> {
   bool _accountLoaded = false;
   String? _rlyAccount;
 
@@ -22,13 +24,17 @@ class _AppState extends State<App> {
 
   Future<void> _readAccount() async {
     final account = await AccountsUtil.getInstance().getAccountAddress();
-    print('user account: $account');
-
     setState(() {
       _accountLoaded = true;
       if (account != null) {
         _rlyAccount = account;
       }
+    });
+  }
+
+  void _clearAccount() {
+    setState(() {
+      _rlyAccount = null;
     });
   }
 
@@ -50,7 +56,8 @@ class _AppState extends State<App> {
       return GenerateAccountScreen(generateAccount: _createRlyAccount);
     }
 
-    return AccountOverviewScreen(rlyAccount: _rlyAccount!);
+    return AccountOverviewScreen(
+        rlyAccount: _rlyAccount!, onAccountDeleted: _clearAccount);
   }
 }
 
