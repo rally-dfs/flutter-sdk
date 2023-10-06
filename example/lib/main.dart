@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'AccountOverviewScreen.dart';
+import 'account_overview_screen.dart';
 import 'GenerateAccountScreen.dart';
 import 'LoadingScreen.dart';
 import 'package:rly_network_flutter_sdk/account.dart';
