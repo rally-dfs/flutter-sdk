@@ -25,7 +25,7 @@ class AccountsUtil {
     }
 
     final mnemonic = await _keyManager.generateMnemonic();
-    _keyManager.saveMnemonic(mnemonic!);
+    await _keyManager.saveMnemonic(mnemonic!);
     final newWallet = await _makeWalletFromMnemonic(mnemonic);
 
     _cachedWallet = newWallet;
