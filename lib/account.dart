@@ -51,14 +51,14 @@ class AccountsUtil {
 
   Future<String?> getAccountAddress() async {
     final wallet = await getWallet();
-    if(wallet == null) {
+    if (wallet == null) {
       return null;
     }
     return wallet.address.hex;
   }
 
-  void permanentlyDeleteAccount() {
-    _keyManager.deleteMnemonic();
+  Future<void> permanentlyDeleteAccount() async {
+    await _keyManager.deleteMnemonic();
     _cachedWallet = null;
   }
 
@@ -102,9 +102,9 @@ class AccountsUtil {
   }
 
   Future<EthPrivateKey> _makeWalletFromMnemonic(String mnemonic) async {
-    Uint8List privateKey = await _keyManager.makePrivateKeyFromMnemonic(mnemonic);
+    Uint8List privateKey =
+        await _keyManager.makePrivateKeyFromMnemonic(mnemonic);
     String hexCode = "0x${bytesToHex(privateKey)}";
     return EthPrivateKey.fromHex(hexCode);
   }
-
 }
