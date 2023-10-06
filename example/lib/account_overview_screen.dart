@@ -128,51 +128,54 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                               )),
-                          Text('Your Current Balance Is'),
+                          const Text('Your Current Balance Is'),
                           Text(balance?.toString() ?? 'Loading...'),
                           const SizedBox(height: 12),
-                          ElevatedButton(
+                          FullWidthButton(
                             onPressed: () async {
                               await launchUrl(Uri.parse(
                                   'https://mumbai.polygonscan.com/address/${widget.rlyAccount}'));
                             },
-                            child: Text('View on Polygon'),
+                            child: const Text('View on Polygon'),
                           ),
                         ],
                       ),
                     ))),
                 const SizedBox(height: 12),
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Column(
-                      children: [
-                        Text('What Would You Like to Do?'),
-                        const SizedBox(height: 12),
-                        ElevatedButton(
-                          onPressed: claimRlyTokens,
-                          child: Text('Register My Account'),
-                        ),
-                        const SizedBox(height: 12),
-                        ElevatedButton(
-                          onPressed: simpleTransferTokens,
-                          child: Text('Simple Transfer'),
-                        ),
-                        ElevatedButton(
-                          onPressed: transferTokens,
-                          child: Text('Transfer RLY'),
-                        ),
-                        const SizedBox(height: 12),
-                        ElevatedButton(
-                          onPressed: revealMnemonic,
-                          child: Text('Export Your Account'),
-                        ),
-                        const SizedBox(height: 12),
-                        ElevatedButton(
-                          onPressed: deleteAccount,
-                          child: Text('Delete Your Account'),
-                        ),
-                      ],
+                SizedBox(
+                  width: double.infinity,
+                  child: Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Column(
+                        children: [
+                          const Text('Exercise the SDKs features'),
+                          const SizedBox(height: 12),
+                          FullWidthButton(
+                            onPressed: claimRlyTokens,
+                            child: Text('Register My Account'),
+                          ),
+                          const SizedBox(height: 12),
+                          FullWidthButton(
+                            onPressed: simpleTransferTokens,
+                            child: Text('Simple Transfer'),
+                          ),
+                          FullWidthButton(
+                            onPressed: transferTokens,
+                            child: Text('Transfer RLY'),
+                          ),
+                          const SizedBox(height: 12),
+                          FullWidthButton(
+                            onPressed: revealMnemonic,
+                            child: Text('Export Your Account'),
+                          ),
+                          const SizedBox(height: 12),
+                          FullWidthButton(
+                            onPressed: deleteAccount,
+                            child: Text('Delete Your Account'),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -186,7 +189,7 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
                         const SizedBox(height: 12),
                         Text(mnemonic ?? ''),
                         const SizedBox(height: 12),
-                        ElevatedButton(
+                        FullWidthButton(
                           onPressed: () {
                             setState(() {
                               mnemonic = null;
@@ -204,6 +207,29 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class FullWidthButton extends MaterialButton {
+  const FullWidthButton({
+    Key? key,
+    required VoidCallback onPressed,
+    required Widget child,
+  }) : super(
+          key: key,
+          onPressed: onPressed,
+          child: child,
+        );
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: onPressed,
+        child: child,
       ),
     );
   }
