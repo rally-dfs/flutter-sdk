@@ -8,8 +8,10 @@ final rlyNetwork = rlyMumbaiNetwork;
 
 class AccountOverviewScreen extends StatefulWidget {
   final String rlyAccount;
+  final VoidCallback onAccountDeleted;
 
-  const AccountOverviewScreen({super.key, required this.rlyAccount});
+  const AccountOverviewScreen(
+      {super.key, required this.rlyAccount, required this.onAccountDeleted});
 
   @override
   AccountOverviewScreenState createState() => AccountOverviewScreenState();
@@ -86,6 +88,7 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
 
   void deleteAccount() async {
     await AccountsUtil.getInstance().permanentlyDeleteAccount();
+    widget.onAccountDeleted();
   }
 
   void revealMnemonic() async {
