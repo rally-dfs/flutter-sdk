@@ -113,32 +113,34 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(height: 12),
-                Text('Welcome to RLY'),
-                const SizedBox(height: 12),
-                Text(widget.rlyAccount.isNotEmpty
-                    ? widget.rlyAccount
-                    : 'No Account Exists'),
-                const SizedBox(height: 12),
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Column(
-                      children: [
-                        Text('Your Current Balance Is'),
-                        Text(balance?.toString() ?? 'Loading...'),
-                        const SizedBox(height: 12),
-                        ElevatedButton(
-                          onPressed: () async {
-                            await launchUrl(Uri.parse(
-                                'https://mumbai.polygonscan.com/address/${widget.rlyAccount}'));
-                          },
-                          child: Text('View on Polygon'),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                SizedBox(
+                    width: double.infinity,
+                    child: Card(
+                        child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Column(
+                        children: [
+                          const Text('Welcome to RLY',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 18)),
+                          const SizedBox(height: 12),
+                          Text(widget.rlyAccount,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              )),
+                          Text('Your Current Balance Is'),
+                          Text(balance?.toString() ?? 'Loading...'),
+                          const SizedBox(height: 12),
+                          ElevatedButton(
+                            onPressed: () async {
+                              await launchUrl(Uri.parse(
+                                  'https://mumbai.polygonscan.com/address/${widget.rlyAccount}'));
+                            },
+                            child: Text('View on Polygon'),
+                          ),
+                        ],
+                      ),
+                    ))),
                 const SizedBox(height: 12),
                 Card(
                   child: Padding(
