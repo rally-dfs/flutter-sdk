@@ -5,7 +5,7 @@ import 'keyStorageConfig.dart';
 abstract class KeyManager {
   Future<String?> getMnemonic();
   Future<String?> generateMnemonic();
-  void saveMnemonic(String mnemonic, {KeyStorageConfig? options});
+  Future<void> saveMnemonic(String mnemonic, {KeyStorageConfig? options});
   Future<void> deleteMnemonic();
   Future<Uint8List> makePrivateKeyFromMnemonic(String mnemonic);
   Future<Uint8List> getStoredPrivateKey();
@@ -37,7 +37,7 @@ class KeyManagerImpl extends KeyManager {
   Future<String?> generateMnemonic() async {
     String? mnemonic =
         await methodChannel.invokeMethod<String>("generateNewMnemonic");
-    saveMnemonic(mnemonic!);
+    await saveMnemonic(mnemonic!);
     return mnemonic;
   }
 
