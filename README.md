@@ -2,6 +2,8 @@ The Rally Mobile SDK is a key component of the Rally Protocol that allows develo
 
 # Example Usage
 
+### accounts (EOAs)
+
 ```
 import 'package:rly_network_flutter_sdk/account.dart';
 
@@ -18,6 +20,8 @@ final address = await AccountsUtil.getInstance().getAccountAddress();
 // delete account
 
 ```
+
+## transactions
 
 ```
 import 'package:rly_network_flutter_sdk/network.dart';
@@ -44,8 +48,9 @@ await mumbai.transfer(transferAddress, double.parse(1), MetaTxMethod.ExecuteMeta
 
 
 
-// relay arbitrary tx through our gasless relayer
+// relay arbitrary tx through our gasless relayer. see complete example at https://github.com/rally-dfs/flutter-example-app/tree/main/app/lib/services/nft.dart
 
+...
 
 final gsnTx = GsnTransactionDetails(
     from: accountAddress,
@@ -58,15 +63,6 @@ final gsnTx = GsnTransactionDetails(
     );
 
 await mumbai.relay(gsnTx)
-
-
-
-
-
-
-
-
-
 
 
 ```
