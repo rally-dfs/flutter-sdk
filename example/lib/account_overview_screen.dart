@@ -97,10 +97,27 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
     if (value == null || value.isEmpty) {
       throw 'Something went wrong, no Mnemonic when there should be one';
     }
+    showMnemonic(value);
+  }
 
-    setState(() {
-      mnemonic = value;
-    });
+  void showMnemonic(String mnemonic) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return SizedBox(
+            height: 200,
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  const Text('Copy The Phrase below to export your wallet'),
+                  const SizedBox(height: 12),
+                  Text(mnemonic),
+                ],
+              ),
+            ));
+      },
+    );
   }
 
   @override
@@ -165,44 +182,33 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
                             onPressed: transferTokens,
                             child: const Text('Transfer RLY'),
                           ),
-                          const SizedBox(height: 12),
-                          FullWidthButton(
-                            onPressed: revealMnemonic,
-                            child: const Text('Export Your Account'),
-                          ),
-                          const SizedBox(height: 12),
-                          FullWidthButton(
-                            onPressed: deleteAccount,
-                            child: const Text('Delete Your Account'),
-                          ),
                         ],
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 32),
                 Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Column(
-                      children: [
-                        const Text(
-                            'Copy The Phrase below to export your wallet'),
-                        const SizedBox(height: 12),
-                        Text(mnemonic ?? ''),
-                        const SizedBox(height: 12),
-                        FullWidthButton(
-                          onPressed: () {
-                            setState(() {
-                              mnemonic = null;
-                            });
-                          },
-                          child: const Text('Close'),
-                        ),
-                      ],
-                    ),
+                    child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Column(
+                    children: [
+                      const Center(
+                        child: Text('Manage Your Wallet'),
+                      ),
+                      const SizedBox(height: 12),
+                      FullWidthButton(
+                        onPressed: revealMnemonic,
+                        child: const Text('Export Your Account'),
+                      ),
+                      const SizedBox(height: 12),
+                      FullWidthButton(
+                        onPressed: deleteAccount,
+                        child: const Text('Delete Your Account'),
+                      ),
+                    ],
                   ),
-                ),
+                )),
                 const SizedBox(height: 12),
                 loading ? const CircularProgressIndicator() : const SizedBox(),
               ],
