@@ -151,10 +151,11 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
                         children: [
                           const Text('Exercise the SDKs features'),
                           const SizedBox(height: 12),
-                          FullWidthButton(
-                            onPressed: claimRlyTokens,
-                            child: const Text('Register My Account'),
-                          ),
+                          if (balance != null && balance! < 1)
+                            FullWidthButton(
+                              onPressed: claimRlyTokens,
+                              child: const Text('Claim RLY'),
+                            ),
                           const SizedBox(height: 12),
                           FullWidthButton(
                             onPressed: simpleTransferTokens,
