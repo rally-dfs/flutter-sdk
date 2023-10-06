@@ -65,8 +65,6 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
     fetchBalance();
 
     setState(() {
-      transferBalance = '';
-      transferAddress = '';
       loading = false;
     });
   }
@@ -82,8 +80,6 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
     fetchBalance();
 
     setState(() {
-      transferBalance = '';
-      transferAddress = '';
       loading = false;
     });
   }
