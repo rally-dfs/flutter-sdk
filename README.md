@@ -1,5 +1,76 @@
 The Rally Mobile SDK is a key component of the Rally Protocol that allows developers to retake control of the user experience by eliminating the reliance for end-users to complete complex blockchain operations through third party apps. By utilizing the SDK, developers gain access to the necessary tools that enable them to create familiar and native mobile UX while leveraging the benefits of blockchain technology.
 
+# Example Usage
+
+```
+import 'package:rly_network_flutter_sdk/account.dart';
+
+
+//create an account
+
+final account = await AccountsUtil.getInstance().createAccount();
+
+
+// get current user account address
+
+final address = await AccountsUtil.getInstance().getAccountAddress();
+
+// delete account
+
+```
+
+```
+import 'package:rly_network_flutter_sdk/network.dart';
+
+//get mumbai config for rally protocol sdk
+
+final mumbai = rlyMumbaiNetwork;
+
+// add your API Key
+
+mumbai.setApiKey(env.API_KEY);
+
+// this is simple method for claiming 10 test ERC20 tokens for testing
+
+await mumbai.claimRly();
+
+// get balance of any ERC20 token
+
+await mumbai.getBalance(tokenAddress);
+
+// transfer any ERC20 token, to transfer gaslessly token contract must support permit() or executeMetaTransaction() (most ERC20s on polygon support this)
+
+await mumbai.transfer(transferAddress, double.parse(1), MetaTxMethod.ExecuteMetaTransaction);
+
+
+
+// relay arbitrary tx through our gasless relayer
+
+
+final gsnTx = GsnTransactionDetails(
+    from: accountAddress,
+    data: tx.data,
+    value: "0",
+    to: contractAddress,
+    gas: gas.toString(),
+    maxFeePerGas: maxFeePerGas.toString(),
+    maxPriorityFeePerGas: maxPriorityFeePerGas.toString(),
+    );
+
+await mumbai.relay(gsnTx)
+
+
+
+
+
+
+
+
+
+
+
+```
+
 # Documentation
 
 For comprehensive documentation, see [docs.rallyprotocol.com](https://docs.rallyprotocol.com)
