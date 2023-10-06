@@ -59,8 +59,8 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
       loading = true;
     });
 
-    final txHash = await rlyNetwork.transfer(transferAddress,
-        double.parse(transferBalance), MetaTxMethod.ExecuteMetaTransaction);
+    await rlyNetwork.transfer(transferAddress, double.parse(transferBalance),
+        MetaTxMethod.ExecuteMetaTransaction);
 
     fetchBalance();
 
@@ -76,7 +76,7 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
       loading = true;
     });
 
-    final txnId = await rlyNetwork.simpleTransfer(
+    await rlyNetwork.simpleTransfer(
         transferAddress, double.parse(transferBalance));
 
     fetchBalance();
@@ -153,26 +153,26 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
                           const SizedBox(height: 12),
                           FullWidthButton(
                             onPressed: claimRlyTokens,
-                            child: Text('Register My Account'),
+                            child: const Text('Register My Account'),
                           ),
                           const SizedBox(height: 12),
                           FullWidthButton(
                             onPressed: simpleTransferTokens,
-                            child: Text('Simple Transfer'),
+                            child: const Text('Simple Transfer'),
                           ),
                           FullWidthButton(
                             onPressed: transferTokens,
-                            child: Text('Transfer RLY'),
+                            child: const Text('Transfer RLY'),
                           ),
                           const SizedBox(height: 12),
                           FullWidthButton(
                             onPressed: revealMnemonic,
-                            child: Text('Export Your Account'),
+                            child: const Text('Export Your Account'),
                           ),
                           const SizedBox(height: 12),
                           FullWidthButton(
                             onPressed: deleteAccount,
-                            child: Text('Delete Your Account'),
+                            child: const Text('Delete Your Account'),
                           ),
                         ],
                       ),
@@ -185,7 +185,8 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
                     padding: const EdgeInsets.all(12.0),
                     child: Column(
                       children: [
-                        Text('Copy The Phrase below to export your wallet'),
+                        const Text(
+                            'Copy The Phrase below to export your wallet'),
                         const SizedBox(height: 12),
                         Text(mnemonic ?? ''),
                         const SizedBox(height: 12),
@@ -195,14 +196,14 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
                               mnemonic = null;
                             });
                           },
-                          child: Text('Close'),
+                          child: const Text('Close'),
                         ),
                       ],
                     ),
                   ),
                 ),
                 const SizedBox(height: 12),
-                loading ? CircularProgressIndicator() : SizedBox(),
+                loading ? const CircularProgressIndicator() : const SizedBox(),
               ],
             ),
           ),
