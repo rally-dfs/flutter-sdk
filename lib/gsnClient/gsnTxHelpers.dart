@@ -372,9 +372,6 @@ Future<BigInt> getSenderContractNonce(Web3Client provider,
 }
 
 BigInt parseUnits(String value, int decimals) {
-  if (value is! String) {
-    throw ArgumentError.value(value, 'value', 'value must be a string');
-  }
   BigInt base = BigInt.from(10).pow(decimals);
   List<String> parts = value.split('.');
   BigInt wholePart = BigInt.parse(parts[0]);
