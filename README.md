@@ -44,7 +44,7 @@ await mumbai.getBalance(tokenAddress);
 
 // transfer any ERC20 token, to transfer gaslessly token contract must support permit() or executeMetaTransaction() (most ERC20s on polygon support this)
 
-await mumbai.transfer(transferAddress, double.parse(1), MetaTxMethod.ExecuteMetaTransaction);
+await mumbai.transfer(transferAddress, double.parse(1), MetaTxMethod.ExecuteMetaTransaction, {tokenAddress});
 
 
 
