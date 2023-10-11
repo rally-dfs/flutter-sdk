@@ -39,24 +39,28 @@ class NetworkImpl extends Network {
   }
 
   @override
-  Future<double> getBalance({PrefixedHexString? tokenAddress}) async {
+  Future<double> getBalance(
+      {PrefixedHexString? tokenAddress, bool humanReadable = false}) async {
     final account = await AccountsUtil.getInstance().getWallet();
+    if (account == null) {
+      throw MISSING_WALLET_ERROR;
+    }
 
     tokenAddress = tokenAddress ?? network.contracts.rlyERC20;
 
     final provider = getEthClient(network.gsn.rpcUrl);
 
     final token = erc20(EthereumAddress.fromHex(tokenAddress));
-    final funCall = await provider.call(
-        contract: token, function: token.function("decimals"), params: []);
-    final decimals = funCall[0];
 
     final balanceOfCall = await provider.call(
         contract: token,
         function: token.function('balanceOf'),
-        params: [account!.address]);
+        params: [account.address]);
+
     final balance = balanceOfCall[0];
-    return formatUnits(balance, decimals);
+
+    final decimals = await _decimalsForToken(token);
+    return balanceToDouble(balance, decimals);
   }
 
   @override
@@ -134,7 +138,7 @@ class NetworkImpl extends Network {
     final account = await AccountsUtil.getInstance().getWallet();
 
     if (account == null) {
-      throw missingWalletError;
+      throw MISSING_WALLET_ERROR;
     }
 
     final result = await client.sendTransaction(
@@ -146,5 +150,15 @@ class NetworkImpl extends Network {
         ),
         chainId: 80001);
     return result;
+  }
+
+  Future<BigInt> _decimalsForToken(DeployedContract token) async {
+    final provider = getEthClient(network.gsn.rpcUrl);
+
+    final funCall = await provider.call(
+        contract: token, function: token.function("decimals"), params: []);
+    final decimals = funCall[0] as BigInt;
+
+    return decimals;
   }
 }

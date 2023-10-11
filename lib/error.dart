@@ -1,4 +1,4 @@
-const String missingWalletError =
+const String MISSING_WALLET_ERROR =
     'Unable to perform action, no account on device';
 const String insufficientBalanceError =
     'Unable to transfer, insufficient balance';
