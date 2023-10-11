@@ -382,11 +382,13 @@ BigInt parseUnits(String value, int decimals) {
   return wholePart * base + fractionalPart;
 }
 
-double formatUnits(BigInt wei, BigInt decimals) {
-  const etherUnit = EtherUnit.gwei;
-  final balanceFormatted =
-      EtherAmount.fromBigInt(etherUnit, wei).getValueInUnit(EtherUnit.gwei);
-  return balanceFormatted;
+// Converts the given value to a double using the given number of decimals.
+// For example, if the value is 1000 and the decimals is 2, the result will be 10.00
+// Beware that this can cause precision loss for large values and should be used for display purposes only.
+double balanceToDouble(BigInt value, BigInt decimals) {
+  final base = BigInt.from(10).pow(decimals.toInt());
+
+  return value.toDouble() / base.toDouble();
 }
 
 class CalldataBytes {
