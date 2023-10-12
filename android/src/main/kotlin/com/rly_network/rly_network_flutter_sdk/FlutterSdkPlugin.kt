@@ -1,4 +1,4 @@
-package com.savez.flutter_sdk
+package com.rly_network.rly_network_flutter_sdk
 
 import androidx.annotation.NonNull
 import com.rlynetworkmobilesdk.EncryptedSharedPreferencesHelper
