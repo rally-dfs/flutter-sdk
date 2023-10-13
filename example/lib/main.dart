@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:web3dart/web3dart.dart';
 
 import 'account_overview_screen.dart';
 import 'GenerateAccountScreen.dart';
@@ -14,7 +15,7 @@ class App extends StatefulWidget {
 
 class AppState extends State<App> {
   bool _accountLoaded = false;
-  String? _rlyAccount;
+  EthPrivateKey? _rlyAccount;
 
   @override
   void initState() {
@@ -23,7 +24,7 @@ class AppState extends State<App> {
   }
 
   Future<void> _readAccount() async {
-    final account = await AccountsUtil.getInstance().getAccountAddress();
+    final account = await AccountsUtil.getInstance().getWallet();
     setState(() {
       _accountLoaded = true;
       if (account != null) {
@@ -57,12 +58,13 @@ class AppState extends State<App> {
     }
 
     return AccountOverviewScreen(
-        rlyAccount: _rlyAccount!, onAccountDeleted: _clearAccount);
+        walletAddress: _rlyAccount!.address.hex,
+        onAccountDeleted: _clearAccount);
   }
 }
 
 void main() {
-  runApp(MaterialApp(
+  runApp(const MaterialApp(
     home: App(),
   ));
 }

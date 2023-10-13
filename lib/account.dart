@@ -18,7 +18,7 @@ class AccountsUtil {
     return _instance;
   }
 
-  Future<String> createAccount({bool overwrite = false}) async {
+  Future<EthPrivateKey> createAccount({bool overwrite = false}) async {
     final existingWallet = await getWallet();
     if (existingWallet != null && !overwrite) {
       throw 'Account already exists';
@@ -29,7 +29,7 @@ class AccountsUtil {
     final newWallet = await _makeWalletFromMnemonic(mnemonic);
 
     _cachedWallet = newWallet;
-    return newWallet.address.hex;
+    return newWallet;
   }
 
   Future<EthPrivateKey?> getWallet() async {
