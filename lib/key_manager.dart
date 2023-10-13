@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 
-import 'keyStorageConfig.dart';
+import 'key_storage_config.dart';
 
 abstract class KeyManager {
   Future<String?> getMnemonic();
@@ -8,22 +8,7 @@ abstract class KeyManager {
   Future<void> saveMnemonic(String mnemonic, {KeyStorageConfig? options});
   Future<void> deleteMnemonic();
   Future<Uint8List> makePrivateKeyFromMnemonic(String mnemonic);
-  Future<Uint8List> getStoredPrivateKey();
 }
-
-class KeychainAccessibilityConstant {
-  final int value;
-
-  const KeychainAccessibilityConstant(this.value);
-}
-
-const AFTER_FIRST_UNLOCK = KeychainAccessibilityConstant(0);
-const AFTER_FIRST_UNLOCK_THIS_DEVICE_ONLY = KeychainAccessibilityConstant(1);
-const ALWAYS = KeychainAccessibilityConstant(2);
-const WHEN_PASSCODE_SET_THIS_DEVICE_ONLY = KeychainAccessibilityConstant(3);
-const ALWAYS_THIS_DEVICE_ONLY = KeychainAccessibilityConstant(4);
-const WHEN_UNLOCKED = KeychainAccessibilityConstant(5);
-const WHEN_UNLOCKED_THIS_DEVICE_ONLY = KeychainAccessibilityConstant(6);
 
 class KeyManagerImpl extends KeyManager {
   final methodChannel = const MethodChannel('rly_network_flutter_sdk');
@@ -49,30 +34,18 @@ class KeyManagerImpl extends KeyManager {
 
   @override
   Future<Uint8List> makePrivateKeyFromMnemonic(String mnemonic) async {
-    //TODO: ultimately this has to be done from native code
     List<Object?>? pvtKey = await methodChannel
         .invokeMethod<List<Object?>>("getPrivateKeyFromMnemonic", {
       'mnemonic': mnemonic,
     });
-    Uint8List privateKey = intListToUint8List(pvtKey!);
+    Uint8List privateKey = _intListToUint8List(pvtKey!);
     return privateKey;
-  }
-
-  Uint8List intListToUint8List(List<Object?> intList) {
-    List<int> ints = [];
-    for (Object? obj in intList) {
-      ints.add(int.parse(obj.toString()));
-    }
-    // Return the string of bytes as a hex string.
-    Uint8List uInt8List = Uint8List.fromList(ints);
-    return uInt8List;
   }
 
   @override
   Future<void> saveMnemonic(String mnemonic,
       {KeyStorageConfig? options}) async {
     if (options == null || !options.saveToCloud) {
-      // TODO: don't pass true,true. Give option to users to select
       await methodChannel.invokeMethod("saveMnemonic", {
         "mnemonic": mnemonic,
         "useBlockStore": true,
@@ -81,9 +54,13 @@ class KeyManagerImpl extends KeyManager {
     }
   }
 
-  @override
-  Future<Uint8List> getStoredPrivateKey() async {
-    String? mnemonic = await getMnemonic();
-    return await makePrivateKeyFromMnemonic(mnemonic!);
+  Uint8List _intListToUint8List(List<Object?> intList) {
+    List<int> ints = [];
+    for (Object? obj in intList) {
+      ints.add(int.parse(obj.toString()));
+    }
+    // Return the string of bytes as a hex string.
+    Uint8List uInt8List = Uint8List.fromList(ints);
+    return uInt8List;
   }
 }
