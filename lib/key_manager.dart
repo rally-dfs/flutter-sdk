@@ -8,7 +8,6 @@ abstract class KeyManager {
   Future<void> saveMnemonic(String mnemonic, {KeyStorageConfig? options});
   Future<void> deleteMnemonic();
   Future<Uint8List> makePrivateKeyFromMnemonic(String mnemonic);
-  Future<Uint8List> getStoredPrivateKey();
 }
 
 class KeyManagerImpl extends KeyManager {
@@ -53,12 +52,6 @@ class KeyManagerImpl extends KeyManager {
         "forceBlockStore": true,
       });
     }
-  }
-
-  @override
-  Future<Uint8List> getStoredPrivateKey() async {
-    String? mnemonic = await getMnemonic();
-    return await makePrivateKeyFromMnemonic(mnemonic!);
   }
 
   Uint8List _intListToUint8List(List<Object?> intList) {
