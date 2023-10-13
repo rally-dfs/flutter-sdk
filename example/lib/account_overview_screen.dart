@@ -7,11 +7,11 @@ import 'package:url_launcher/url_launcher.dart';
 final rlyNetwork = rlyMumbaiNetwork;
 
 class AccountOverviewScreen extends StatefulWidget {
-  final String rlyAccount;
+  final String walletAddress;
   final VoidCallback onAccountDeleted;
 
   const AccountOverviewScreen(
-      {super.key, required this.rlyAccount, required this.onAccountDeleted});
+      {super.key, required this.walletAddress, required this.onAccountDeleted});
 
   @override
   AccountOverviewScreenState createState() => AccountOverviewScreenState();
@@ -140,7 +140,7 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 18)),
                           const SizedBox(height: 12),
-                          Text(widget.rlyAccount,
+                          Text(widget.walletAddress,
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                               )),
@@ -150,7 +150,7 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
                           FullWidthButton(
                             onPressed: () async {
                               await launchUrl(Uri.parse(
-                                  'https://mumbai.polygonscan.com/address/${widget.rlyAccount}'));
+                                  'https://mumbai.polygonscan.com/address/${widget.walletAddress}'));
                             },
                             child: const Text('View on Polygon'),
                           ),
