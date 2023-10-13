@@ -43,7 +43,7 @@ class NetworkImpl extends Network {
       {PrefixedHexString? tokenAddress, bool humanReadable = false}) async {
     final account = await AccountsUtil.getInstance().getWallet();
     if (account == null) {
-      throw MISSING_WALLET_ERROR;
+      throw missingWalletError;
     }
 
     tokenAddress = tokenAddress ?? network.contracts.rlyERC20;
@@ -138,7 +138,7 @@ class NetworkImpl extends Network {
     final account = await AccountsUtil.getInstance().getWallet();
 
     if (account == null) {
-      throw MISSING_WALLET_ERROR;
+      throw missingWalletError;
     }
 
     final result = await client.sendTransaction(
