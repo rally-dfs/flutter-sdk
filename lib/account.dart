@@ -12,7 +12,7 @@ class AccountsUtil {
 
   AccountsUtil(this._keyManager);
 
-  static final AccountsUtil _instance = AccountsUtil(KeyManagerImpl());
+  static final AccountsUtil _instance = AccountsUtil(KeyManager());
 
   factory AccountsUtil.getInstance() {
     return _instance;
