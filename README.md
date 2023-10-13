@@ -19,6 +19,8 @@ final address = await AccountsUtil.getInstance().getAccountAddress();
 
 // delete account
 
+await AccountsUtil.getInstance().permanentlyDeleteAccount();
+
 ```
 
 ## transactions
