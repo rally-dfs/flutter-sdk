@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 
-import 'keyStorageConfig.dart';
+import 'key_storage_config.dart';
 
 abstract class KeyManager {
   Future<String?> getMnemonic();
@@ -39,18 +39,8 @@ class KeyManagerImpl extends KeyManager {
         .invokeMethod<List<Object?>>("getPrivateKeyFromMnemonic", {
       'mnemonic': mnemonic,
     });
-    Uint8List privateKey = intListToUint8List(pvtKey!);
+    Uint8List privateKey = _intListToUint8List(pvtKey!);
     return privateKey;
-  }
-
-  Uint8List intListToUint8List(List<Object?> intList) {
-    List<int> ints = [];
-    for (Object? obj in intList) {
-      ints.add(int.parse(obj.toString()));
-    }
-    // Return the string of bytes as a hex string.
-    Uint8List uInt8List = Uint8List.fromList(ints);
-    return uInt8List;
   }
 
   @override
@@ -69,5 +59,15 @@ class KeyManagerImpl extends KeyManager {
   Future<Uint8List> getStoredPrivateKey() async {
     String? mnemonic = await getMnemonic();
     return await makePrivateKeyFromMnemonic(mnemonic!);
+  }
+
+  Uint8List _intListToUint8List(List<Object?> intList) {
+    List<int> ints = [];
+    for (Object? obj in intList) {
+      ints.add(int.parse(obj.toString()));
+    }
+    // Return the string of bytes as a hex string.
+    Uint8List uInt8List = Uint8List.fromList(ints);
+    return uInt8List;
   }
 }
