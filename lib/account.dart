@@ -103,7 +103,7 @@ class AccountsUtil {
 
   Future<EthPrivateKey> _makeWalletFromMnemonic(String mnemonic) async {
     Uint8List privateKey =
-        await _keyManager.makePrivateKeyFromMnemonic(mnemonic);
+        await _keyManager.getPrivateKeyFromMnemonic(mnemonic);
     String hexCode = "0x${bytesToHex(privateKey)}";
     return EthPrivateKey.fromHex(hexCode);
   }

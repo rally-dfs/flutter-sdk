@@ -7,7 +7,7 @@ abstract class KeyManager {
   Future<String> generateMnemonic();
   Future<void> saveMnemonic(String mnemonic, {KeyStorageConfig? options});
   Future<void> deleteMnemonic();
-  Future<Uint8List> makePrivateKeyFromMnemonic(String mnemonic);
+  Future<Uint8List> getPrivateKeyFromMnemonic(String mnemonic);
 }
 
 class KeyManagerImpl extends KeyManager {
@@ -38,7 +38,7 @@ class KeyManagerImpl extends KeyManager {
   }
 
   @override
-  Future<Uint8List> makePrivateKeyFromMnemonic(String mnemonic) async {
+  Future<Uint8List> getPrivateKeyFromMnemonic(String mnemonic) async {
     List<Object?>? pvtKey = await methodChannel
         .invokeMethod<List<Object?>>("getPrivateKeyFromMnemonic", {
       'mnemonic': mnemonic,
