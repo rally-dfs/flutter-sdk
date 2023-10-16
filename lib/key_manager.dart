@@ -2,38 +2,31 @@ import 'package:flutter/services.dart';
 
 import 'key_storage_config.dart';
 
-abstract class KeyManager {
-  Future<String?> getMnemonic();
-  Future<String?> generateMnemonic();
-  Future<void> saveMnemonic(String mnemonic, {KeyStorageConfig? options});
-  Future<void> deleteMnemonic();
-  Future<Uint8List> makePrivateKeyFromMnemonic(String mnemonic);
-}
-
-class KeyManagerImpl extends KeyManager {
+class KeyManager {
   final methodChannel = const MethodChannel('rly_network_flutter_sdk');
 
-  @override
   Future<void> deleteMnemonic() async {
     await methodChannel.invokeMethod<bool>("deleteMnemonic");
   }
 
-  @override
-  Future<String?> generateMnemonic() async {
+  Future<String> generateMnemonic() async {
     String? mnemonic =
         await methodChannel.invokeMethod<String>("generateNewMnemonic");
-    await saveMnemonic(mnemonic!);
+
+    if (mnemonic == null) {
+      throw Exception(
+          "Unable to generate mnemonic, something went wrong at native code layer");
+    }
+
     return mnemonic;
   }
 
-  @override
   Future<String?> getMnemonic() async {
     String? mnemonic = await methodChannel.invokeMethod<String>("getMnemonic");
     return mnemonic;
   }
 
-  @override
-  Future<Uint8List> makePrivateKeyFromMnemonic(String mnemonic) async {
+  Future<Uint8List> getPrivateKeyFromMnemonic(String mnemonic) async {
     List<Object?>? pvtKey = await methodChannel
         .invokeMethod<List<Object?>>("getPrivateKeyFromMnemonic", {
       'mnemonic': mnemonic,
@@ -42,7 +35,6 @@ class KeyManagerImpl extends KeyManager {
     return privateKey;
   }
 
-  @override
   Future<void> saveMnemonic(String mnemonic,
       {KeyStorageConfig? options}) async {
     if (options == null || !options.saveToCloud) {

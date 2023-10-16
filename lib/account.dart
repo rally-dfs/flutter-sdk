@@ -12,7 +12,7 @@ class AccountsUtil {
 
   AccountsUtil(this._keyManager);
 
-  static final AccountsUtil _instance = AccountsUtil(KeyManagerImpl());
+  static final AccountsUtil _instance = AccountsUtil(KeyManager());
 
   factory AccountsUtil.getInstance() {
     return _instance;
@@ -25,7 +25,7 @@ class AccountsUtil {
     }
 
     final mnemonic = await _keyManager.generateMnemonic();
-    await _keyManager.saveMnemonic(mnemonic!);
+    await _keyManager.saveMnemonic(mnemonic);
     final newWallet = await _makeWalletFromMnemonic(mnemonic);
 
     _cachedWallet = newWallet;
@@ -103,7 +103,7 @@ class AccountsUtil {
 
   Future<EthPrivateKey> _makeWalletFromMnemonic(String mnemonic) async {
     Uint8List privateKey =
-        await _keyManager.makePrivateKeyFromMnemonic(mnemonic);
+        await _keyManager.getPrivateKeyFromMnemonic(mnemonic);
     String hexCode = "0x${bytesToHex(privateKey)}";
     return EthPrivateKey.fromHex(hexCode);
   }
