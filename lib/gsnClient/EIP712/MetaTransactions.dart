@@ -52,24 +52,12 @@ Map<String, dynamic> getTypedMetatransaction(MetaTransaction metaTransaction) {
     'verifyingContract': metaTransaction.verifyingContract,
     'salt': metaTransaction.salt,
   };
-  // final domainSeparator = {
-  //   'name': 'Rally Polygon',
-  //   'version': '3',
-  //   'verifyingContract': '0x1C7312Cb60b40cF586e796FEdD60Cf243286c9E9',
-  //   'salt': '0x0000000000000000000000000000000000000000000000000000000000013881'
-  // };
+
   final messageData = {
     'nonce': metaTransaction.nonce,
     'from': metaTransaction.from,
     'functionSignature': '0x${bytesToHex(metaTransaction.functionSignature)}',
   };
-
-  // final messageData = {
-  //   'nonce': 1,
-  //   'from': '0x9E6d844c0257E3356065cD6a3F90eE4d966F1551',
-  //   'functionSignature':
-  //       '0xa9059cbb0000000000000000000000005205bcc1852c4b626099aa7a2aff36ac3e9de83b0000000000000000000000000000000000000000000000000de0b6b3a7640000',
-  // };
 
   return {
     'types': types,

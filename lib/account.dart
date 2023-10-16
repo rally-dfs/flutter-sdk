@@ -6,6 +6,8 @@ import 'package:web3dart/web3dart.dart';
 
 import 'key_manager.dart';
 
+import 'wallet_wrapper.dart';
+
 class AccountsUtil {
   static EthPrivateKey? _cachedWallet;
   final KeyManager _keyManager;
@@ -105,6 +107,6 @@ class AccountsUtil {
     Uint8List privateKey =
         await _keyManager.makePrivateKeyFromMnemonic(mnemonic);
     String hexCode = "0x${bytesToHex(privateKey)}";
-    return EthPrivateKey.fromHex(hexCode);
+    return WalletWrapper.fromHex(hexCode);
   }
 }
