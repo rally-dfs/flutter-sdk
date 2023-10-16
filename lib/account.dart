@@ -30,7 +30,7 @@ class AccountsUtil {
         KeyStorageConfig(rejectOnCloudSaveFailure: true, saveToCloud: true);
 
     final mnemonic = await _keyManager.generateMnemonic();
-    await _keyManager.saveMnemonic(mnemonic, options: storageConfig);
+    await _keyManager.saveMnemonic(mnemonic, storageOptions: storageConfig);
     final newWallet = await _makeWalletFromMnemonic(mnemonic);
 
     _cachedWallet = newWallet;

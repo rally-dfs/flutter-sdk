@@ -36,14 +36,12 @@ class KeyManager {
   }
 
   Future<void> saveMnemonic(String mnemonic,
-      {KeyStorageConfig? options}) async {
-    if (options == null || !options.saveToCloud) {
-      await methodChannel.invokeMethod("saveMnemonic", {
-        "mnemonic": mnemonic,
-        "useBlockStore": true,
-        "forceBlockStore": true,
-      });
-    }
+      {required KeyStorageConfig storageOptions}) async {
+    await methodChannel.invokeMethod("saveMnemonic", {
+      "mnemonic": mnemonic,
+      "useBlockStore": storageOptions.saveToCloud,
+      "forceBlockStore": storageOptions.rejectOnCloudSaveFailure,
+    });
   }
 
   Uint8List _intListToUint8List(List<Object?> intList) {
