@@ -39,8 +39,8 @@ class KeyManager {
       {required KeyStorageConfig storageOptions}) async {
     await methodChannel.invokeMethod("saveMnemonic", {
       "mnemonic": mnemonic,
-      "useBlockStore": storageOptions.saveToCloud,
-      "forceBlockStore": storageOptions.rejectOnCloudSaveFailure,
+      "saveToCloud": storageOptions.saveToCloud,
+      "rejectOnCloudSaveFailure": storageOptions.rejectOnCloudSaveFailure,
     });
   }
 
