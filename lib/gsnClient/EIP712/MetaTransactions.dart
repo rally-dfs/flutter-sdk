@@ -69,7 +69,7 @@ Map<String, dynamic> getTypedMetatransaction(MetaTransaction metaTransaction) {
 }
 
 Future<Map<String, dynamic>> getMetatransactionEIP712Signature(
-  Wallet account,
+  Wallet wallet,
   String contractName,
   String contractAddress,
   Uint8List functionSignature,
@@ -89,12 +89,12 @@ Future<Map<String, dynamic>> getMetatransactionEIP712Signature(
       // Padding the chainId with zeroes to make it 32 bytes
       verifyingContract: contractAddress,
       nonce: nonce,
-      from: account.address.hex,
+      from: wallet.address.hex,
       functionSignature: functionSignature,
     ),
   );
   // signature for metatransaction
-  final String signature = account.signTypedData(eip712Data);
+  final String signature = wallet.signTypedData(eip712Data);
 
   final cleanedSignature =
       signature.startsWith('0x') ? signature.substring(2) : signature;
@@ -117,7 +117,7 @@ String hexZeroPad(int number, int length) {
 }
 
 Future<GsnTransactionDetails> getExecuteMetatransactionTx(
-  Wallet account,
+  Wallet wallet,
   String destinationAddress,
   double amount,
   NetworkConfig config,
@@ -130,7 +130,7 @@ Future<GsnTransactionDetails> getExecuteMetatransactionTx(
       .call(contract: token, function: token.function('name'), params: []);
   final name = nameCallResult.first;
 
-  final nonce = await getSenderContractNonce(provider, token, account.address);
+  final nonce = await getSenderContractNonce(provider, token, wallet.address);
   final decimals = await provider
       .call(contract: token, function: token.function('decimals'), params: []);
 
@@ -143,7 +143,7 @@ Future<GsnTransactionDetails> getExecuteMetatransactionTx(
       [web3.EthereumAddress.fromHex(destinationAddress), decimalAmount]);
 
   final signatureData = await getMetatransactionEIP712Signature(
-    account,
+    wallet,
     name,
     contractAddress,
     data,
@@ -159,7 +159,7 @@ Future<GsnTransactionDetails> getExecuteMetatransactionTx(
     contract: token,
     function: token.function('executeMetaTransaction'),
     parameters: [
-      account.address,
+      wallet.address,
       data,
       r,
       s,
@@ -170,7 +170,7 @@ Future<GsnTransactionDetails> getExecuteMetatransactionTx(
 
   // Estimate the gas required for the transaction
   final gas = await provider.estimateGas(
-    sender: account.address,
+    sender: wallet.address,
     data: tx.data,
     to: token.address,
   );
@@ -185,7 +185,7 @@ Future<GsnTransactionDetails> getExecuteMetatransactionTx(
   }
 
   final gsnTx = GsnTransactionDetails(
-    from: account.address.hex,
+    from: wallet.address.hex,
     data: "0x${bytesToHex(tx.data!)}",
     value: "0",
     to: tx.to!.hex,

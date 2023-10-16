@@ -156,7 +156,7 @@ Future<String> signRequest(
   RelayRequest relayRequest,
   String domainSeparatorName,
   String chainId,
-  Wallet account,
+  Wallet wallet,
   NetworkConfig config,
 ) async {
   final cloneRequest = {
@@ -246,7 +246,7 @@ Future<String> signRequest(
   };
 
 // Sign the data
-  final signature = account.signTypedData(jsonData);
+  final signature = wallet.signTypedData(jsonData);
 
   return signature;
 }
@@ -271,7 +271,7 @@ String getRelayRequestID(
 }
 
 Future<GsnTransactionDetails> getClaimTx(
-  Wallet account,
+  Wallet wallet,
   NetworkConfig config,
   web3.Web3Client client,
 ) async {
@@ -283,7 +283,7 @@ Future<GsnTransactionDetails> getClaimTx(
   final tx = web3.Transaction.callContract(
       contract: faucet, function: faucet.function('claim'), parameters: []);
   final gas = await client.estimateGas(
-    sender: account.address,
+    sender: wallet.address,
     data: tx.data,
     to: faucet.address,
   );
@@ -301,7 +301,7 @@ Future<GsnTransactionDetails> getClaimTx(
   }
 
   final gsnTx = GsnTransactionDetails(
-    from: account.address.toString(),
+    from: wallet.address.toString(),
     data: uint8ListToHex(tx.data!),
     value: "0",
     to: faucet.address.hex,
