@@ -6,8 +6,9 @@ import 'package:eth_sig_util/util/utils.dart';
 import 'package:rly_network_flutter_sdk/contracts/erc20.dart';
 import 'package:rly_network_flutter_sdk/gsnClient/gsnTxHelpers.dart';
 import 'package:rly_network_flutter_sdk/gsnClient/utils.dart';
-import 'package:web3dart/web3dart.dart';
+import 'package:web3dart/web3dart.dart' as web3;
 import 'package:convert/convert.dart';
+import '../../wallet.dart';
 
 import '../../network_config/network_config.dart'; // For the hex string conversion
 
@@ -68,7 +69,7 @@ Map<String, dynamic> getTypedMetatransaction(MetaTransaction metaTransaction) {
 }
 
 Future<Map<String, dynamic>> getMetatransactionEIP712Signature(
-  EthPrivateKey account,
+  Wallet account,
   String contractName,
   String contractAddress,
   Uint8List functionSignature,
@@ -93,13 +94,7 @@ Future<Map<String, dynamic>> getMetatransactionEIP712Signature(
     ),
   );
   // signature for metatransaction
-  final String signature = EthSigUtil.signTypedData(
-    jsonData: jsonEncode(eip712Data),
-    version: TypedDataVersion.V4,
-    privateKey: "0x${bytesToHex(account.privateKey)}",
-    // privateKey:
-    //     "0xb0239b0afcbb5d7c36dfed696b621fc428c2ad3094c28e4a4a68a1d983cc679d",
-  );
+  final String signature = account.signTypedData(eip712Data);
 
   final cleanedSignature =
       signature.startsWith('0x') ? signature.substring(2) : signature;
@@ -122,17 +117,14 @@ String hexZeroPad(int number, int length) {
 }
 
 Future<GsnTransactionDetails> getExecuteMetatransactionTx(
-  EthPrivateKey account,
+  Wallet account,
   String destinationAddress,
   double amount,
   NetworkConfig config,
   String contractAddress,
-  Web3Client provider,
+  web3.Web3Client provider,
 ) async {
-  //TODO: Once things are stable, think about refactoring
-  // to avoid code duplication
-
-  final token = erc20(EthereumAddress.fromHex(contractAddress));
+  final token = erc20(web3.EthereumAddress.fromHex(contractAddress));
 
   final nameCallResult = await provider
       .call(contract: token, function: token.function('name'), params: []);
@@ -147,8 +139,8 @@ Future<GsnTransactionDetails> getExecuteMetatransactionTx(
 
   // get function signature
   final transferFunc = token.function('transfer');
-  final data = transferFunc
-      .encodeCall([EthereumAddress.fromHex(destinationAddress), decimalAmount]);
+  final data = transferFunc.encodeCall(
+      [web3.EthereumAddress.fromHex(destinationAddress), decimalAmount]);
 
   final signatureData = await getMetatransactionEIP712Signature(
     account,
@@ -163,7 +155,7 @@ Future<GsnTransactionDetails> getExecuteMetatransactionTx(
   final s = signatureData['s'];
   final v = signatureData['v'];
 
-  final tx = Transaction.callContract(
+  final tx = web3.Transaction.callContract(
     contract: token,
     function: token.function('executeMetaTransaction'),
     parameters: [

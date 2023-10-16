@@ -4,7 +4,7 @@ import 'package:eth_sig_util/util/utils.dart';
 
 import 'key_manager.dart';
 
-import 'wallet_wrapper.dart';
+import 'wallet.dart';
 
 class AccountsUtil {
   static Wallet? _cachedWallet;

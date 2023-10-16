@@ -6,8 +6,8 @@ import 'dart:convert';
 class Wallet extends EthPrivateKey {
   Wallet.fromHex(String hex) : super.fromHex(hex);
 
-  String signTypedData(
-      Map<String, dynamic> eip712Data, TypedDataVersion typedDataVersion) {
+  String signTypedData(Map<String, dynamic> eip712Data,
+      [TypedDataVersion typedDataVersion = TypedDataVersion.V4]) {
     final String signature = EthSigUtil.signTypedData(
       jsonData: jsonEncode(eip712Data),
       version: typedDataVersion,

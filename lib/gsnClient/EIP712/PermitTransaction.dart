@@ -2,9 +2,10 @@ import 'dart:convert';
 
 import 'package:eth_sig_util/eth_sig_util.dart';
 import 'package:eth_sig_util/util/utils.dart';
-import 'package:web3dart/web3dart.dart';
+import 'package:web3dart/web3dart.dart' as web3;
 import 'package:rly_network_flutter_sdk/gsnClient/gsnTxHelpers.dart';
 
+import '../../wallet.dart';
 import '../../contracts/erc20.dart';
 import '../../network_config/network_config.dart';
 import '../utils.dart';
@@ -85,7 +86,7 @@ Map<String, dynamic> getTypedPermitTransaction(Permit permit) {
 }
 
 Future<Map<String, dynamic>> getPermitEIP712Signature(
-  EthPrivateKey account,
+  Wallet account,
   String contractName,
   String contractAddress,
   NetworkConfig config,
@@ -114,11 +115,7 @@ Future<Map<String, dynamic>> getPermitEIP712Signature(
   );
 
   // signature for metatransaction
-  final String signature = EthSigUtil.signTypedData(
-    jsonData: jsonEncode(eip712Data),
-    version: TypedDataVersion.V4,
-    privateKey: "0x${bytesToHex(account.privateKey)}",
-  );
+  final String signature = account.signTypedData(eip712Data);
 
   final cleanedSignature =
       signature.startsWith('0x') ? signature.substring(2) : signature;
@@ -135,18 +132,18 @@ Future<Map<String, dynamic>> getPermitEIP712Signature(
 }
 
 Future<GsnTransactionDetails> getPermitTx(
-  EthPrivateKey account,
-  EthereumAddress destinationAddress,
+  Wallet account,
+  web3.EthereumAddress destinationAddress,
   double amount,
   NetworkConfig config,
   String contractAddress,
-  Web3Client provider,
+  web3.Web3Client provider,
 ) async {
-  final token = erc20(EthereumAddress.fromHex(contractAddress));
+  final token = erc20(web3.EthereumAddress.fromHex(contractAddress));
   final noncesCallResult = await provider.call(
       contract: token,
       function: token.function("nonces"),
-      params: [EthereumAddress.fromHex(account.address.hex)]);
+      params: [web3.EthereumAddress.fromHex(account.address.hex)]);
 
   final nameCall = await provider
       .call(contract: token, function: token.function('name'), params: []);
@@ -183,17 +180,17 @@ Future<GsnTransactionDetails> getPermitTx(
   final v = signature['v'];
 
   final fromTx = token.function('transferFrom').encodeCall([
-    EthereumAddress.fromHex(account.address.hex),
+    web3.EthereumAddress.fromHex(account.address.hex),
     destinationAddress,
     decimalAmount,
   ]);
 
-  final tx = Transaction.callContract(
+  final tx = web3.Transaction.callContract(
     contract: token,
     function: token.function('permit'),
     parameters: [
-      EthereumAddress.fromHex(account.address.hex),
-      EthereumAddress.fromHex(config.gsn.paymasterAddress),
+      web3.EthereumAddress.fromHex(account.address.hex),
+      web3.EthereumAddress.fromHex(config.gsn.paymasterAddress),
       decimalAmount,
       deadline,
       BigInt.from(v),
@@ -233,7 +230,7 @@ Future<GsnTransactionDetails> getPermitTx(
 }
 
 // get timestamp that will always be included in the next 3 blocks
-Future<BigInt> getPermitDeadline(Web3Client provider) async {
+Future<BigInt> getPermitDeadline(web3.Web3Client provider) async {
   final block = await provider.getBlockInformation();
   return BigInt.from(
       block.timestamp.add(const Duration(seconds: 45)).millisecondsSinceEpoch);
