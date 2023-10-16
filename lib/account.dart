@@ -2,14 +2,12 @@ import 'dart:typed_data';
 
 import 'package:eth_sig_util/util/utils.dart';
 
-import 'package:web3dart/web3dart.dart';
-
 import 'key_manager.dart';
 
 import 'wallet_wrapper.dart';
 
 class AccountsUtil {
-  static EthPrivateKey? _cachedWallet;
+  static Wallet? _cachedWallet;
   final KeyManager _keyManager;
 
   AccountsUtil(this._keyManager);
@@ -20,7 +18,7 @@ class AccountsUtil {
     return _instance;
   }
 
-  Future<EthPrivateKey> createAccount({bool overwrite = false}) async {
+  Future<Wallet> createAccount({bool overwrite = false}) async {
     final existingWallet = await getWallet();
     if (existingWallet != null && !overwrite) {
       throw 'Account already exists';
@@ -34,7 +32,7 @@ class AccountsUtil {
     return newWallet;
   }
 
-  Future<EthPrivateKey?> getWallet() async {
+  Future<Wallet?> getWallet() async {
     if (_cachedWallet != null) {
       return _cachedWallet!;
     }
@@ -103,10 +101,10 @@ class AccountsUtil {
     // return utils.joinSignature(signingKey.signDigest(hash));
   }
 
-  Future<EthPrivateKey> _makeWalletFromMnemonic(String mnemonic) async {
+  Future<Wallet> _makeWalletFromMnemonic(String mnemonic) async {
     Uint8List privateKey =
         await _keyManager.makePrivateKeyFromMnemonic(mnemonic);
     String hexCode = "0x${bytesToHex(privateKey)}";
-    return WalletWrapper.fromHex(hexCode);
+    return Wallet.fromHex(hexCode);
   }
 }
