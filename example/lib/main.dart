@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:web3dart/web3dart.dart';
+import 'package:rly_network_flutter_sdk/wallet.dart';
 
 import 'account_overview_screen.dart';
 import 'GenerateAccountScreen.dart';
@@ -15,7 +15,7 @@ class App extends StatefulWidget {
 
 class AppState extends State<App> {
   bool _accountLoaded = false;
-  EthPrivateKey? _rlyAccount;
+  Wallet? _rlyAccount;
 
   @override
   void initState() {

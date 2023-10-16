@@ -11,12 +11,14 @@ import 'package:rly_network_flutter_sdk/gsnClient/ABI/IRelayHub.dart';
 
 import 'package:rly_network_flutter_sdk/gsnClient/utils.dart';
 
-import 'package:web3dart/web3dart.dart';
+import 'package:web3dart/web3dart.dart' as web3;
 
 import '../network_config/network_config.dart';
+import '../../wallet.dart';
 import 'EIP712/ForwardRequest.dart';
 import 'EIP712/RelayData.dart';
 import 'EIP712/RelayRequest.dart';
+
 import 'EIP712/typedSigning.dart';
 
 CalldataBytes calculateCalldataBytesZeroNonzero(PrefixedHexString calldata) {
@@ -62,7 +64,7 @@ String estimateGasWithoutCallData(
 }
 
 Future<String> estimateCalldataCostForRequest(RelayRequest relayRequestOriginal,
-    GSNConfig config, Web3Client client) async {
+    GSNConfig config, web3.Web3Client client) async {
   // Protecting the original object from temporary modifications done here
   var relayRequest = RelayRequest(
     request: ForwardRequest(
@@ -101,7 +103,7 @@ Future<String> estimateCalldataCostForRequest(RelayRequest relayRequestOriginal,
   final function = relayHub.function('relayCall');
 
   // Transaction.callContract(contract: contract, function: function, parameters: parameters)
-  final tx = Transaction.callContract(
+  final tx = web3.Transaction.callContract(
       contract: relayHub,
       function: function,
       parameters: [
@@ -132,8 +134,8 @@ Future<String> estimateCalldataCostForRequest(RelayRequest relayRequestOriginal,
       .toRadixString(16);
 }
 
-Future<String> getSenderNonce(EthereumAddress sender,
-    EthereumAddress forwarderAddress, Web3Client client) async {
+Future<String> getSenderNonce(web3.EthereumAddress sender,
+    web3.EthereumAddress forwarderAddress, web3.Web3Client client) async {
   final forwarder = iForwarderContract(forwarderAddress);
 
   final List<dynamic> result = await client.call(
@@ -154,7 +156,7 @@ Future<String> signRequest(
   RelayRequest relayRequest,
   String domainSeparatorName,
   String chainId,
-  EthPrivateKey account,
+  Wallet wallet,
   NetworkConfig config,
 ) async {
   final cloneRequest = {
@@ -243,12 +245,8 @@ Future<String> signRequest(
     'message': messageData,
   };
 
-// Sign the data using ethsigutil.signTypedData
-  final signature = EthSigUtil.signTypedData(
-    jsonData: jsonEncode(jsonData),
-    privateKey: "0x${bytesToHex(account.privateKey)}",
-    version: TypedDataVersion.V4,
-  );
+// Sign the data
+  final signature = wallet.signTypedData(jsonData);
 
   return signature;
 }
@@ -273,19 +271,19 @@ String getRelayRequestID(
 }
 
 Future<GsnTransactionDetails> getClaimTx(
-  EthPrivateKey account,
+  Wallet wallet,
   NetworkConfig config,
-  Web3Client client,
+  web3.Web3Client client,
 ) async {
   final faucet = tokenFaucet(
     config,
-    EthereumAddress.fromHex(config.contracts.tokenFaucet),
+    web3.EthereumAddress.fromHex(config.contracts.tokenFaucet),
   );
 
-  final tx = Transaction.callContract(
+  final tx = web3.Transaction.callContract(
       contract: faucet, function: faucet.function('claim'), parameters: []);
   final gas = await client.estimateGas(
-    sender: account.address,
+    sender: wallet.address,
     data: tx.data,
     to: faucet.address,
   );
@@ -294,7 +292,7 @@ Future<GsnTransactionDetails> getClaimTx(
   //abstract-provider of ethers js library
   //test if it exactly replicates the functions of getFeeData
 
-  BlockInformation blockInformation = await client.getBlockInformation();
+  web3.BlockInformation blockInformation = await client.getBlockInformation();
   final BigInt maxPriorityFeePerGas = BigInt.parse("1500000000");
   BigInt? maxFeePerGas;
   if (blockInformation.baseFeePerGas != null) {
@@ -303,7 +301,7 @@ Future<GsnTransactionDetails> getClaimTx(
   }
 
   final gsnTx = GsnTransactionDetails(
-    from: account.address.toString(),
+    from: wallet.address.toString(),
     data: uint8ListToHex(tx.data!),
     value: "0",
     to: faucet.address.hex,
@@ -319,7 +317,7 @@ Future<String> getClientId() async {
   // Replace this line with the actual method to get the bundleId from the native module
   final bundleId = await getBundleIdFromNativeModule();
 //TODO:
-  final hexValue = EthereumAddress.fromHex(bundleId).hex;
+  final hexValue = web3.EthereumAddress.fromHex(bundleId).hex;
   return BigInt.parse(hexValue, radix: 16).toString();
 }
 
@@ -332,7 +330,7 @@ Future<String> getBundleIdFromNativeModule() {
 
 Future<String> handleGsnResponse(
   Response res,
-  Web3Client ethClient,
+  web3.Web3Client ethClient,
 ) async {
   // printLog("res.body  = ${res.body}");
   Map<String, dynamic> responseMap = jsonDecode(res.body);
@@ -345,7 +343,7 @@ Future<String> handleGsnResponse(
     final txHash =
         "0x${bytesToHex(keccak256(hexToBytes(responseMap['signedTx'])))}";
     // Poll for the transaction receipt until it's confirmed
-    TransactionReceipt? receipt;
+    web3.TransactionReceipt? receipt;
     do {
       receipt = await ethClient.getTransactionReceipt(txHash);
       if (receipt == null) {
@@ -356,8 +354,8 @@ Future<String> handleGsnResponse(
   }
 }
 
-Future<BigInt> getSenderContractNonce(Web3Client provider,
-    DeployedContract token, EthereumAddress address) async {
+Future<BigInt> getSenderContractNonce(web3.Web3Client provider,
+    web3.DeployedContract token, web3.EthereumAddress address) async {
   try {
     final fn = token.function('nonces');
     final fnCall =

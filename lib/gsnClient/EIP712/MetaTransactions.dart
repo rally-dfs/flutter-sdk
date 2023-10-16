@@ -6,8 +6,9 @@ import 'package:eth_sig_util/util/utils.dart';
 import 'package:rly_network_flutter_sdk/contracts/erc20.dart';
 import 'package:rly_network_flutter_sdk/gsnClient/gsnTxHelpers.dart';
 import 'package:rly_network_flutter_sdk/gsnClient/utils.dart';
-import 'package:web3dart/web3dart.dart';
+import 'package:web3dart/web3dart.dart' as web3;
 import 'package:convert/convert.dart';
+import '../../wallet.dart';
 
 import '../../network_config/network_config.dart'; // For the hex string conversion
 
@@ -52,24 +53,12 @@ Map<String, dynamic> getTypedMetatransaction(MetaTransaction metaTransaction) {
     'verifyingContract': metaTransaction.verifyingContract,
     'salt': metaTransaction.salt,
   };
-  // final domainSeparator = {
-  //   'name': 'Rally Polygon',
-  //   'version': '3',
-  //   'verifyingContract': '0x1C7312Cb60b40cF586e796FEdD60Cf243286c9E9',
-  //   'salt': '0x0000000000000000000000000000000000000000000000000000000000013881'
-  // };
+
   final messageData = {
     'nonce': metaTransaction.nonce,
     'from': metaTransaction.from,
     'functionSignature': '0x${bytesToHex(metaTransaction.functionSignature)}',
   };
-
-  // final messageData = {
-  //   'nonce': 1,
-  //   'from': '0x9E6d844c0257E3356065cD6a3F90eE4d966F1551',
-  //   'functionSignature':
-  //       '0xa9059cbb0000000000000000000000005205bcc1852c4b626099aa7a2aff36ac3e9de83b0000000000000000000000000000000000000000000000000de0b6b3a7640000',
-  // };
 
   return {
     'types': types,
@@ -80,7 +69,7 @@ Map<String, dynamic> getTypedMetatransaction(MetaTransaction metaTransaction) {
 }
 
 Future<Map<String, dynamic>> getMetatransactionEIP712Signature(
-  EthPrivateKey account,
+  Wallet wallet,
   String contractName,
   String contractAddress,
   Uint8List functionSignature,
@@ -100,18 +89,12 @@ Future<Map<String, dynamic>> getMetatransactionEIP712Signature(
       // Padding the chainId with zeroes to make it 32 bytes
       verifyingContract: contractAddress,
       nonce: nonce,
-      from: account.address.hex,
+      from: wallet.address.hex,
       functionSignature: functionSignature,
     ),
   );
   // signature for metatransaction
-  final String signature = EthSigUtil.signTypedData(
-    jsonData: jsonEncode(eip712Data),
-    version: TypedDataVersion.V4,
-    privateKey: "0x${bytesToHex(account.privateKey)}",
-    // privateKey:
-    //     "0xb0239b0afcbb5d7c36dfed696b621fc428c2ad3094c28e4a4a68a1d983cc679d",
-  );
+  final String signature = wallet.signTypedData(eip712Data);
 
   final cleanedSignature =
       signature.startsWith('0x') ? signature.substring(2) : signature;
@@ -134,23 +117,20 @@ String hexZeroPad(int number, int length) {
 }
 
 Future<GsnTransactionDetails> getExecuteMetatransactionTx(
-  EthPrivateKey account,
+  Wallet wallet,
   String destinationAddress,
   double amount,
   NetworkConfig config,
   String contractAddress,
-  Web3Client provider,
+  web3.Web3Client provider,
 ) async {
-  //TODO: Once things are stable, think about refactoring
-  // to avoid code duplication
-
-  final token = erc20(EthereumAddress.fromHex(contractAddress));
+  final token = erc20(web3.EthereumAddress.fromHex(contractAddress));
 
   final nameCallResult = await provider
       .call(contract: token, function: token.function('name'), params: []);
   final name = nameCallResult.first;
 
-  final nonce = await getSenderContractNonce(provider, token, account.address);
+  final nonce = await getSenderContractNonce(provider, token, wallet.address);
   final decimals = await provider
       .call(contract: token, function: token.function('decimals'), params: []);
 
@@ -159,11 +139,11 @@ Future<GsnTransactionDetails> getExecuteMetatransactionTx(
 
   // get function signature
   final transferFunc = token.function('transfer');
-  final data = transferFunc
-      .encodeCall([EthereumAddress.fromHex(destinationAddress), decimalAmount]);
+  final data = transferFunc.encodeCall(
+      [web3.EthereumAddress.fromHex(destinationAddress), decimalAmount]);
 
   final signatureData = await getMetatransactionEIP712Signature(
-    account,
+    wallet,
     name,
     contractAddress,
     data,
@@ -175,11 +155,11 @@ Future<GsnTransactionDetails> getExecuteMetatransactionTx(
   final s = signatureData['s'];
   final v = signatureData['v'];
 
-  final tx = Transaction.callContract(
+  final tx = web3.Transaction.callContract(
     contract: token,
     function: token.function('executeMetaTransaction'),
     parameters: [
-      account.address,
+      wallet.address,
       data,
       r,
       s,
@@ -190,7 +170,7 @@ Future<GsnTransactionDetails> getExecuteMetatransactionTx(
 
   // Estimate the gas required for the transaction
   final gas = await provider.estimateGas(
-    sender: account.address,
+    sender: wallet.address,
     data: tx.data,
     to: token.address,
   );
@@ -205,7 +185,7 @@ Future<GsnTransactionDetails> getExecuteMetatransactionTx(
   }
 
   final gsnTx = GsnTransactionDetails(
-    from: account.address.hex,
+    from: wallet.address.hex,
     data: "0x${bytesToHex(tx.data!)}",
     value: "0",
     to: tx.to!.hex,

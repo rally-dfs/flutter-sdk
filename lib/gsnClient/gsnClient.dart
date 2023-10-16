@@ -3,11 +3,12 @@ import 'package:http/http.dart' as http;
 import 'package:rly_network_flutter_sdk/gsnClient/EIP712/ForwardRequest.dart';
 import 'package:rly_network_flutter_sdk/gsnClient/EIP712/RelayData.dart';
 import 'package:rly_network_flutter_sdk/gsnClient/utils.dart';
-import 'package:web3dart/web3dart.dart';
+import 'package:web3dart/web3dart.dart' as web3;
 import 'package:rly_network_flutter_sdk/gsnClient/gsnTxHelpers.dart';
 
 import '../network_config/network_config.dart';
 import 'EIP712/RelayRequest.dart';
+import '../../wallet.dart';
 
 Future<Map<String, dynamic>> updateConfig(
   NetworkConfig config,
@@ -26,8 +27,8 @@ Future<Map<String, dynamic>> updateConfig(
 Future<RelayRequest> buildRelayRequest(
   GsnTransactionDetails transaction,
   NetworkConfig config,
-  EthPrivateKey account,
-  Web3Client web3Provider,
+  Wallet account,
+  web3.Web3Client web3Provider,
 ) async {
   transaction.gas = estimateGasWithoutCallData(
     transaction,
@@ -41,7 +42,7 @@ Future<RelayRequest> buildRelayRequest(
 
   final senderNonce = await getSenderNonce(
     account.address,
-    EthereumAddress.fromHex(config.gsn.forwarderAddress),
+    web3.EthereumAddress.fromHex(config.gsn.forwarderAddress),
     web3Provider,
   );
   ForwardRequest forwardRequest = ForwardRequest(
@@ -80,15 +81,15 @@ Future<RelayRequest> buildRelayRequest(
 Future<Map<String, dynamic>> buildRelayHttpRequest(
   RelayRequest relayRequest,
   NetworkConfig config,
-  EthPrivateKey account,
-  Web3Client web3Provider,
+  Wallet account,
+  web3.Web3Client web3Provider,
 ) async {
   final signature = await signRequest(relayRequest,
       config.gsn.domainSeparatorName, config.gsn.chainId, account, config);
   const approvalData = '0x';
 
   final relayWorkerAddress =
-      EthereumAddress.fromHex(relayRequest.relayData.relayWorker);
+      web3.EthereumAddress.fromHex(relayRequest.relayData.relayWorker);
   final relayLastKnownNonce =
       await web3Provider.getTransactionCount(relayWorkerAddress);
   final relayMaxNonce = relayLastKnownNonce + config.gsn.maxRelayNonceGap;
@@ -112,7 +113,7 @@ Future<Map<String, dynamic>> buildRelayHttpRequest(
 }
 
 Future<String> relayTransaction(
-  EthPrivateKey account,
+  Wallet account,
   NetworkConfig config,
   GsnTransactionDetails transaction,
 ) async {
