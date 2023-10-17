@@ -161,13 +161,12 @@ Future<GsnTransactionDetails> getExecuteMetatransactionTx(
       data,
       r,
       s,
-      //TODO: is this correct?
       BigInt.from(v),
     ],
   );
 
   // Estimate the gas required for the transaction
-  final gas = await provider.estimateGas(
+  final estimatedGas = await provider.estimateGas(
     sender: wallet.address,
     data: tx.data,
     to: token.address,
@@ -178,17 +177,13 @@ Future<GsnTransactionDetails> getExecuteMetatransactionTx(
   final BigInt maxPriorityFeePerGas = BigInt.parse("1500000000");
   final maxFeePerGas =
       info.baseFeePerGas!.getInWei * BigInt.from(2) + (maxPriorityFeePerGas);
-  if (tx == null) {
-    throw 'tx not populated';
-  }
 
   final gsnTx = GsnTransactionDetails(
     from: wallet.address.hex,
     data: "0x${bytesToHex(tx.data!)}",
     value: "0",
     to: tx.to!.hex,
-    //TODO: Remove hardcoding
-    gas: "0x${gas.toRadixString(16)}",
+    gas: "0x${estimatedGas.toRadixString(16)}",
     maxFeePerGas: maxFeePerGas.toString(),
     maxPriorityFeePerGas: maxPriorityFeePerGas.toString(),
   );
