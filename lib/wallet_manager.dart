@@ -75,37 +75,6 @@ class WalletManager {
     }
   }
 
-  Future<String> signMessage(String message) async {
-    final wallet = await getWallet();
-
-    if (wallet == null) {
-      throw 'No account';
-    }
-    throw UnimplementedError();
-    // return wallet.signMessage(message);
-  }
-
-  Future<String> signTransaction() async {
-    final wallet = await getWallet();
-    if (wallet == null) {
-      throw 'No account';
-    }
-    throw UnimplementedError();
-    // return wallet.signTransaction(tx);
-  }
-
-  Future<String> signHash(String hash) async {
-    final wallet = await getWallet();
-    if (wallet == null) {
-      throw 'No account';
-    }
-    throw UnimplementedError();
-
-    // final signingKey = utils.SigningKey(wallet.privateKey);
-    //
-    // return utils.joinSignature(signingKey.signDigest(hash));
-  }
-
   Future<Wallet> _makeWalletFromMnemonic(String mnemonic) async {
     Uint8List privateKey =
         await _keyManager.getPrivateKeyFromMnemonic(mnemonic);
