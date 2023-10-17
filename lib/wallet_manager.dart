@@ -7,19 +7,19 @@ import 'key_manager.dart';
 
 import 'wallet.dart';
 
-class AccountsUtil {
+class WalletManager {
   static Wallet? _cachedWallet;
   final KeyManager _keyManager;
 
-  AccountsUtil(this._keyManager);
+  WalletManager(this._keyManager);
 
-  static final AccountsUtil _instance = AccountsUtil(KeyManager());
+  static final WalletManager _instance = WalletManager(KeyManager());
 
-  factory AccountsUtil.getInstance() {
+  factory WalletManager.getInstance() {
     return _instance;
   }
 
-  Future<Wallet> createAccount(
+  Future<Wallet> createWallet(
       {bool overwrite = false, KeyStorageConfig? storageOptions}) async {
     final existingWallet = await getWallet();
     if (existingWallet != null && !overwrite) {
@@ -54,7 +54,7 @@ class AccountsUtil {
     return wallet;
   }
 
-  Future<String?> getAccountAddress() async {
+  Future<String?> getPublicAddress() async {
     final wallet = await getWallet();
     if (wallet == null) {
       return null;
@@ -62,7 +62,7 @@ class AccountsUtil {
     return wallet.address.hex;
   }
 
-  Future<void> permanentlyDeleteAccount() async {
+  Future<void> permanentlyDeleteWallet() async {
     await _keyManager.deleteMnemonic();
     _cachedWallet = null;
   }
@@ -73,37 +73,6 @@ class AccountsUtil {
     } catch (error) {
       return null;
     }
-  }
-
-  Future<String> signMessage(String message) async {
-    final wallet = await getWallet();
-
-    if (wallet == null) {
-      throw 'No account';
-    }
-    throw UnimplementedError();
-    // return wallet.signMessage(message);
-  }
-
-  Future<String> signTransaction() async {
-    final wallet = await getWallet();
-    if (wallet == null) {
-      throw 'No account';
-    }
-    throw UnimplementedError();
-    // return wallet.signTransaction(tx);
-  }
-
-  Future<String> signHash(String hash) async {
-    final wallet = await getWallet();
-    if (wallet == null) {
-      throw 'No account';
-    }
-    throw UnimplementedError();
-
-    // final signingKey = utils.SigningKey(wallet.privateKey);
-    //
-    // return utils.joinSignature(signingKey.signDigest(hash));
   }
 
   Future<Wallet> _makeWalletFromMnemonic(String mnemonic) async {
