@@ -87,7 +87,7 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
   }
 
   void deleteAccount() async {
-    await WalletManager.getInstance().permanentlyDeleteAccount();
+    await WalletManager.getInstance().permanentlyDeleteWallet();
     widget.onAccountDeleted();
   }
 

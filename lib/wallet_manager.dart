@@ -54,7 +54,7 @@ class WalletManager {
     return wallet;
   }
 
-  Future<String?> getAccountAddress() async {
+  Future<String?> getPublicAddress() async {
     final wallet = await getWallet();
     if (wallet == null) {
       return null;
@@ -62,7 +62,7 @@ class WalletManager {
     return wallet.address.hex;
   }
 
-  Future<void> permanentlyDeleteAccount() async {
+  Future<void> permanentlyDeleteWallet() async {
     await _keyManager.deleteMnemonic();
     _cachedWallet = null;
   }

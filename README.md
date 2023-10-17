@@ -17,12 +17,11 @@ final account = await WalletManager.getInstance().createWallet(
     storageOptions: KeyStorageConfig(saveToCloud: false, rejectOnCloudSaveFailure: false)
 );
 
-// get current user account address
-final address = await WalletManager.getInstance().getAccountAddress();
+// get address of current EOA wallet
+final address = await WalletManager.getInstance().getPublicAddress();
 
-// delete account
-
-await WalletManager.getInstance().permanentlyDeleteAccount();
+// Delete EOA wallet. Be careful calling this, it can not be undone.
+await WalletManager.getInstance().permanentlyDeleteWallet();
 
 ```
 
