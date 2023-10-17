@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'components/AppContainer.dart';
-import 'components/CustomText.dart';
-import 'components/RlyCard.dart';
+import 'components/app_container.dart';
+import 'components/custom_text.dart';
+import 'components/rly_card.dart';
 
 class GenerateAccountScreen extends StatelessWidget {
   final VoidCallback generateAccount;

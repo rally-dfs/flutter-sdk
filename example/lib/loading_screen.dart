@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'components/CustomText.dart';
+import 'components/custom_text.dart';
 
 class LoadingScreen extends StatelessWidget {
   @override

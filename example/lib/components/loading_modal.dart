@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'CustomText.dart';
+import 'custom_text.dart';
 
 class LoadingModal extends StatelessWidget {
   final bool show;
