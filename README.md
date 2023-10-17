@@ -14,10 +14,11 @@ import 'package:rly_network_flutter_sdk/account.dart';
 final account = await AccountsUtil.getInstance().createAccount();
 
 //Want to configure whether keys are synced to the cloud, you can pass in storage options
-final account = await AccountsUtil.getInstance().createAccount();
+final account = await AccountsUtil.getInstance().createAccount(
+    storageOptions: KeyStorageConfig(saveToCloud: false, rejectOnCloudSaveFailure: false)
+);
 
 // get current user account address
-
 final address = await AccountsUtil.getInstance().getAccountAddress();
 
 // delete account
