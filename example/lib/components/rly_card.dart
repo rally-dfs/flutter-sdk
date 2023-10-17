@@ -4,12 +4,12 @@ class RlyCard extends StatelessWidget {
   final Widget child;
   final BoxDecoration? style;
 
-  RlyCard({required this.child, this.style});
+  const RlyCard({super.key, required this.child, this.style});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(14),
+      padding: const EdgeInsets.all(14),
       decoration: style?.copyWith(
         color: Colors.black87,
         borderRadius: BorderRadius.circular(8),

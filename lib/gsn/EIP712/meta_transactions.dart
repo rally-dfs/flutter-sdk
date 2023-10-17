@@ -1,11 +1,9 @@
-import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:eth_sig_util/eth_sig_util.dart';
 import 'package:eth_sig_util/util/utils.dart';
 import 'package:rly_network_flutter_sdk/contracts/erc20.dart';
-import 'package:rly_network_flutter_sdk/gsnClient/gsnTxHelpers.dart';
-import 'package:rly_network_flutter_sdk/gsnClient/utils.dart';
+import 'package:rly_network_flutter_sdk/gsn/gsn_tx_helpers.dart';
+import 'package:rly_network_flutter_sdk/gsn/utils.dart';
 import 'package:web3dart/web3dart.dart' as web3;
 import 'package:convert/convert.dart';
 import '../../wallet.dart';
@@ -163,13 +161,12 @@ Future<GsnTransactionDetails> getExecuteMetatransactionTx(
       data,
       r,
       s,
-      //TODO: is this correct?
       BigInt.from(v),
     ],
   );
 
   // Estimate the gas required for the transaction
-  final gas = await provider.estimateGas(
+  final estimatedGas = await provider.estimateGas(
     sender: wallet.address,
     data: tx.data,
     to: token.address,
@@ -180,17 +177,13 @@ Future<GsnTransactionDetails> getExecuteMetatransactionTx(
   final BigInt maxPriorityFeePerGas = BigInt.parse("1500000000");
   final maxFeePerGas =
       info.baseFeePerGas!.getInWei * BigInt.from(2) + (maxPriorityFeePerGas);
-  if (tx == null) {
-    throw 'tx not populated';
-  }
 
   final gsnTx = GsnTransactionDetails(
     from: wallet.address.hex,
     data: "0x${bytesToHex(tx.data!)}",
     value: "0",
     to: tx.to!.hex,
-    //TODO: Remove hardcoding
-    gas: "0x${gas.toRadixString(16)}",
+    gas: "0x${estimatedGas.toRadixString(16)}",
     maxFeePerGas: maxFeePerGas.toString(),
     maxPriorityFeePerGas: maxPriorityFeePerGas.toString(),
   );

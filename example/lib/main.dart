@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:rly_network_flutter_sdk/wallet.dart';
 
 import 'account_overview_screen.dart';
-import 'GenerateAccountScreen.dart';
-import 'LoadingScreen.dart';
+import 'generate_account_screen.dart';
+import 'loading_screen.dart';
 import 'package:rly_network_flutter_sdk/account.dart';
 
 class App extends StatefulWidget {
@@ -50,7 +50,7 @@ class AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     if (!_accountLoaded) {
-      return LoadingScreen();
+      return const LoadingScreen();
     }
 
     if (_rlyAccount == null) {

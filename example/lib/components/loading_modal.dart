@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-import 'CustomText.dart';
+import 'custom_text.dart';
 
 class LoadingModal extends StatelessWidget {
   final bool show;
   final String title;
 
-  LoadingModal({required this.show, required this.title});
+  const LoadingModal({super.key, required this.show, required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -17,8 +17,8 @@ class LoadingModal extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           HeadingText(text: title),
-          SizedBox(height: 12),
-          CircularProgressIndicator(),
+          const SizedBox(height: 12),
+          const CircularProgressIndicator(),
         ],
       ),
     );
@@ -29,7 +29,7 @@ class StandardModal extends StatelessWidget {
   final bool show;
   final Widget children;
 
-  StandardModal({required this.show, required this.children});
+  const StandardModal({super.key, required this.show, required this.children});
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +40,7 @@ class StandardModal extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.grey[800],
             borderRadius: BorderRadius.circular(20),
-            boxShadow: [
+            boxShadow: const [
               BoxShadow(
                 color: Colors.black,
                 offset: Offset(0, 2),
@@ -48,7 +48,7 @@ class StandardModal extends StatelessWidget {
               ),
             ],
           ),
-          padding: EdgeInsets.all(35),
+          padding: const EdgeInsets.all(35),
           child: children,
         ),
       ),
