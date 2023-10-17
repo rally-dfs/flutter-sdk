@@ -77,8 +77,8 @@ class FlutterSdkPlugin: FlutterPlugin, MethodCallHandler {
 
   private fun saveMnemonic(call: MethodCall, result: Result) {
     val mnemonic = call.argument<String>("mnemonic") ?: ""
-    val useBlockStore = call.argument<Boolean>("useBlockStore")?: false
-    val forceBlockStore = call.argument<Boolean>("forceBlockStore")?: false
+    val useBlockStore = call.argument<Boolean>("saveToCloud")?: false
+    val forceBlockStore = call.argument<Boolean>("rejectOnCloudSaveFailure")?: false
 
     if (!MnemonicWords(mnemonic).validate(WORDLIST_ENGLISH)) {
       result.error("mnemonic_verification_failure", "Mnemonic is not valid", null)

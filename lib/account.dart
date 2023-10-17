@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:eth_sig_util/util/utils.dart';
+import 'package:rly_network_flutter_sdk/key_storage_config.dart';
 
 import 'key_manager.dart';
 
@@ -18,14 +19,18 @@ class AccountsUtil {
     return _instance;
   }
 
-  Future<Wallet> createAccount({bool overwrite = false}) async {
+  Future<Wallet> createAccount(
+      {bool overwrite = false, KeyStorageConfig? storageOptions}) async {
     final existingWallet = await getWallet();
     if (existingWallet != null && !overwrite) {
       throw 'Account already exists';
     }
 
+    final storageConfig = storageOptions ??
+        KeyStorageConfig(rejectOnCloudSaveFailure: true, saveToCloud: true);
+
     final mnemonic = await _keyManager.generateMnemonic();
-    await _keyManager.saveMnemonic(mnemonic);
+    await _keyManager.saveMnemonic(mnemonic, storageOptions: storageConfig);
     final newWallet = await _makeWalletFromMnemonic(mnemonic);
 
     _cachedWallet = newWallet;
