@@ -1,14 +1,14 @@
-import 'package:rly_network_flutter_sdk/gsnClient/gsnTxHelpers.dart';
-import 'package:rly_network_flutter_sdk/gsnClient/utils.dart';
+import 'package:rly_network_flutter_sdk/gsn/gsn_tx_helpers.dart';
+import 'package:rly_network_flutter_sdk/gsn/utils.dart';
 import 'package:rly_network_flutter_sdk/network.dart';
 import 'package:web3dart/web3dart.dart';
 
 import '../account.dart';
 import '../contracts/erc20.dart';
 import '../error.dart';
-import '../gsnClient/EIP712/MetaTransactions.dart';
-import '../gsnClient/EIP712/PermitTransaction.dart';
-import '../gsnClient/gsnClient.dart';
+import '../gsn/EIP712/meta_transactions.dart';
+import '../gsn/EIP712/permit_transaction.dart';
+import '../gsn/gsn_client.dart';
 import '../network_config/network_config.dart';
 
 class NetworkImpl extends Network {

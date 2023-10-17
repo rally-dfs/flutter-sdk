@@ -4,22 +4,22 @@ import 'dart:typed_data';
 import 'package:convert/convert.dart';
 import 'package:eth_sig_util/eth_sig_util.dart';
 import 'package:rly_network_flutter_sdk/contracts/tokenFaucet.dart';
-import 'package:rly_network_flutter_sdk/gsnClient/ABI/IForwarder.dart';
+import 'package:rly_network_flutter_sdk/gsn/ABI/IForwarder.dart';
 import 'package:web3dart/crypto.dart';
 import 'package:http/http.dart';
-import 'package:rly_network_flutter_sdk/gsnClient/ABI/IRelayHub.dart';
+import 'package:rly_network_flutter_sdk/gsn/ABI/IRelayHub.dart';
 
-import 'package:rly_network_flutter_sdk/gsnClient/utils.dart';
+import 'package:rly_network_flutter_sdk/gsn/utils.dart';
 
 import 'package:web3dart/web3dart.dart' as web3;
 
 import '../network_config/network_config.dart';
 import '../../wallet.dart';
-import 'EIP712/ForwardRequest.dart';
-import 'EIP712/RelayData.dart';
-import 'EIP712/RelayRequest.dart';
+import 'EIP712/forward_request.dart';
+import 'EIP712/relay_data.dart';
+import 'EIP712/relay_request.dart';
 
-import 'EIP712/typedSigning.dart';
+import 'EIP712/typed_signing.dart';
 
 CalldataBytes calculateCalldataBytesZeroNonzero(PrefixedHexString calldata) {
   final calldataBuf =

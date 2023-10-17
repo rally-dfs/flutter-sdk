@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:rly_network_flutter_sdk/gsnClient/EIP712/ForwardRequest.dart';
-import 'package:rly_network_flutter_sdk/gsnClient/EIP712/RelayData.dart';
-import 'package:rly_network_flutter_sdk/gsnClient/utils.dart';
+import 'package:rly_network_flutter_sdk/gsn/EIP712/forward_request.dart';
+import 'package:rly_network_flutter_sdk/gsn/EIP712/relay_data.dart';
+import 'package:rly_network_flutter_sdk/gsn/utils.dart';
 import 'package:web3dart/web3dart.dart' as web3;
-import 'package:rly_network_flutter_sdk/gsnClient/gsnTxHelpers.dart';
+import 'package:rly_network_flutter_sdk/gsn/gsn_tx_helpers.dart';
 
 import '../network_config/network_config.dart';
-import 'EIP712/RelayRequest.dart';
+import 'EIP712/relay_request.dart';
 import '../../wallet.dart';
 
 Future<Map<String, dynamic>> updateConfig(

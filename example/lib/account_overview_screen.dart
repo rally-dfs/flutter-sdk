@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rly_network_flutter_sdk/account.dart';
-import 'package:rly_network_flutter_sdk/gsnClient/utils.dart';
+import 'package:rly_network_flutter_sdk/gsn/utils.dart';
 import 'package:rly_network_flutter_sdk/network.dart';
 import 'package:url_launcher/url_launcher.dart';
 
