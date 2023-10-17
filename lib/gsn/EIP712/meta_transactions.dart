@@ -1,7 +1,5 @@
-import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:eth_sig_util/eth_sig_util.dart';
 import 'package:eth_sig_util/util/utils.dart';
 import 'package:rly_network_flutter_sdk/contracts/erc20.dart';
 import 'package:rly_network_flutter_sdk/gsn/gsn_tx_helpers.dart';
