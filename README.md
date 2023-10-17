@@ -10,10 +10,10 @@ import 'package:rly_network_flutter_sdk/account.dart';
 
 //create an account
 // By default this will configure the keys for secure cloud syncing
-final account = await WalletManager.getInstance().createAccount();
+final account = await WalletManager.getInstance().createWallet();
 
 //Want to configure whether keys are synced to the cloud, you can pass in storage options
-final account = await WalletManager.getInstance().createAccount(
+final account = await WalletManager.getInstance().createWallet(
     storageOptions: KeyStorageConfig(saveToCloud: false, rejectOnCloudSaveFailure: false)
 );
 

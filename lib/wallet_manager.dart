@@ -19,7 +19,7 @@ class WalletManager {
     return _instance;
   }
 
-  Future<Wallet> createAccount(
+  Future<Wallet> createWallet(
       {bool overwrite = false, KeyStorageConfig? storageOptions}) async {
     final existingWallet = await getWallet();
     if (existingWallet != null && !overwrite) {

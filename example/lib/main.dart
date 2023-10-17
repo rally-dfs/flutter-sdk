@@ -40,7 +40,7 @@ class AppState extends State<App> {
   }
 
   Future<void> _createRlyAccount() async {
-    final rlyAct = await WalletManager.getInstance().createAccount();
+    final rlyAct = await WalletManager.getInstance().createWallet();
     setState(() {
       _rlyAccount = rlyAct;
     });
