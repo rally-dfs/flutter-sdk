@@ -50,7 +50,7 @@ class AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     if (!_accountLoaded) {
-      return LoadingScreen();
+      return const LoadingScreen();
     }
 
     if (_rlyAccount == null) {

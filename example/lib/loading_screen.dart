@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'components/custom_text.dart';
 
 class LoadingScreen extends StatelessWidget {
+  const LoadingScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       backgroundColor: Colors.black, // Use your desired background color
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 60),
+        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 60),
         child: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
