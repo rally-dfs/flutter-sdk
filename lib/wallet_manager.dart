@@ -7,15 +7,15 @@ import 'key_manager.dart';
 
 import 'wallet.dart';
 
-class AccountsUtil {
+class WalletManager {
   static Wallet? _cachedWallet;
   final KeyManager _keyManager;
 
-  AccountsUtil(this._keyManager);
+  WalletManager(this._keyManager);
 
-  static final AccountsUtil _instance = AccountsUtil(KeyManager());
+  static final WalletManager _instance = WalletManager(KeyManager());
 
-  factory AccountsUtil.getInstance() {
+  factory WalletManager.getInstance() {
     return _instance;
   }
 

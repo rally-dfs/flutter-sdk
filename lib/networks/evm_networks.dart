@@ -3,7 +3,7 @@ import 'package:rly_network_flutter_sdk/gsn/utils.dart';
 import 'package:rly_network_flutter_sdk/network.dart';
 import 'package:web3dart/web3dart.dart';
 
-import '../account.dart';
+import '../wallet_manager.dart';
 import '../contracts/erc20.dart';
 import '../error.dart';
 import '../gsn/EIP712/meta_transactions.dart';
@@ -18,7 +18,7 @@ class NetworkImpl extends Network {
 
   @override
   Future<String> claimRly() async {
-    final account = await AccountsUtil.getInstance().getWallet();
+    final account = await WalletManager.getInstance().getWallet();
 
     if (account == null) {
       throw "account does not exist";
@@ -41,7 +41,7 @@ class NetworkImpl extends Network {
   @override
   Future<double> getBalance(
       {PrefixedHexString? tokenAddress, bool humanReadable = false}) async {
-    final account = await AccountsUtil.getInstance().getWallet();
+    final account = await WalletManager.getInstance().getWallet();
     if (account == null) {
       throw missingWalletError;
     }
@@ -65,7 +65,7 @@ class NetworkImpl extends Network {
 
   @override
   Future<String> relay(GsnTransactionDetails tx) async {
-    final account = await AccountsUtil.getInstance().getWallet();
+    final account = await WalletManager.getInstance().getWallet();
 
     if (account == null) {
       throw "account does not exist";
@@ -83,7 +83,7 @@ class NetworkImpl extends Network {
   Future<String> transfer(
       String destinationAddress, double amount, MetaTxMethod metaTxMethod,
       {PrefixedHexString? tokenAddress}) async {
-    final account = await AccountsUtil.getInstance().getWallet();
+    final account = await WalletManager.getInstance().getWallet();
 
     if (account == null) {
       throw "account does not exist";
@@ -135,7 +135,7 @@ class NetworkImpl extends Network {
   Future<String> simpleTransfer(String destinationAddress, double amount,
       {String? tokenAddress, MetaTxMethod? metaTxMethod}) async {
     Web3Client client = getEthClient(network.gsn.rpcUrl);
-    final account = await AccountsUtil.getInstance().getWallet();
+    final account = await WalletManager.getInstance().getWallet();
 
     if (account == null) {
       throw missingWalletError;

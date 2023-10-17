@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:rly_network_flutter_sdk/wallet.dart';
+import 'package:rly_network_flutter_sdk/wallet_manager.dart';
 
 import 'account_overview_screen.dart';
 import 'generate_account_screen.dart';
 import 'loading_screen.dart';
-import 'package:rly_network_flutter_sdk/account.dart';
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -24,7 +24,7 @@ class AppState extends State<App> {
   }
 
   Future<void> _readAccount() async {
-    final account = await AccountsUtil.getInstance().getWallet();
+    final account = await WalletManager.getInstance().getWallet();
     setState(() {
       _accountLoaded = true;
       if (account != null) {
@@ -40,8 +40,7 @@ class AppState extends State<App> {
   }
 
   Future<void> _createRlyAccount() async {
-    AccountsUtil accountsUtil = AccountsUtil.getInstance();
-    final rlyAct = await accountsUtil.createAccount();
+    final rlyAct = await WalletManager.getInstance().createAccount();
     setState(() {
       _rlyAccount = rlyAct;
     });

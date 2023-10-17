@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rly_network_flutter_sdk/account.dart';
+import 'package:rly_network_flutter_sdk/wallet_manager.dart';
 import 'package:rly_network_flutter_sdk/gsn/utils.dart';
 import 'package:rly_network_flutter_sdk/network.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -87,12 +87,12 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
   }
 
   void deleteAccount() async {
-    await AccountsUtil.getInstance().permanentlyDeleteAccount();
+    await WalletManager.getInstance().permanentlyDeleteAccount();
     widget.onAccountDeleted();
   }
 
   void revealMnemonic() async {
-    String? value = await AccountsUtil.getInstance().getAccountPhrase();
+    String? value = await WalletManager.getInstance().getAccountPhrase();
     if (value == null || value.isEmpty) {
       throw 'Something went wrong, no Mnemonic when there should be one';
     }
