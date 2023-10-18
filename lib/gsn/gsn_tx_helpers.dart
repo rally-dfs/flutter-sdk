@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:convert/convert.dart';
 import 'package:eth_sig_util/eth_sig_util.dart';
+import 'package:flutter/services.dart';
 import 'package:rly_network_flutter_sdk/contracts/tokenFaucet.dart';
 import 'package:rly_network_flutter_sdk/gsn/ABI/IForwarder.dart';
 import 'package:web3dart/crypto.dart';
@@ -314,18 +315,19 @@ Future<GsnTransactionDetails> getClaimTx(
 }
 
 Future<String> getClientId() async {
-  // Replace this line with the actual method to get the bundleId from the native module
-  final bundleId = await getBundleIdFromNativeModule();
-//TODO:
+  final bundleId = await getBundleIdFromOS();
   final hexValue = web3.EthereumAddress.fromHex(bundleId).hex;
   return BigInt.parse(hexValue, radix: 16).toString();
 }
 
-Future<String> getBundleIdFromNativeModule() {
-  // TODO: Replace this with the actual method to get the bundleId from the native module
-  // Example: MethodChannel or Platform channel to communicate with native code
-  // For demonstration purposes, we'll use a dummy value
-  return Future.value('com.savez.app');
+Future<String> getBundleIdFromOS() async {
+  const methodChannel = MethodChannel('rly_network_flutter_sdk');
+  final osBundleId = await methodChannel.invokeMethod<String>("getBundleId");
+
+  if (osBundleId == null) {
+    throw Exception("Unable to get bundle id from OS");
+  }
+  return osBundleId;
 }
 
 Future<String> handleGsnResponse(
