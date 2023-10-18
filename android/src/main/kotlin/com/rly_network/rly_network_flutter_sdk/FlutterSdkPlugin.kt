@@ -43,6 +43,9 @@ class FlutterSdkPlugin: FlutterPlugin, MethodCallHandler {
         "getPlatformVersion" -> {
           result.success("Android ${android.os.Build.VERSION.RELEASE}")
         }
+        "getBundleId" -> {
+          result.success(flutterPluginBinding.applicationContext.getPackageName())
+        }
         "saveMnemonic" -> {
           saveMnemonic(call, result);
         }

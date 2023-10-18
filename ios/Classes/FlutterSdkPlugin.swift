@@ -14,6 +14,8 @@ public class FlutterSdkPlugin: NSObject, FlutterPlugin {
     switch call.method {
       case "getPlatformVersion":
         result("iOS " + UIDevice.current.systemVersion)
+      case "getBundleId":
+        result(RlyNetworkMobileSdk().getBundleId())
       case "generateNewMnemonic":
         result(RlyNetworkMobileSdk().generateMnemonic())
       case "getPrivateKeyFromMnemonic":

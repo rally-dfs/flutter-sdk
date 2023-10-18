@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rly_network_flutter_sdk/key_storage_config.dart';
 import 'package:rly_network_flutter_sdk/wallet.dart';
 import 'package:rly_network_flutter_sdk/wallet_manager.dart';
 
@@ -40,7 +41,9 @@ class AppState extends State<App> {
   }
 
   Future<void> _createRlyAccount() async {
-    final rlyAct = await WalletManager.getInstance().createWallet();
+    final rlyAct = await WalletManager.getInstance().createWallet(
+        storageOptions: KeyStorageConfig(
+            rejectOnCloudSaveFailure: false, saveToCloud: false));
     setState(() {
       _rlyAccount = rlyAct;
     });
