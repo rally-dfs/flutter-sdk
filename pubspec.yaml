@@ -1,5 +1,5 @@
 name: rly_network_flutter_sdk
-description: RLY Network Flutter SDK
+description: Rally Protocol Flutter SDK. Secure web3 key management, transaction signing, and gassless transactions.
 version: 0.0.1
 homepage: https://www.rallyprotocol.com
 repository: https://github.com/rally-dfs/flutter-sdk
