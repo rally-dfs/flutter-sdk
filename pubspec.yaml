@@ -1,7 +1,8 @@
 name: rly_network_flutter_sdk
 description: RLY Network Flutter SDK
 version: 0.0.1
-homepage:
+homepage: https://www.rallyprotocol.com
+repository: https://github.com/rally-dfs/flutter-sdk
 
 environment:
   sdk: ">=3.0.5 <4.0.0"
