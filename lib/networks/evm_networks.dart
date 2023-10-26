@@ -1,7 +1,7 @@
 import 'package:rly_network_flutter_sdk/gsn/gsn_tx_helpers.dart';
 import 'package:rly_network_flutter_sdk/gsn/utils.dart';
 import 'package:rly_network_flutter_sdk/network.dart';
-import 'package:web3dart/web3dart.dart';
+import 'package:web3dart/web3dart.dart' as web3;
 
 import '../wallet_manager.dart';
 import '../contracts/erc20.dart';
@@ -41,6 +41,13 @@ class NetworkImpl extends Network {
   @override
   Future<double> getBalance(
       {PrefixedHexString? tokenAddress, bool humanReadable = false}) async {
+    return getDisplayBalance(
+        tokenAddress: tokenAddress, humanReadable: humanReadable);
+  }
+
+  @override
+  Future<double> getDisplayBalance(
+      {PrefixedHexString? tokenAddress, bool humanReadable = false}) async {
     final account = await WalletManager.getInstance().getWallet();
     if (account == null) {
       throw missingWalletError;
@@ -50,7 +57,7 @@ class NetworkImpl extends Network {
 
     final provider = getEthClient(network.gsn.rpcUrl);
 
-    final token = erc20(EthereumAddress.fromHex(tokenAddress));
+    final token = erc20(web3.EthereumAddress.fromHex(tokenAddress));
 
     final balanceOfCall = await provider.call(
         contract: token,
@@ -61,6 +68,30 @@ class NetworkImpl extends Network {
 
     final decimals = await _decimalsForToken(token);
     return balanceToDouble(balance, decimals);
+  }
+
+  @override
+  Future<BigInt> getExactBalance(
+      {PrefixedHexString? tokenAddress, bool humanReadable = false}) async {
+    final account = await WalletManager.getInstance().getWallet();
+    if (account == null) {
+      throw missingWalletError;
+    }
+
+    tokenAddress = tokenAddress ?? network.contracts.rlyERC20;
+
+    final provider = getEthClient(network.gsn.rpcUrl);
+
+    final token = erc20(web3.EthereumAddress.fromHex(tokenAddress));
+
+    final balanceOfCall = await provider.call(
+        contract: token,
+        function: token.function('balanceOf'),
+        params: [account.address]);
+
+    final balance = balanceOfCall[0];
+
+    return balance;
   }
 
   @override
@@ -101,12 +132,44 @@ class NetworkImpl extends Network {
 
     final provider = getEthClient(network.gsn.rpcUrl);
 
+    final token = erc20(web3.EthereumAddress.fromHex(tokenAddress));
+
+    final decimals = await provider.call(
+        contract: token, function: token.function('decimals'), params: []);
+    BigInt decimalAmount =
+        parseUnits(amount.toString(), int.parse(decimals.first.toString()));
+
+    return transferExact(destinationAddress, decimalAmount, metaTxMethod);
+  }
+
+  @override
+  Future<String> transferExact(
+      String destinationAddress, BigInt amount, MetaTxMethod metaTxMethod,
+      {PrefixedHexString? tokenAddress}) async {
+    final account = await WalletManager.getInstance().getWallet();
+
+    if (account == null) {
+      throw "account does not exist";
+    }
+
+    tokenAddress = tokenAddress ?? network.contracts.rlyERC20;
+
+    final sourceBalance = await getExactBalance(tokenAddress: tokenAddress);
+
+    final sourceFinalBalance = sourceBalance - amount;
+
+    if (sourceFinalBalance < BigInt.zero) {
+      throw insufficientBalanceError;
+    }
+
+    final provider = getEthClient(network.gsn.rpcUrl);
+
     GsnTransactionDetails? transferTx;
 
     if (metaTxMethod == MetaTxMethod.Permit) {
       transferTx = await getPermitTx(
         account,
-        EthereumAddress.fromHex(destinationAddress),
+        web3.EthereumAddress.fromHex(destinationAddress),
         amount,
         network,
         tokenAddress,
@@ -134,7 +197,7 @@ class NetworkImpl extends Network {
   @override
   Future<String> simpleTransfer(String destinationAddress, double amount,
       {String? tokenAddress, MetaTxMethod? metaTxMethod}) async {
-    Web3Client client = getEthClient(network.gsn.rpcUrl);
+    web3.Web3Client client = getEthClient(network.gsn.rpcUrl);
     final account = await WalletManager.getInstance().getWallet();
 
     if (account == null) {
@@ -143,16 +206,17 @@ class NetworkImpl extends Network {
 
     final result = await client.sendTransaction(
         account,
-        Transaction(
-          to: EthereumAddress.fromHex(destinationAddress),
-          gasPrice: EtherAmount.fromInt(EtherUnit.wei, 1000000),
-          value: EtherAmount.fromBigInt(EtherUnit.gwei, BigInt.from(3)),
+        web3.Transaction(
+          to: web3.EthereumAddress.fromHex(destinationAddress),
+          gasPrice: web3.EtherAmount.fromInt(web3.EtherUnit.wei, 1000000),
+          value:
+              web3.EtherAmount.fromBigInt(web3.EtherUnit.gwei, BigInt.from(3)),
         ),
         chainId: 80001);
     return result;
   }
 
-  Future<BigInt> _decimalsForToken(DeployedContract token) async {
+  Future<BigInt> _decimalsForToken(web3.DeployedContract token) async {
     final provider = getEthClient(network.gsn.rpcUrl);
 
     final funCall = await provider.call(
