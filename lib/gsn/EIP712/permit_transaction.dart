@@ -131,7 +131,7 @@ Future<Map<String, dynamic>> getPermitEIP712Signature(
 Future<GsnTransactionDetails> getPermitTx(
   Wallet wallet,
   web3.EthereumAddress destinationAddress,
-  double amount,
+  BigInt amount,
   NetworkConfig config,
   String contractAddress,
   web3.Web3Client provider,
@@ -147,17 +147,11 @@ Future<GsnTransactionDetails> getPermitTx(
   final name = nameCall[0];
   final nonce = noncesCallResult[0];
 
-  final decimals = await provider
-      .call(contract: token, function: token.function('decimals'), params: []);
-
   final deadline = await getPermitDeadline(provider);
   final eip712DomainCallResult = await provider.call(
       contract: token, function: token.function('eip712Domain'), params: []);
 
   final salt = "0x${bytesToHex(eip712DomainCallResult[5])}";
-
-  BigInt decimalAmount =
-      parseUnits(amount.toString(), int.parse(decimals.first.toString()));
 
   final signature = await getPermitEIP712Signature(
     wallet,
@@ -165,7 +159,7 @@ Future<GsnTransactionDetails> getPermitTx(
     contractAddress,
     config,
     nonce.toInt(),
-    decimalAmount,
+    amount,
     deadline,
     salt,
   );
@@ -177,7 +171,7 @@ Future<GsnTransactionDetails> getPermitTx(
   final fromTx = token.function('transferFrom').encodeCall([
     web3.EthereumAddress.fromHex(wallet.address.hex),
     destinationAddress,
-    decimalAmount,
+    amount,
   ]);
 
   final tx = web3.Transaction.callContract(
@@ -186,7 +180,7 @@ Future<GsnTransactionDetails> getPermitTx(
     parameters: [
       web3.EthereumAddress.fromHex(wallet.address.hex),
       web3.EthereumAddress.fromHex(config.gsn.paymasterAddress),
-      decimalAmount,
+      amount,
       deadline,
       BigInt.from(v),
       r,

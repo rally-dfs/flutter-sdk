@@ -117,7 +117,7 @@ String hexZeroPad(int number, int length) {
 Future<GsnTransactionDetails> getExecuteMetatransactionTx(
   Wallet wallet,
   String destinationAddress,
-  double amount,
+  BigInt amount,
   NetworkConfig config,
   String contractAddress,
   web3.Web3Client provider,
@@ -137,8 +137,8 @@ Future<GsnTransactionDetails> getExecuteMetatransactionTx(
 
   // get function signature
   final transferFunc = token.function('transfer');
-  final data = transferFunc.encodeCall(
-      [web3.EthereumAddress.fromHex(destinationAddress), decimalAmount]);
+  final data = transferFunc
+      .encodeCall([web3.EthereumAddress.fromHex(destinationAddress), amount]);
 
   final signatureData = await getMetatransactionEIP712Signature(
     wallet,
