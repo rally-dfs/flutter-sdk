@@ -1,6 +1,5 @@
 import 'package:eth_sig_util/util/utils.dart';
 import 'package:web3dart/web3dart.dart' as web3;
-import 'package:rly_network_flutter_sdk/gsn/gsn_tx_helpers.dart';
 
 import '../../wallet.dart';
 import '../../contracts/erc20.dart';

@@ -129,11 +129,6 @@ Future<GsnTransactionDetails> getExecuteMetatransactionTx(
   final name = nameCallResult.first;
 
   final nonce = await getSenderContractNonce(provider, token, wallet.address);
-  final decimals = await provider
-      .call(contract: token, function: token.function('decimals'), params: []);
-
-  BigInt decimalAmount =
-      parseUnits(amount.toString(), int.parse(decimals.first.toString()));
 
   // get function signature
   final transferFunc = token.function('transfer');
