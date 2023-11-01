@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:typed_data';
 import 'package:convert/convert.dart';
 import 'package:eth_sig_util/eth_sig_util.dart';
 import 'package:flutter/services.dart';
@@ -19,8 +18,6 @@ import '../../wallet.dart';
 import 'EIP712/forward_request.dart';
 import 'EIP712/relay_data.dart';
 import 'EIP712/relay_request.dart';
-
-import 'EIP712/typed_signing.dart';
 
 CalldataBytes calculateCalldataBytesZeroNonzero(PrefixedHexString calldata) {
   final calldataBuf =
@@ -123,13 +120,8 @@ Future<String> estimateCalldataCostForRequest(RelayRequest relayRequestOriginal,
   //       hexToBytes(approvalData)
   //     ]);
 
-  if (tx == null) {
-    throw 'tx not populated';
-  }
-
   //todo: is the calculation of call data cost(from the rly sdk gsnTxHelper file)
   //similar to the estimate gas here?
-  //TODO: remove this to string from next line
   return BigInt.from(calculateCalldataCost(
           uint8ListToHex(tx.data!), config.gtxDataNonZero, config.gtxDataZero))
       .toRadixString(16);
@@ -160,36 +152,6 @@ Future<String> signRequest(
   Wallet wallet,
   NetworkConfig config,
 ) async {
-  final cloneRequest = {
-    "request": ForwardRequest(
-      from: relayRequest.request.from,
-      to: relayRequest.request.to,
-      value: relayRequest.request.value,
-      gas: relayRequest.request.gas,
-      nonce: relayRequest.request.nonce,
-      data: relayRequest.request.data,
-      validUntilTime: relayRequest.request.validUntilTime,
-    ).toMap(),
-    "relayData": RelayData(
-      maxFeePerGas: relayRequest.relayData.maxFeePerGas,
-      maxPriorityFeePerGas: relayRequest.relayData.maxPriorityFeePerGas,
-      transactionCalldataGasUsed:
-          relayRequest.relayData.transactionCalldataGasUsed,
-      relayWorker: relayRequest.relayData.relayWorker,
-      paymaster: relayRequest.relayData.paymaster,
-      paymasterData: relayRequest.relayData.paymasterData,
-      clientId: relayRequest.relayData.clientId,
-      forwarder: relayRequest.relayData.forwarder,
-    ).toMap(),
-  };
-  //     String name, int chainId, EthereumAddress verifier, dynamic relayRequest)
-  final signedGsnData = TypedGsnRequestData(
-    domainSeparatorName,
-    int.parse(chainId),
-    relayRequest.relayData.forwarder,
-    cloneRequest,
-  );
-
   // Define the domain separator
   final domainSeparator = {
     'name': domainSeparatorName,
