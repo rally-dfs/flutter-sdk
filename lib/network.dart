@@ -6,7 +6,8 @@ import 'network_config/network_config_local.dart';
 import 'network_config/network_config_polygon.dart';
 
 abstract class Network {
-  Future<double> getBalance({PrefixedHexString? tokenAddress});
+  Future<dynamic> getBalance(
+      {PrefixedHexString? tokenAddress, bool humanReadable = false});
   Future<double> getDisplayBalance({PrefixedHexString? tokenAddress});
   Future<BigInt> getExactBalance({PrefixedHexString? tokenAddress});
   Future<String> transfer(

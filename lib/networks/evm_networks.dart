@@ -39,14 +39,7 @@ class NetworkImpl extends Network {
   }
 
   @override
-  Future<double> getBalance(
-      {PrefixedHexString? tokenAddress, bool humanReadable = false}) async {
-    return getDisplayBalance(
-        tokenAddress: tokenAddress, humanReadable: humanReadable);
-  }
-
-  @override
-  Future<double> getDisplayBalance(
+  Future<dynamic> getBalance(
       {PrefixedHexString? tokenAddress, bool humanReadable = false}) async {
     final account = await WalletManager.getInstance().getWallet();
     if (account == null) {
@@ -65,33 +58,28 @@ class NetworkImpl extends Network {
         params: [account.address]);
 
     final balance = balanceOfCall[0];
+
+    if (!humanReadable) {
+      return balance;
+    }
 
     final decimals = await _decimalsForToken(token);
     return balanceToDouble(balance, decimals);
   }
 
   @override
+  Future<double> getDisplayBalance({PrefixedHexString? tokenAddress}) async {
+    final balance =
+        await getBalance(tokenAddress: tokenAddress, humanReadable: true);
+    return balance as double;
+  }
+
+  @override
   Future<BigInt> getExactBalance(
       {PrefixedHexString? tokenAddress, bool humanReadable = false}) async {
-    final account = await WalletManager.getInstance().getWallet();
-    if (account == null) {
-      throw missingWalletError;
-    }
-
-    tokenAddress = tokenAddress ?? network.contracts.rlyERC20;
-
-    final provider = getEthClient(network.gsn.rpcUrl);
-
-    final token = erc20(web3.EthereumAddress.fromHex(tokenAddress));
-
-    final balanceOfCall = await provider.call(
-        contract: token,
-        function: token.function('balanceOf'),
-        params: [account.address]);
-
-    final balance = balanceOfCall[0];
-
-    return balance;
+    final balance =
+        await getBalance(tokenAddress: tokenAddress, humanReadable: false);
+    return balance as BigInt;
   }
 
   @override
