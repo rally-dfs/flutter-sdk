@@ -19,8 +19,24 @@ class WalletManager {
     return _instance;
   }
 
+  /*
+    * Creates a new wallet and saves it to the device.
+    * If a wallet already exists, it will throw an error unless overwrite is set to true.
+    *
+    * overwrite: If true, will overwrite the existing wallet. Use with caution as old mnemonic will be lost.
+    * identifier: The identifier for the underlying mnemonic. You should provide a value here is you intend to use multiple unique mnemonics.
+    * It is the responsibility of the developer to ensure that the identifier is unique, and that the same identifier is used to retrieve the wallet in getWallet
+    * index: The slot offset / index of the keypair derived from the underlying mnemonic. This is intended for advanced users who wish to use multiple keypairs derived from the same mnemonic.
+    * It is the responsibility of the developer to keep track of human friendly names for each index.
+    * storageOptions: Options for storing the mnemonic. See KeyStorageConfig for more details.
+    *
+    * Returns the newly created wallet.
+    */
   Future<Wallet> createWallet(
-      {bool overwrite = false, KeyStorageConfig? storageOptions}) async {
+      {bool overwrite = false,
+      String identifier = "default",
+      int index = 0,
+      KeyStorageConfig? storageOptions}) async {
     final existingWallet = await getWallet();
     if (existingWallet != null && !overwrite) {
       throw 'Account already exists';
@@ -31,13 +47,23 @@ class WalletManager {
 
     final mnemonic = await _keyManager.generateMnemonic();
     await _keyManager.saveMnemonic(mnemonic, storageOptions: storageConfig);
-    final newWallet = await _makeWalletFromMnemonic(mnemonic);
+    final newWallet = await _makeWalletFromMnemonic(mnemonic, index: index);
 
     _cachedWallet = newWallet;
     return newWallet;
   }
 
-  Future<Wallet?> getWallet() async {
+  /*
+    * Retrieves the wallet from the device.
+    *
+    * identifier: The identifier for the underlying mnemonic. You should provide a value here is you called createWallet with multiple unique identifiers.
+    * index: The slot offset / index of the keypair derived from the underlying mnemonic. This is intended for advanced users who wish to use multiple keypairs derived from the same mnemonic.
+    * value provided here should match the value provided to createWallet.
+    *
+    * Returns the wallet.
+    */
+  Future<Wallet?> getWallet(
+      {String identifier = "default", int index = 0}) async {
     if (_cachedWallet != null) {
       return _cachedWallet!;
     }
@@ -67,7 +93,7 @@ class WalletManager {
     _cachedWallet = null;
   }
 
-  Future<String?> getAccountPhrase() async {
+  Future<String?> getAccountPhrase({String identifier = "default"}) async {
     try {
       return await _keyManager.getMnemonic();
     } catch (error) {
@@ -75,7 +101,8 @@ class WalletManager {
     }
   }
 
-  Future<Wallet> _makeWalletFromMnemonic(String mnemonic) async {
+  Future<Wallet> _makeWalletFromMnemonic(String mnemonic,
+      {int index = 0}) async {
     Uint8List privateKey =
         await _keyManager.getPrivateKeyFromMnemonic(mnemonic);
     String hexCode = "0x${bytesToHex(privateKey)}";
