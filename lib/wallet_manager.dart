@@ -21,16 +21,11 @@ class WalletManager {
 
   Future<Wallet> createWallet(
       {bool overwrite = false, KeyStorageConfig? storageOptions}) async {
-    final existingWallet = await getWallet();
-    if (existingWallet != null && !overwrite) {
-      throw 'Account already exists';
-    }
-
-    final storageConfig = storageOptions ??
-        KeyStorageConfig(rejectOnCloudSaveFailure: true, saveToCloud: true);
-
     final mnemonic = await _keyManager.generateMnemonic();
-    await _keyManager.saveMnemonic(mnemonic, storageOptions: storageConfig);
+
+    await _saveMnemonic(mnemonic,
+        overwrite: overwrite, storageOptions: storageOptions);
+
     final newWallet = await _makeWalletFromMnemonic(mnemonic);
 
     _cachedWallet = newWallet;
@@ -49,6 +44,17 @@ class WalletManager {
     }
 
     final wallet = await _makeWalletFromMnemonic(mnemonic);
+
+    _cachedWallet = wallet;
+    return wallet;
+  }
+
+  Future<Wallet> importExistingWallet(String existinMnemonic,
+      {bool overwrite = false, KeyStorageConfig? storageOptions}) async {
+    await _saveMnemonic(existinMnemonic,
+        overwrite: overwrite, storageOptions: storageOptions);
+
+    final wallet = await _makeWalletFromMnemonic(existinMnemonic);
 
     _cachedWallet = wallet;
     return wallet;
@@ -73,6 +79,20 @@ class WalletManager {
     } catch (error) {
       return null;
     }
+  }
+
+  Future<void> _saveMnemonic(String mnemonic,
+      {required bool overwrite, KeyStorageConfig? storageOptions}) async {
+    final existingWallet = await getWallet();
+    if (existingWallet != null && !overwrite) {
+      throw 'Wallet already exists. Use overwrite flag to overwrite';
+    }
+
+    final storageConfig = storageOptions ??
+        KeyStorageConfig(rejectOnCloudSaveFailure: true, saveToCloud: true);
+
+    await _keyManager.saveMnemonic(mnemonic, storageOptions: storageConfig);
+    return;
   }
 
   Future<Wallet> _makeWalletFromMnemonic(String mnemonic) async {
