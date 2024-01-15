@@ -29,7 +29,7 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
       loading = true;
     });
 
-    double bal = await rlyNetwork.getBalance();
+    double bal = await rlyNetwork.getDisplayBalance();
     setState(() {
       balance = bal;
       loading = false;
