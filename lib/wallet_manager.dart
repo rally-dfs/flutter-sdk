@@ -32,6 +32,14 @@ class WalletManager {
     return newWallet;
   }
 
+  /// Returns the cloud backup status of the existing wallet.
+  /// Returns false if there is currently no wallet.
+  /// If a wallet already exists the reponse will be true or false depending on whether the wallet is backed up to cloud or not.
+  /// TRUE response means wallet is backed up to cloud, FALSE means wallet is not backed up to cloud.
+  Future<bool> walletBackedUpToCloud() async {
+    return await _keyManager.walletBackedUpToCloud();
+  }
+
   Future<Wallet?> getWallet() async {
     if (_cachedWallet != null) {
       return _cachedWallet!;

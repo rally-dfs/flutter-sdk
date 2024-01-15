@@ -20,6 +20,7 @@ class AccountOverviewScreen extends StatefulWidget {
 class AccountOverviewScreenState extends State<AccountOverviewScreen> {
   bool loading = false;
   double? balance;
+  bool? backedUpToCloud;
   String transferBalance = '1';
   String transferAddress = '0x5205BcC1852c4b626099aa7A2AFf36Ac3e9dE83b';
   String? mnemonic;
@@ -27,6 +28,12 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
   void fetchBalance() async {
     setState(() {
       loading = true;
+    });
+
+    bool backedUp = await WalletManager.getInstance().walletBackedUpToCloud();
+
+    setState(() {
+      backedUpToCloud = backedUp;
     });
 
     double bal = await rlyNetwork.getDisplayBalance();
@@ -144,6 +151,10 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                               )),
+                          const SizedBox(height: 12),
+                          Text(
+                              'Backed up to cloud: ${backedUpToCloud ?? 'Loading...'}'),
+                          const SizedBox(height: 24),
                           const Text('Your Current Balance Is'),
                           Text(balance?.toString() ?? 'Loading...'),
                           const SizedBox(height: 12),
