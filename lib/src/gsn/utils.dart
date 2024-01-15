@@ -5,11 +5,6 @@ enum RlyEnv {
   local,
 }
 
-enum MetaTxMethod {
-  Permit,
-  ExecuteMetaTransaction,
-}
-
 class GsnTransactionDetails {
   // users address
   final String from;

@@ -1,6 +1,7 @@
-import 'package:rly_network_flutter_sdk/networks/evm_networks.dart';
-import 'package:rly_network_flutter_sdk/gsn/utils.dart';
+import './networks/evm_networks.dart';
 
+import 'gsn/meta_tx_method.dart';
+import 'gsn/utils.dart';
 import 'network_config/network_config_mumbai.dart';
 import 'network_config/network_config_local.dart';
 import 'network_config/network_config_polygon.dart';

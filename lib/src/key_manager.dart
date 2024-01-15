@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 
-import 'key_storage_config.dart';
+import './key_storage_config.dart';
 
 class KeyManager {
   final methodChannel = const MethodChannel('rly_network_flutter_sdk');

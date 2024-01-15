@@ -1,0 +1,4 @@
+enum MetaTxMethod {
+  Permit,
+  ExecuteMetaTransaction,
+}
