@@ -26,6 +26,16 @@ class KeyManager {
     return mnemonic;
   }
 
+  Future<bool> walletBackedUpToCloud() async {
+    bool? backedUpToCloud =
+        await methodChannel.invokeMethod<bool>("mnemonicBackedUpToCloud");
+    if (backedUpToCloud == null) {
+      throw Exception(
+          "Unable to get wallet backup status, something went wrong at native code layer");
+    }
+    return backedUpToCloud;
+  }
+
   Future<Uint8List> getPrivateKeyFromMnemonic(String mnemonic) async {
     List<Object?>? pvtKey = await methodChannel
         .invokeMethod<List<Object?>>("getPrivateKeyFromMnemonic", {

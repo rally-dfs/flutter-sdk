@@ -1,10 +1,10 @@
 import Foundation
 
 final class KeychainHelper {
-    
+
     static let standard = KeychainHelper()
     private init() {}
-    
+
     func save(
       _ data: Data,
       service: String,
@@ -36,30 +36,45 @@ final class KeychainHelper {
             SecItemUpdate(query, attributesToUpdate)
         }
     }
-    
+
+    func readAttributes(service: String, account: String) -> [String: Any]? {
+        let query = [
+            kSecAttrService: service,
+            kSecAttrAccount: account,
+            kSecClass: kSecClassGenericPassword,
+            kSecReturnAttributes: true
+        ] as CFDictionary
+
+        var result: AnyObject?
+        SecItemCopyMatching(query, &result)
+
+        return (result as? [String: Any])
+    }
+
+
     func read(service: String, account: String) -> Data? {
-        
+
         let query = [
             kSecAttrService: service,
             kSecAttrAccount: account,
             kSecClass: kSecClassGenericPassword,
             kSecReturnData: true
         ] as CFDictionary
-        
+
         var result: AnyObject?
         SecItemCopyMatching(query, &result)
-        
+
         return (result as? Data)
     }
-    
+
     func delete(service: String, account: String) {
-        
+
         let query = [
             kSecAttrService: service,
             kSecAttrAccount: account,
             kSecClass: kSecClassGenericPassword,
             ] as CFDictionary
-        
+
         // Delete item from keychain
         SecItemDelete(query)
     }

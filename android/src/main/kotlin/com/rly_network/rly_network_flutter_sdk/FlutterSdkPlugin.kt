@@ -52,6 +52,9 @@ class FlutterSdkPlugin: FlutterPlugin, MethodCallHandler {
         "getMnemonic" -> {
           getMnemonic(result)
         }
+        "mnemonicBackedUpToCloud" -> {
+          isBackedUpToCloud(result)
+        }
         "deleteMnemonic" -> {
           deleteMnemonic(result)
         }
@@ -68,8 +71,14 @@ class FlutterSdkPlugin: FlutterPlugin, MethodCallHandler {
   }
 
   private fun getMnemonic(result: Result) {
-    mnemonicHelper.read(MNEMONIC_STORAGE_KEY) { mnemonic: String? ->
+    mnemonicHelper.read(MNEMONIC_STORAGE_KEY) { mnemonic: String?, fromBlockstore ->
       result.success(mnemonic)
+    }
+  }
+
+  private fun isBackedUpToCloud(result: Result) {
+    mnemonicHelper.read(MNEMONIC_STORAGE_KEY) { mnemonic, fromBlockstore ->
+      result.success(mnemonic != null && fromBlockstore);
     }
   }
 
