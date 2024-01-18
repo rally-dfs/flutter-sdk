@@ -3,18 +3,18 @@ import 'dart:convert';
 import 'package:convert/convert.dart';
 import 'package:eth_sig_util/eth_sig_util.dart';
 import 'package:flutter/services.dart';
-import 'package:rly_network_flutter_sdk/contracts/tokenFaucet.dart';
-import 'package:rly_network_flutter_sdk/gsn/ABI/IForwarder.dart';
+import 'package:rly_network_flutter_sdk/src/contracts/tokenFaucet.dart';
+import 'package:rly_network_flutter_sdk/src/gsn/ABI/IForwarder.dart';
 import 'package:web3dart/crypto.dart';
 import 'package:http/http.dart';
-import 'package:rly_network_flutter_sdk/gsn/ABI/IRelayHub.dart';
+import 'package:rly_network_flutter_sdk/src/gsn/ABI/IRelayHub.dart';
 
-import 'package:rly_network_flutter_sdk/gsn/utils.dart';
+import 'package:rly_network_flutter_sdk/src/gsn/utils.dart';
 
 import 'package:web3dart/web3dart.dart' as web3;
 
 import '../network_config/network_config.dart';
-import '../../wallet.dart';
+import '../wallet.dart';
 import 'EIP712/forward_request.dart';
 import 'EIP712/relay_data.dart';
 import 'EIP712/relay_request.dart';

@@ -1,4 +1,3 @@
-
 import 'flutter_sdk_platform_interface.dart';
 
 class FlutterSdk {

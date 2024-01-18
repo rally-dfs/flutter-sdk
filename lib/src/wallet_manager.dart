@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:eth_sig_util/util/utils.dart';
-import 'package:rly_network_flutter_sdk/key_storage_config.dart';
+import 'key_storage_config.dart';
 
 import 'key_manager.dart';
 

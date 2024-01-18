@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rly_network_flutter_sdk/key_storage_config.dart';
-import 'package:rly_network_flutter_sdk/wallet.dart';
-import 'package:rly_network_flutter_sdk/wallet_manager.dart';
+import 'package:rly_network_flutter_sdk/rly_network_flutter_sdk.dart';
 
 import 'account_overview_screen.dart';
 import 'generate_account_screen.dart';

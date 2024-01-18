@@ -1,9 +1,9 @@
 import 'dart:typed_data';
 
 import 'package:eth_sig_util/util/utils.dart';
-import 'package:rly_network_flutter_sdk/contracts/erc20.dart';
-import 'package:rly_network_flutter_sdk/gsn/gsn_tx_helpers.dart';
-import 'package:rly_network_flutter_sdk/gsn/utils.dart';
+import 'package:rly_network_flutter_sdk/src/contracts/erc20.dart';
+import 'package:rly_network_flutter_sdk/src/gsn/gsn_tx_helpers.dart';
+import 'package:rly_network_flutter_sdk/src/gsn/utils.dart';
 import 'package:web3dart/web3dart.dart' as web3;
 import 'package:convert/convert.dart';
 import '../../wallet.dart';
