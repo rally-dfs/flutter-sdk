@@ -25,10 +25,10 @@ class NetworkImpl extends Network {
       throw "account does not exist";
     }
 
-    final existingBalance = await getBalance();
+    final existingBalance = await getExactBalance();
     // final existingBalance = 0;
 
-    if (existingBalance > 0) {
+    if (existingBalance > BigInt.zero) {
       throw priorDustingError;
     }
 
