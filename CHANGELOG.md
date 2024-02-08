@@ -11,3 +11,7 @@
 ## 0.2.0
 
 * We've added a new method `walletBackedUpToCloud` on `WalletManager` to help you determine if a wallet has been backed up to the cloud. This is useful for apps that need to understand the cloud backup status of a wallet outside of the creation process.
+
+### 0.2.1
+
+* Fixed an issue that broke abiilty to claimRly. This was a regression from 0.2.0.
