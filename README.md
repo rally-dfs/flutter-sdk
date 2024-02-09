@@ -4,8 +4,8 @@ The Rally Mobile SDK is a key component of the Rally Protocol that allows develo
 
 ### accounts (EOAs)
 
-```
-import 'package:rly_network_flutter_sdk/account.dart';
+```dart
+import 'package:rly_network_flutter_sdk/rly_network_flutter_sdk.dart';
 
 
 //create an account
@@ -27,8 +27,8 @@ await WalletManager.getInstance().permanentlyDeleteWallet();
 
 ## transactions
 
-```
-import 'package:rly_network_flutter_sdk/network.dart';
+```dart
+import 'package:rly_network_flutter_sdk/rly_network_flutter_sdk.dart';
 
 //get mumbai config for rally protocol sdk
 

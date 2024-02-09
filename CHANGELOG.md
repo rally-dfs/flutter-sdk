@@ -15,3 +15,9 @@
 ### 0.2.1
 
 * Fixed an issue that broke abiilty to claimRly. This was a regression from 0.2.0.
+
+## 0.3.0
+
+* Library has been reorganized to better follow flutter / dart best practices. **This is a breaking change** and you will need to update your imports to reflect the new package structure. All classes are now under the `rly_network_flutter_sdk/rly_network_flutter_sdk.dart` file. See README for an example of updated import.
+
+* As a result of library restructuring, the auto generated API docs are now much easier to navigate and understand
