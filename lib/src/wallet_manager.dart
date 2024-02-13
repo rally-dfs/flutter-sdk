@@ -19,6 +19,15 @@ class WalletManager {
     return _instance;
   }
 
+  /// Creates a new wallet and saves it to the device based on the storage options provided.
+  /// If a wallet already exists, it will throw an error unless the overwrite flag is set to true.
+  /// If the overwrite flag is set to true, the existing wallet will be overwritten with the new wallet.
+  /// KeyStorageConfig is used to specify the storage options for the wallet.
+  /// If no storage options are provided, the default options of attmpting to save to cloud and rejecting on cloud save failure will be used.
+  /// The rejectOnCloudSaveFailure flag is used to specify whether to reject the wallet creation if the cloud save fails.
+  /// when set to true, the promise will reject if the cloud save fails. When set to false, the promise will resolve even if the cloud save fails and the wallet will be stored only on device.
+  /// The saveToCloud flag is used to specify whether to save the wallet to cloud or not. When set to true, the wallet will be saved to cloud. When set to false, the wallet will be saved only on device.
+  /// After the wallet is created, you can check the cloud backup status of the wallet using the walletBackedUpToCloud method.
   Future<Wallet> createWallet(
       {bool overwrite = false, KeyStorageConfig? storageOptions}) async {
     final mnemonic = await _keyManager.generateMnemonic();

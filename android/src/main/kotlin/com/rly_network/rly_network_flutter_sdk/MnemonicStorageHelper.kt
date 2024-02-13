@@ -43,7 +43,12 @@ class MnemonicStorageHelper(context: Context) {
                 .addOnSuccessListener {
                     onSuccess()
                 }.addOnFailureListener { e ->
-                    onFailure("Failed to save to cloud $e")
+                    if (forceBlockStore) {
+                        onFailure("Failed to save mnemonic to cloud $e")
+                    } else {
+                        saveToSharedPref(key, mnemonic)
+                        onSuccess()
+                    }
                 }
         } else {
             if (forceBlockStore) {
