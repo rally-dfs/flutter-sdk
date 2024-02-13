@@ -21,3 +21,8 @@
 * Library has been reorganized to better follow flutter / dart best practices. **This is a breaking change** and you will need to update your imports to reflect the new package structure. All classes are now under the `rly_network_flutter_sdk/rly_network_flutter_sdk.dart` file. See README for an example of updated import.
 
 * As a result of library restructuring, the auto generated API docs are now much easier to navigate and understand
+
+
+### 0.3.1
+
+* Creation / storage of wallets on Android is now more consistent with the iOS experience. When creating a wallet on Android, storage will automatically fall back to local storage if cloud storage fails, and the `rejectOnCloudSaveFailure` is set to false.
