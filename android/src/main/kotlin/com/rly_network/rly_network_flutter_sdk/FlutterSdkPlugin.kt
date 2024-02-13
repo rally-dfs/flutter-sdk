@@ -20,9 +20,9 @@ import java.util.Locale
 
 /** FlutterSdkPlugin */
 const val MNEMONIC_STORAGE_KEY = "BIP39_MNEMONIC"
+
 class FlutterSdkPlugin: FlutterPlugin, MethodCallHandler {
   private lateinit var mnemonicHelper: MnemonicStorageHelper
-  private val MNEMONIC_PREFERENCE_KEY = "BIP39_MNEMONIC"
 
   /// The MethodChannel that will the communication between Flutter and native Android
   ///
