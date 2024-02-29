@@ -2,6 +2,7 @@ package com.rlynetworkmobilesdk
 
 import android.content.Context
 import android.content.SharedPreferences
+import java.io.IOException
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import androidx.security.crypto.MasterKey.Builder
@@ -17,13 +18,32 @@ class MnemonicStorageHelper(context: Context) {
             .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
             .build()
 
-        sharedPreferences = EncryptedSharedPreferences.create(
-            context,
-            "encrypted_mnemonic",
-            masterKey,
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        )
+        var attemptedSharedPreferences: SharedPreferences
+        try {
+            attemptedSharedPreferences = EncryptedSharedPreferences.create(
+                context,
+                "encrypted_mnemonic",
+                masterKey,
+                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            )
+        } catch (ex: IOException) {
+            // If we encounter an IOException, it's likely due to the user restoring from backup and
+            // the master key being invalidated. In this case, we need to clear the shared preferences
+            // and recreate them. The user will lose their mnemonic, but this is the only way to
+            // recover from this situation.
+            context.getSharedPreferences("encrypted_mnemonic", Context.MODE_PRIVATE).edit().clear().apply()
+           
+            attemptedSharedPreferences = EncryptedSharedPreferences.create(
+                context,
+                "encrypted_mnemonic",
+                masterKey,
+                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            )
+        }
+        
+        sharedPreferences = attemptedSharedPreferences
 
         blockstoreClient = Blockstore.getClient(context)
         blockstoreClient.isEndToEndEncryptionAvailable.addOnSuccessListener { isE2EEAvailable ->
