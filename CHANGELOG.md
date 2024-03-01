@@ -26,3 +26,7 @@
 ### 0.3.1
 
 * Creation / storage of wallets on Android is now more consistent with the iOS experience. When creating a wallet on Android, storage will automatically fall back to local storage if cloud storage fails, and the `rejectOnCloudSaveFailure` is set to false.
+
+### 0.3.2
+
+* Addressed a bug that caused SDK to hang when trying to interact with wallets on Android following device backup and restore.
