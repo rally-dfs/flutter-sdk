@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:rly_network_flutter_sdk/rly_network_flutter_sdk.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-final rlyNetwork = rlyMumbaiNetwork;
+final rlyNetwork = rlyAmoyNetwork;
 
 class AccountOverviewScreen extends StatefulWidget {
   final String walletAddress;

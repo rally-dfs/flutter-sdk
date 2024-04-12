@@ -1,6 +1,6 @@
 import './network_config.dart';
 
-final NetworkConfig mumbaiNetworkConfig = NetworkConfig(
+final NetworkConfig amoyNetworkConfig = NetworkConfig(
   contracts: Contracts(
     rlyERC20: '0x846d8a5fb8a003b431b67115f809a9b9fffe5012',
     tokenFaucet: '0xb8c8274f775474f4f2549edcc4db45cbad936fac',

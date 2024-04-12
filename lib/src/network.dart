@@ -2,7 +2,7 @@ import './networks/evm_networks.dart';
 
 import 'gsn/meta_tx_method.dart';
 import 'gsn/utils.dart';
-import 'network_config/network_config_mumbai.dart';
+import 'network_config/network_config_amoy.dart';
 import 'network_config/network_config_local.dart';
 import 'network_config/network_config_polygon.dart';
 
@@ -25,6 +25,6 @@ abstract class Network {
   void setApiKey(String apiKey);
 }
 
-final Network rlyMumbaiNetwork = NetworkImpl(mumbaiNetworkConfig);
+final Network rlyAmoyNetwork = NetworkImpl(amoyNetworkConfig);
 final Network rlyLocalNetwork = NetworkImpl(localNetworkConfig);
 final Network rlyPolygonNetwork = NetworkImpl(polygonNetworkConfig);
