@@ -162,7 +162,7 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
                           FullWidthButton(
                             onPressed: () async {
                               await launchUrl(Uri.parse(
-                                  'https://mumbai.polygonscan.com/address/${widget.walletAddress}'));
+                                  'https://www.oklink.com/amoy/address/${widget.walletAddress}'));
                             },
                             child: const Text('View on Polygon'),
                           ),
