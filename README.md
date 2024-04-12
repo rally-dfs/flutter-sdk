@@ -30,25 +30,25 @@ await WalletManager.getInstance().permanentlyDeleteWallet();
 ```dart
 import 'package:rly_network_flutter_sdk/rly_network_flutter_sdk.dart';
 
-//get mumbai config for rally protocol sdk
+//get polygon testnet (amoy) config for rally protocol sdk
 
-final mumbai = rlyMumbaiNetwork;
+final amoy = rlyAmoyNetwork;
 
 // add your API Key
 
-mumbai.setApiKey(env.API_KEY);
+amoy.setApiKey(env.API_KEY);
 
 // this is simple method for claiming 10 test ERC20 tokens for testing
 
-await mumbai.claimRly();
+await amoy.claimRly();
 
 // get balance of any ERC20 token
 
-await mumbai.getBalance(tokenAddress);
+await amoy.getBalance(tokenAddress);
 
 // transfer any ERC20 token, to transfer gaslessly token contract must support permit() or executeMetaTransaction() (most ERC20s on polygon support this)
 
-await mumbai.transfer(transferAddress, double.parse(1), MetaTxMethod.ExecuteMetaTransaction, {tokenAddress});
+await amoy.transfer(transferAddress, double.parse(1), MetaTxMethod.ExecuteMetaTransaction, {tokenAddress});
 
 
 
@@ -66,7 +66,7 @@ final gsnTx = GsnTransactionDetails(
     maxPriorityFeePerGas: maxPriorityFeePerGas.toString(),
     );
 
-await mumbai.relay(gsnTx)
+await amoy.relay(gsnTx)
 
 
 ```

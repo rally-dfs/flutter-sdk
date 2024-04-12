@@ -30,3 +30,17 @@
 ### 0.3.2
 
 * Addressed a bug that caused SDK to hang when trying to interact with wallets on Android following device backup and restore.
+
+## 0.4.0
+
+If you are only using wallet management features, there are no changes in this release
+
+**This release is not backwards compatible with previous versions if you are using any transaction features**
+
+This release migrates away from Mumbai and over to Amoy. This is required as Mumbai is deprecated and will stop working around 4/13.
+
+To migrate you will need to follow the following steps:
+1. Update your SDK to 0.4.0
+2. Rename references from `rlyMumbaiNetwork` to `rlyAmoyNetwork`
+3. Get your new Amoy API key from https://app.rallyprotocol.com
+4. Update your config to set the new API key

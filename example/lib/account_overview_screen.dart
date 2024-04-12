@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:rly_network_flutter_sdk/rly_network_flutter_sdk.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-final rlyNetwork = rlyMumbaiNetwork;
+final rlyNetwork = rlyAmoyNetwork;
 
 class AccountOverviewScreen extends StatefulWidget {
   final String walletAddress;
@@ -48,10 +48,8 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
     super.initState();
     getWalletBackupState();
     fetchBalance();
-    // RlyNetwork.setApiKey(
-    //     "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOjEzNX0.wqnX-E-KRvzqLgIBAw6RV-BT1puWuZgVdAsqxoU1nL2z8hxTkT4OlH7G6Okv9l3qRMLxMbkORg14XTko-gJW1A");
     rlyNetwork.setApiKey(
-        "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOjkzfQ.PgErzRN88Sz07OKp9aj0cUxCap_chaqTsDzgkaIc7NMC_WSPeL4HUlmSb_spHe5N_Gk7EYsF-1QFXg-rIp7ETA");
+        "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOjUxOH0.m8M8gE94u3_wvDV4aQnImTufK6FxNiHoJCUokQbzY6vqeHnFDohnxD2N_HRMhEf_q15WWtM4jPkHJDmB63h1ow");
   }
 
   void claimRlyTokens() async {
@@ -162,7 +160,7 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
                           FullWidthButton(
                             onPressed: () async {
                               await launchUrl(Uri.parse(
-                                  'https://mumbai.polygonscan.com/address/${widget.walletAddress}'));
+                                  'https://www.oklink.com/amoy/address/${widget.walletAddress}'));
                             },
                             child: const Text('View on Polygon'),
                           ),
