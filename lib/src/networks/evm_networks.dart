@@ -126,7 +126,8 @@ class NetworkImpl extends Network {
     BigInt decimalAmount =
         parseUnits(amount.toString(), int.parse(decimals.first.toString()));
 
-    return transferExact(destinationAddress, decimalAmount, metaTxMethod);
+    return transferExact(destinationAddress, decimalAmount, metaTxMethod,
+        tokenAddress: tokenAddress);
   }
 
   @override
