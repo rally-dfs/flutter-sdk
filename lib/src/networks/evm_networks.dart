@@ -111,7 +111,7 @@ class NetworkImpl extends Network {
 
     tokenAddress = tokenAddress ?? network.contracts.rlyERC20;
 
-    final sourceBalance = await getBalance(tokenAddress: tokenAddress);
+    final sourceBalance = await getDisplayBalance(tokenAddress: tokenAddress);
 
     final sourceFinalBalance = sourceBalance - amount;
 
