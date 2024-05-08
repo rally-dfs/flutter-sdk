@@ -12,7 +12,7 @@ final NetworkConfig amoyNetworkConfig = NetworkConfig(
     relayWorkerAddress: '0xb9950b71ec94cbb274aeb1be98e697678077a17f',
     relayUrl: 'https://api.rallyprotocol.com',
     rpcUrl:
-        'https://polygon-amoy.g.alchemy.com/v2/-dYNjZXvre3GC9kYtwDzzX4N8tcgomU4',
+        'https://polygon-amoy.g.alchemy.com/v2/oOsX9gjRzWeq5WQrlM3zvWAXZ9nIT2Cr',
     chainId: '80002',
     maxAcceptanceBudget: '285252',
     domainSeparatorName: 'GSN Relayed Transaction',
