@@ -2,8 +2,8 @@ import './network_config.dart';
 
 final NetworkConfig amoyNetworkConfig = NetworkConfig(
   contracts: Contracts(
-    rlyERC20: '0x846d8a5fb8a003b431b67115f809a9b9fffe5012',
-    tokenFaucet: '0xb8c8274f775474f4f2549edcc4db45cbad936fac',
+    rlyERC20: '0x758641a1b566998CaC5Bc5fC8032F001e1CEBeEf',
+    tokenFaucet: '0xAb5C5633a5c483499047e552C96E1760136dc70A',
   ),
   gsn: GSNConfig(
     paymasterAddress: '0xb570b57b821670707fF4E38Ea53fcb67192278F8',
