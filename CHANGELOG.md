@@ -44,3 +44,8 @@ To migrate you will need to follow the following steps:
 2. Rename references from `rlyMumbaiNetwork` to `rlyAmoyNetwork`
 3. Get your new Amoy API key from https://app.rallyprotocol.com
 4. Update your config to set the new API key
+
+### 0.4.1
+
+* Fixed a bug that prevented relay token transfers of more than 9.9 value for a token with 18 decimals.
+* Fixed a bug that causes simple relay token transfers to work unexpectedly when using custom token addresses.
