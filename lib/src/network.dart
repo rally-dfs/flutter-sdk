@@ -2,11 +2,16 @@ import './networks/evm_networks.dart';
 
 import 'gsn/meta_tx_method.dart';
 import 'gsn/utils.dart';
+import 'network_config/network_config.dart';
 import 'network_config/network_config_amoy.dart';
 import 'network_config/network_config_local.dart';
 import 'network_config/network_config_polygon.dart';
 
 abstract class Network {
+  NetworkConfig config;
+
+  Network(this.config);
+
   Future<dynamic> getBalance(
       {PrefixedHexString? tokenAddress, bool humanReadable = false});
   Future<double> getDisplayBalance({PrefixedHexString? tokenAddress});

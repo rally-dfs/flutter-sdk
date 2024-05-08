@@ -4,18 +4,16 @@ import 'package:web3dart/web3dart.dart' as web3;
 
 import '../gsn/utils.dart';
 import '../gsn/meta_tx_method.dart';
+import '../network_config/network_config.dart';
 import '../wallet_manager.dart';
 import '../contracts/erc20.dart';
 import '../errors.dart';
 import '../gsn/EIP712/meta_transactions.dart';
 import '../gsn/EIP712/permit_transaction.dart';
 import '../gsn/gsn_client.dart';
-import '../network_config/network_config.dart';
 
 class NetworkImpl extends Network {
-  NetworkConfig network;
-
-  NetworkImpl(this.network);
+  NetworkImpl(NetworkConfig network) : super(network);
 
   @override
   Future<String> claimRly() async {
@@ -32,9 +30,9 @@ class NetworkImpl extends Network {
       throw priorDustingError;
     }
 
-    final ethers = getEthClient(network.gsn.rpcUrl);
+    final ethers = getEthClient(config.gsn.rpcUrl);
 
-    final claimTx = await getClaimTx(account, network, ethers);
+    final claimTx = await getClaimTx(account, config, ethers);
 
     return relay(claimTx);
   }
@@ -47,9 +45,9 @@ class NetworkImpl extends Network {
       throw missingWalletError;
     }
 
-    tokenAddress = tokenAddress ?? network.contracts.rlyERC20;
+    tokenAddress = tokenAddress ?? config.contracts.rlyERC20;
 
-    final provider = getEthClient(network.gsn.rpcUrl);
+    final provider = getEthClient(config.gsn.rpcUrl);
 
     final token = erc20(web3.EthereumAddress.fromHex(tokenAddress));
 
@@ -91,12 +89,12 @@ class NetworkImpl extends Network {
       throw "account does not exist";
     }
 
-    return relayTransaction(account, network, tx);
+    return relayTransaction(account, config, tx);
   }
 
   @override
   void setApiKey(String apiKey) {
-    network.relayerApiKey = apiKey;
+    config.relayerApiKey = apiKey;
   }
 
   @override
@@ -109,7 +107,7 @@ class NetworkImpl extends Network {
       throw "account does not exist";
     }
 
-    tokenAddress = tokenAddress ?? network.contracts.rlyERC20;
+    tokenAddress = tokenAddress ?? config.contracts.rlyERC20;
 
     final sourceBalance = await getDisplayBalance(tokenAddress: tokenAddress);
 
@@ -119,7 +117,7 @@ class NetworkImpl extends Network {
       throw insufficientBalanceError;
     }
 
-    final provider = getEthClient(network.gsn.rpcUrl);
+    final provider = getEthClient(config.gsn.rpcUrl);
 
     final token = erc20(web3.EthereumAddress.fromHex(tokenAddress));
 
@@ -141,7 +139,7 @@ class NetworkImpl extends Network {
       throw "account does not exist";
     }
 
-    tokenAddress = tokenAddress ?? network.contracts.rlyERC20;
+    tokenAddress = tokenAddress ?? config.contracts.rlyERC20;
 
     final sourceBalance = await getExactBalance(tokenAddress: tokenAddress);
 
@@ -151,7 +149,7 @@ class NetworkImpl extends Network {
       throw insufficientBalanceError;
     }
 
-    final provider = getEthClient(network.gsn.rpcUrl);
+    final provider = getEthClient(config.gsn.rpcUrl);
 
     GsnTransactionDetails? transferTx;
 
@@ -160,7 +158,7 @@ class NetworkImpl extends Network {
         account,
         web3.EthereumAddress.fromHex(destinationAddress),
         amount,
-        network,
+        config,
         tokenAddress,
         provider,
       );
@@ -169,7 +167,7 @@ class NetworkImpl extends Network {
         account,
         destinationAddress,
         amount,
-        network,
+        config,
         tokenAddress,
         provider,
       );
@@ -186,7 +184,7 @@ class NetworkImpl extends Network {
   @override
   Future<String> simpleTransfer(String destinationAddress, double amount,
       {String? tokenAddress, MetaTxMethod? metaTxMethod}) async {
-    web3.Web3Client client = getEthClient(network.gsn.rpcUrl);
+    web3.Web3Client client = getEthClient(config.gsn.rpcUrl);
     final account = await WalletManager.getInstance().getWallet();
 
     if (account == null) {
@@ -206,7 +204,7 @@ class NetworkImpl extends Network {
   }
 
   Future<BigInt> _decimalsForToken(web3.DeployedContract token) async {
-    final provider = getEthClient(network.gsn.rpcUrl);
+    final provider = getEthClient(config.gsn.rpcUrl);
 
     final funCall = await provider.call(
         contract: token, function: token.function("decimals"), params: []);
