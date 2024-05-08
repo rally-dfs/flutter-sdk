@@ -68,8 +68,8 @@ Map<String, dynamic> getTypedPermitTransaction(Permit permit) {
   final message = {
     'owner': permit.owner,
     'spender': permit.spender,
-    'value': permit.value.toInt(),
-    'nonce': permit.nonce.toInt(),
+    'value': permit.value.toString(),
+    'nonce': permit.nonce.toString(),
     'deadline': permit.deadline.toInt(),
   };
 
