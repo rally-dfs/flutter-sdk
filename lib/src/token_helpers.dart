@@ -11,13 +11,14 @@ class TokenHelpers {
       '0xb8c8274f775474f4f2549edcc4db45cbad936fac';
 
   static Future<BigInt> getDecimals(
-      PrefixedHexString tokenAddress, NetworkConfig network) async {
-    final provider = getEthClient(network.gsn.rpcUrl);
+      PrefixedHexString tokenAddress, NetworkConfig config) async {
+    final provider = getEthClient(config.gsn.rpcUrl);
 
     final token = erc20(web3.EthereumAddress.fromHex(tokenAddress));
+    final funCall = await provider.call(
+        contract: token, function: token.function("decimals"), params: []);
+    final decimals = funCall[0] as BigInt;
 
-    final decimals = await provider.call(
-        contract: token, function: token.function('decimals'), params: []);
-    return decimals.first as BigInt;
+    return decimals;
   }
 }

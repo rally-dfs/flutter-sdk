@@ -1,5 +1,6 @@
 import 'package:rly_network_flutter_sdk/src/gsn/gsn_tx_helpers.dart';
 import 'package:rly_network_flutter_sdk/src/network.dart';
+import 'package:rly_network_flutter_sdk/src/token_helpers.dart';
 import 'package:web3dart/web3dart.dart' as web3;
 
 import '../gsn/utils.dart';
@@ -62,7 +63,7 @@ class NetworkImpl extends Network {
       return balance;
     }
 
-    final decimals = await _decimalsForToken(token);
+    final decimals = await TokenHelpers.getDecimals(tokenAddress, config);
     return balanceToDouble(balance, decimals);
   }
 
@@ -202,15 +203,5 @@ class NetworkImpl extends Network {
         ),
         chainId: 80001);
     return result;
-  }
-
-  Future<BigInt> _decimalsForToken(web3.DeployedContract token) async {
-    final provider = getEthClient(config.gsn.rpcUrl);
-
-    final funCall = await provider.call(
-        contract: token, function: token.function("decimals"), params: []);
-    final decimals = funCall[0] as BigInt;
-
-    return decimals;
   }
 }
