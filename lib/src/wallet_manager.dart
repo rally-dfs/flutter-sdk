@@ -41,13 +41,27 @@ class WalletManager {
     return newWallet;
   }
 
-  /// Returns the cloud backup status of the existing wallet.
-  /// Returns false if there is currently no wallet. This method should not be used as a check for wallet existence
+  /// DEPRECATED: Use walletEligibleForCloudSync instead.
+  /// The naming of this method was confusing and has been deprecated in favor of walletEligibleForCloudSync.
+  /// Name implied a level of control over device syncing that is not possible given the operating system constraints. See walletEligibleForCloudSync for more details.
+  Future<bool> walletBackedUpToCloud() async {
+    // ignore: avoid_print
+    print(
+        "walletBackedUpToCloud is deprecated. Use walletCanSyncToOSCloud instead.");
+    return walletEligibleForCloudSync();
+  }
+
+  /// Returns whether the current wallet is stored in a way that is eligible for OS provided cloud backup and cross device sync.
+  /// This is not a guarantee that the wallet is backed up to cloud,
+  /// as the some user & app level settings determine whether secure keys are backed up to device cloud.
+  /// On iOS this is a check whether the wallet will sync if user enables iCloud -> Keychain sync.
+  /// On Android this is a check whether the wallet is in google play keystore and will sync if user enables google backup.
+  /// TRUE response indicates that the wallet will be backed up to OS cloud if user enables the OS provided cloud backup / cross device sync.
+  ///
+  /// This method should not be used as a check for wallet existence
   /// as it will return false if there is no wallet or if the wallet does exist but is not backed up to cloud.
   ///
-  /// If a wallet already exists the reponse will be true or false depending on whether the wallet is backed up to cloud or not.
-  /// TRUE response means wallet is backed up to cloud, FALSE means wallet is not backed up to cloud.
-  Future<bool> walletBackedUpToCloud() async {
+  Future<bool> walletEligibleForCloudSync() async {
     return await _keyManager.walletBackedUpToCloud();
   }
 
