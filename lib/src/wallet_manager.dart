@@ -75,6 +75,8 @@ class WalletManager {
   /// Please note that when moving from KeyStorageConfig.saveToCloud = false to true, the wallet will be moved to device cloud
   /// which will replace a non cloud on device wallet your user might have on a different device. You should ensure you properly
   /// communicate to end users that moving to cloud storage will could cause issues if they currently have different wallets on different devices
+  ///
+  /// If moving from cloud to device only storage, the wallet will be removed from cloud storage and only stored on device. This will remove the wallet from any other devices.
   Future<void> updateWalletStorage(KeyStorageConfig storageOptions) async {
     final mnemonic = await _keyManager.getMnemonic();
     if (mnemonic == null) {
@@ -82,6 +84,10 @@ class WalletManager {
     }
 
     await _keyManager.saveMnemonic(mnemonic, storageOptions: storageOptions);
+
+    if (storageOptions.saveToCloud == false) {
+      await _keyManager.deleteCloudMnemonic();
+    }
   }
 
   Future<Wallet?> getWallet() async {

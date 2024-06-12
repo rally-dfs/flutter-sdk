@@ -70,6 +70,12 @@ public class RlyNetworkMobileSdk: NSObject {
         return true
     }
 
+    public func deleteCloudMnemonic() -> Bool {
+        KeychainHelper.standard.deleteFromiCloudKeychain(service: SERVICE_KEY, account: MNEMONIC_ACCOUNT_KEY)
+
+        return true
+    }
+
     public func getPrivateKeyFromMnemonic(
       _ mnemonic: String
     ) -> Any{

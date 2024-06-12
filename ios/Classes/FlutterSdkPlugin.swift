@@ -31,6 +31,8 @@ public class FlutterSdkPlugin: NSObject, FlutterPlugin {
           result(RlyNetworkMobileSdk().mnemonicBackedUpToCloud())
         case "deleteMnemonic":
           result(RlyNetworkMobileSdk().deleteMnemonic())
+        case "deleteCloudMnemonic":
+          result(RlyNetworkMobileSdk().deleteCloudMnemonic())
         case "saveMnemonic":
           if let arguments = call.arguments as? [String: Any],
             let mnemonicToSave = arguments["mnemonic"] as? String,
