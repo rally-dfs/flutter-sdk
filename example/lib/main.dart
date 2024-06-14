@@ -41,7 +41,7 @@ class AppState extends State<App> {
   Future<void> _createRlyAccount() async {
     final rlyAct = await WalletManager.getInstance().createWallet(
         storageOptions: KeyStorageConfig(
-            rejectOnCloudSaveFailure: false, saveToCloud: false));
+            rejectOnCloudSaveFailure: true, saveToCloud: true));
     setState(() {
       _rlyAccount = rlyAct;
     });

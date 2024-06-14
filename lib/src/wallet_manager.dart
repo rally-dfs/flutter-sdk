@@ -41,14 +41,53 @@ class WalletManager {
     return newWallet;
   }
 
-  /// Returns the cloud backup status of the existing wallet.
-  /// Returns false if there is currently no wallet. This method should not be used as a check for wallet existence
+  /// DEPRECATED: Use walletEligibleForCloudSync instead.
+  /// The naming of this method was confusing and has been deprecated in favor of walletEligibleForCloudSync.
+  /// Name implied a level of control over device syncing that is not possible given the operating system constraints. See walletEligibleForCloudSync for more details.
+  Future<bool> walletBackedUpToCloud() async {
+    // ignore: avoid_print
+    print(
+        "walletBackedUpToCloud is deprecated. Use walletCanSyncToOSCloud instead.");
+    return walletEligibleForCloudSync();
+  }
+
+  /// Returns whether the current wallet is stored in a way that is eligible for OS provided cloud backup and cross device sync.
+  /// This is not a guarantee that the wallet is backed up to cloud,
+  /// as user & app level settings determine whether secure keys are backed up to device cloud.
+  /// On iOS this is a check whether the wallet will sync if user enables iCloud -> Keychain sync.
+  /// On Android this is a check whether the wallet is in google play keystore and will sync if user enables google backup.
+  /// TRUE response indicates that the wallet will be backed up to OS cloud if user enables the OS provided cloud backup / cross device sync.
+  ///
+  /// This method should not be used as a check for wallet existence
   /// as it will return false if there is no wallet or if the wallet does exist but is not backed up to cloud.
   ///
-  /// If a wallet already exists the reponse will be true or false depending on whether the wallet is backed up to cloud or not.
-  /// TRUE response means wallet is backed up to cloud, FALSE means wallet is not backed up to cloud.
-  Future<bool> walletBackedUpToCloud() async {
+  Future<bool> walletEligibleForCloudSync() async {
     return await _keyManager.walletBackedUpToCloud();
+  }
+
+  /// Updates the storage settings for an existing wallet.
+  /// Accepts a KeyStorageConfig object to specify the storage options for the wallet, same as when creating the wallet
+  ///
+  /// Throws an error if no wallet is found.
+  /// Will reject the promise if the cloud save fails and rejectOnCloudSaveFailure is set to true.
+  /// If rejectOnCloudSaveFailure is set to false, cloud save failure will fallback to on device only storage without rejecting the promise.
+  ///
+  /// Please note that when moving from KeyStorageConfig.saveToCloud = false to true, the wallet will be moved to device cloud
+  /// which will replace a non cloud on device wallet your user might have on a different device. You should ensure you properly
+  /// communicate to end users that moving to cloud storage will could cause issues if they currently have different wallets on different devices
+  ///
+  /// If moving from cloud to device only storage, the wallet will be removed from cloud storage and only stored on device. This will remove the wallet from any other devices.
+  Future<void> updateWalletStorage(KeyStorageConfig storageOptions) async {
+    final mnemonic = await _keyManager.getMnemonic();
+    if (mnemonic == null) {
+      throw 'Unable to update storage settings, no wallet found';
+    }
+
+    await _keyManager.saveMnemonic(mnemonic, storageOptions: storageOptions);
+
+    if (storageOptions.saveToCloud == false) {
+      await _keyManager.deleteCloudMnemonic();
+    }
   }
 
   Future<Wallet?> getWallet() async {

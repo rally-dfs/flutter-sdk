@@ -97,6 +97,17 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
     widget.onAccountDeleted();
   }
 
+  void switchStorageLocation() async {
+    if (backedUpToCloud == true) {
+      await WalletManager.getInstance().updateWalletStorage(KeyStorageConfig(
+          saveToCloud: false, rejectOnCloudSaveFailure: false));
+    } else {
+      await WalletManager.getInstance().updateWalletStorage(
+          KeyStorageConfig(saveToCloud: true, rejectOnCloudSaveFailure: true));
+    }
+    getWalletBackupState();
+  }
+
   void revealMnemonic() async {
     String? value = await WalletManager.getInstance().getAccountPhrase();
     if (value == null || value.isEmpty) {
@@ -204,6 +215,11 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
                     children: [
                       const Center(
                         child: Text('Manage Your Wallet'),
+                      ),
+                      const SizedBox(height: 12),
+                      FullWidthButton(
+                        onPressed: switchStorageLocation,
+                        child: const Text('Swap Storage Location'),
                       ),
                       const SizedBox(height: 12),
                       FullWidthButton(

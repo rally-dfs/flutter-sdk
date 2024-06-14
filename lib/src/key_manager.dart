@@ -9,6 +9,19 @@ class KeyManager {
     await methodChannel.invokeMethod<bool>("deleteMnemonic");
   }
 
+  /// Removes the mnemonic from the cloud storage. This is a destructive operation.
+  ///
+  /// This is necessary for the case where dev wants to move user storage from cloud to local only.
+  Future<void> deleteCloudMnemonic() async {
+    final bool? status =
+        await methodChannel.invokeMethod<bool>("deleteCloudMnemonic");
+
+    if (status == null || status == false) {
+      throw Exception(
+          "Unable to delete mnemonic from cloud storage, something went wrong at native code layer");
+    }
+  }
+
   Future<String> generateMnemonic() async {
     String? mnemonic =
         await methodChannel.invokeMethod<String>("generateNewMnemonic");
