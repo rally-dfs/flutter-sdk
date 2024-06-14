@@ -58,6 +58,9 @@ class FlutterSdkPlugin: FlutterPlugin, MethodCallHandler {
         "deleteMnemonic" -> {
           deleteMnemonic(result)
         }
+        "deleteCloudMnemonic" -> {
+          deleteCloudMnemonic(result)
+        }
         "generateNewMnemonic" -> {
           generateNewMnemonic(result)
         }
@@ -101,6 +104,12 @@ class FlutterSdkPlugin: FlutterPlugin, MethodCallHandler {
       result.error("mnemonic_save_failure", message, null)
     })
   }
+
+  private fun deleteCloudMnemonic(result: Result) {
+    mnemonicHelper.deleteFromCloudKeystore(MNEMONIC_STORAGE_KEY)
+    result.success(true)
+  }
+
   private fun deleteMnemonic(result: Result) {
     mnemonicHelper.delete(MNEMONIC_STORAGE_KEY)
     result.success(true)

@@ -21,7 +21,7 @@ class MnemonicStorageHelper(context: Context) {
             isEndToEndEncryptionAvailable = isE2EEAvailable
         }
     }
-    
+
     fun getSharedPreferences(): SharedPreferences {
         val masterKey: MasterKey = Builder(localContext)
             .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
@@ -42,7 +42,7 @@ class MnemonicStorageHelper(context: Context) {
             // and recreate them. The user will lose their mnemonic, but this is the only way to
             // recover from this situation.
             localContext.getSharedPreferences(ENCRYPTED_PREFERENCE_FILENAME, Context.MODE_PRIVATE).edit().clear().apply()
-           
+
             attemptedSharedPreferences = EncryptedSharedPreferences.create(
                 localContext,
                 ENCRYPTED_PREFERENCE_FILENAME,
@@ -122,12 +122,19 @@ class MnemonicStorageHelper(context: Context) {
     }
 
     fun delete(key: String) {
+        deleteFromCloudKeystore(key)
+        deleteFromSharedPref(key)
+    }
+
+    fun deleteFromCloudKeystore(key: String) {
         val retrieveRequest = DeleteBytesRequest.Builder()
             .setKeys(listOf(key))
             .build()
 
         blockstoreClient.deleteBytes(retrieveRequest)
+    }
 
+    fun deleteFromSharedPref(key: String) {
         val editor = getSharedPreferences().edit()
         editor.remove(key)
         editor.commit()
