@@ -49,3 +49,10 @@ To migrate you will need to follow the following steps:
 
 * Fixed a bug that prevented relay token transfers of more than 9.9 value for a token with 18 decimals.
 * Fixed a bug that causes simple relay token transfers to work unexpectedly when using custom token addresses.
+
+## 0.5.0
+
+This release addresses an issue where the cloud sync status returned by WalletManager.walletBackedUpToCloud on iOS was returning inaccurate & misleading response.  We are now more correctly setting our iOS keychain storage flags for real cloud sync.
+
+Migrating from device only storage to cloud sync storage comes with some end user risk if users have multiple wallets on different devices. Therefore, there
+is no auto migration of data. Instead we have exposed a method through WalletManager that allows developers to update the storage config of an existing wallet.
