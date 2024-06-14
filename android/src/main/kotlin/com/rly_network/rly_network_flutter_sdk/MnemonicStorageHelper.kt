@@ -75,7 +75,7 @@ class MnemonicStorageHelper(context: Context) {
                 }
         } else {
             if (forceBlockStore) {
-                onFailure("Failed to save mnemonic. No end to end encryption option is available and force cloud is on");
+                onFailure("Failed to save mnemonic. Android Blockstore is unavailable and force cloud is on");
             } else {
                 saveToSharedPref(key, mnemonic)
                 onSuccess()
