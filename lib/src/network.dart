@@ -6,6 +6,7 @@ import 'network_config/network_config.dart';
 import 'network_config/network_config_amoy.dart';
 import 'network_config/network_config_local.dart';
 import 'network_config/network_config_polygon.dart';
+import 'network_config/network_config_base_sepolia.dart';
 
 abstract class Network {
   NetworkConfig config;
@@ -33,3 +34,4 @@ abstract class Network {
 final Network rlyAmoyNetwork = NetworkImpl(amoyNetworkConfig);
 final Network rlyLocalNetwork = NetworkImpl(localNetworkConfig);
 final Network rlyPolygonNetwork = NetworkImpl(polygonNetworkConfig);
+final Network rlyBaseSepoliaNetwork = NetworkImpl(baseSepoliaNetworkConfig);
