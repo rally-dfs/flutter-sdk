@@ -6,7 +6,7 @@ final NetworkConfig baseSepoliaNetworkConfig = NetworkConfig(
     tokenFaucet: '0xCeCFB48a9e7C0765Ed1319ee1Bc0F719a30641Ce',
   ),
   gsn: GSNConfig(
-    paymasterAddress: '0x0e20E8A953a1e7D5FD4B24F12aC021b6345F364F',
+    paymasterAddress: '0x9bf59A7924cBa2475A03AD77e92fcf1Eaddb2Cc2',
     forwarderAddress: '0xabf9Fa3b2b2d9bDd77f4271A0d5A309AA465BCBa',
     relayHubAddress: '0xb570b57b821670707fF4E38Ea53fcb67192278F8',
     relayWorkerAddress: '0xdb1d6c7b07c857cc22a4ef10ac7b1dd06dd7501f',
