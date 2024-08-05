@@ -2,8 +2,8 @@ import './network_config.dart';
 
 final NetworkConfig baseSepoliaNetworkConfig = NetworkConfig(
   contracts: Contracts(
-    rlyERC20: '0x16723e9bb894EfC09449994eC5bCF5b41EE0D9b2',
-    tokenFaucet: '0xCeCFB48a9e7C0765Ed1319ee1Bc0F719a30641Ce',
+    rlyERC20: '0x846D8a5fb8a003b431b67115f809a9B9FFFe5012',
+    tokenFaucet: '0xFCfC511B8915D3aFD0eadc794A0c4151278fE7D1',
   ),
   gsn: GSNConfig(
     paymasterAddress: '0x9bf59A7924cBa2475A03AD77e92fcf1Eaddb2Cc2',
