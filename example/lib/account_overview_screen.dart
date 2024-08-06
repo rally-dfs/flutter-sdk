@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:rly_network_flutter_sdk/rly_network_flutter_sdk.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-final rlyNetwork = rlyAmoyNetwork;
+final rlyNetwork = rlyBaseSepoliaNetwork;
 
 class AccountOverviewScreen extends StatefulWidget {
   final String walletAddress;
@@ -49,7 +49,7 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
     getWalletBackupState();
     fetchBalance();
     rlyNetwork.setApiKey(
-        "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOjUxOH0.m8M8gE94u3_wvDV4aQnImTufK6FxNiHoJCUokQbzY6vqeHnFDohnxD2N_HRMhEf_q15WWtM4jPkHJDmB63h1ow");
+        "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOjY5M30.Oxe3OxqXVGQJzGKXFjEWoF9DCDZapi0OXBuKIew1uPuD_XUzqn9aoLrcxGKPYZiMrQW86Jp7ugy7tM6LEfxbTQ");
   }
 
   void claimRlyTokens() async {
@@ -68,7 +68,7 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
     });
 
     await rlyNetwork.transfer(transferAddress, double.parse(transferBalance),
-        MetaTxMethod.ExecuteMetaTransaction);
+        MetaTxMethod.Permit);
 
     fetchBalance();
 
@@ -171,9 +171,9 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
                           FullWidthButton(
                             onPressed: () async {
                               await launchUrl(Uri.parse(
-                                  'https://www.oklink.com/amoy/address/${widget.walletAddress}'));
+                                  'https://sepolia.basescan.org/address/${widget.walletAddress}'));
                             },
-                            child: const Text('View on Polygon'),
+                            child: const Text('View on Base'),
                           ),
                         ],
                       ),

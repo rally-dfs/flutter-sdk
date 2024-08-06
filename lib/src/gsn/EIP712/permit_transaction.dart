@@ -127,6 +127,19 @@ Future<Map<String, dynamic>> getPermitEIP712Signature(
   return rsv;
 }
 
+Future<String> getPermitSalt(web3.Web3Client provider, web3.DeployedContract token) async {
+  try
+  {
+      final eip712DomainCallResult = await provider.call(
+      contract: token, function: token.function('eip712Domain'), params: []);
+      return "0x${bytesToHex(eip712DomainCallResult[5])}";
+  }
+  catch(e)
+  {
+    return "0x0000000000000000000000000000000000000000000000000000000000000000";
+  }
+}
+
 Future<GsnTransactionDetails> getPermitTx(
   Wallet wallet,
   web3.EthereumAddress destinationAddress,
@@ -147,12 +160,10 @@ Future<GsnTransactionDetails> getPermitTx(
   final nonce = noncesCallResult[0];
 
   final deadline = await getPermitDeadline(provider);
-  final eip712DomainCallResult = await provider.call(
-      contract: token, function: token.function('eip712Domain'), params: []);
 
-  final salt = "0x${bytesToHex(eip712DomainCallResult[5])}";
+  final salt = await getPermitSalt(provider, token);
 
-  final signature = await getPermitEIP712Signature(
+ final signature = await getPermitEIP712Signature(
     wallet,
     name,
     contractAddress,
