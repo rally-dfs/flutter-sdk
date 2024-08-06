@@ -136,7 +136,7 @@ Future<String> getPermitSalt(web3.Web3Client provider, web3.DeployedContract tok
   }
   catch(e)
   {
-    return "0x0000000000000000000000000000000000000000000000000000000000000000";
+    return '';
   }
 }
 
