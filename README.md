@@ -1,4 +1,7 @@
-The Rally Mobile SDK is a key component of the Rally Protocol that allows developers to retake control of the user experience by eliminating the reliance for end-users to complete complex blockchain operations through third party apps. By utilizing the SDK, developers gain access to the necessary tools that enable them to create familiar and native mobile UX while leveraging the benefits of blockchain technology.
+# RallyMobile SDK
+RallyMobile SDK, a key component of RallyProtocol, enables developers to equip users with embedded wallets in their mobile apps—no signups, third-party logins, or popups required. Embedded wallets are created instantly, encrypted by the device’s secure enclave, and are permissionless and free.
+
+Most importantly, RallyMobile eliminates intermediaries, allowing developers to retain full ownership of user and wallet data.
 
 # Example Usage
 
@@ -75,6 +78,6 @@ await amoy.relay(gsnTx)
 
 For comprehensive documentation, see [docs.rallyprotocol.com](https://docs.rallyprotocol.com)
 
-# Supported Blockchains
+# RallyProtocol
 
-The Rally Mobile SDK currently supports Polygon. More blockchains coming soon.
+RallyProtocol is an all-in-one web3 mobile toolkit that enables developers to create frictionless, end-to-end onchain experiences for native mobile apps. Whether you’re building an iOS or Android mobile app, our mission is to empower developers to craft user-friendly mobile UX with fewer taps and zero web3 touchpoints.
