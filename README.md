@@ -1,11 +1,9 @@
-# RallyMobile SDK
+## RallyMobile SDK
 RallyMobile SDK, a key component of RallyProtocol, enables developers to equip users with embedded wallets in their mobile apps—no signups, third-party logins, or popups required. Embedded wallets are created instantly, encrypted by the device’s secure enclave, and are permissionless and free.
 
 Most importantly, RallyMobile eliminates intermediaries, allowing developers to retain full ownership of user and wallet data.
 
-# Example Usage
-
-### accounts (EOAs)
+### Embedded Wallets (EOAs)
 
 ```dart
 import 'package:rly_network_flutter_sdk/rly_network_flutter_sdk.dart';
@@ -28,13 +26,13 @@ await WalletManager.getInstance().permanentlyDeleteWallet();
 
 ```
 
-# RallyTransact
+## RallyTransact
 
 RallyTransact enables gasless transactions for on-chain operations, allowing users to perform one-tap token transfers, NFT claims, and even smart contract deployments from within mobile apps, all without gas fees.
 
 Get your API key here: https://app.rallyprotocol.com/
 
-## transactions
+### Gasless Transactions
 
 ```dart
 import 'package:rly_network_flutter_sdk/rly_network_flutter_sdk.dart';
@@ -80,10 +78,10 @@ await amoy.relay(gsnTx)
 
 ```
 
-# Documentation
+## Documentation
 
 For comprehensive documentation, see [docs.rallyprotocol.com](https://docs.rallyprotocol.com)
 
-# RallyProtocol
+## RallyProtocol
 
 RallyProtocol is an all-in-one web3 mobile toolkit that enables developers to create frictionless, end-to-end onchain experiences for native mobile apps. Whether you’re building an iOS or Android mobile app, our mission is to empower developers to craft user-friendly mobile UX with fewer taps and zero web3 touchpoints.
