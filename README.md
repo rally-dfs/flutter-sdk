@@ -28,6 +28,12 @@ await WalletManager.getInstance().permanentlyDeleteWallet();
 
 ```
 
+# RallyTransact
+
+RallyTransact enables gasless transactions for on-chain operations, allowing users to perform one-tap token transfers, NFT claims, and even smart contract deployments from within mobile apps, all without gas fees.
+
+Get your API key here: https://app.rallyprotocol.com/
+
 ## transactions
 
 ```dart
