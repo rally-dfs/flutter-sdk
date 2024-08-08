@@ -89,8 +89,11 @@ class FlutterSdkPlugin: FlutterPlugin, MethodCallHandler {
   }
 
   private fun refreshEndToEndEncryptionAvailability(result: Result) {
-    mnemonicHelper.refreshEndToEndEncryptionAvailability()
-    result.success(true)
+    mnemonicHelper.refreshEndToEndEncryptionAvailability({ isEndToEndEncryptionAvailable ->
+        result.success(isEndToEndEncryptionAvailable)
+    }, { message: String ->
+        result.error("refresh_end_to_end_encryption_availability_failure", message, null)
+    })
   }
 
   private fun generateNewMnemonic(result: Result){

@@ -56,3 +56,7 @@ This release addresses an issue where the cloud sync status returned by WalletMa
 
 Migrating from device only storage to cloud sync storage comes with some end user risk if users have multiple wallets on different devices. Therefore, there
 is no auto migration of data. Instead we have exposed a method through WalletManager that allows developers to update the storage config of an existing wallet.
+
+## 0.5.1
+
+Adds `refreshEndToEndEncryptionAvailability` that refreshes end-to-end encryption availability on Android. This should be used before attempting to save the wallet to cloud on Android.
