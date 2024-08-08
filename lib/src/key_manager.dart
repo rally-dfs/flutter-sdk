@@ -67,6 +67,10 @@ class KeyManager {
     });
   }
 
+  Future<void> refreshEndToEndEncryptionAvailability() async {
+    await methodChannel.invokeMethod("refreshEndToEndEncryptionAvailability");
+  }
+
   Uint8List _intListToUint8List(List<Object?> intList) {
     List<int> ints = [];
     for (Object? obj in intList) {

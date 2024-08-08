@@ -139,4 +139,10 @@ class MnemonicStorageHelper(context: Context) {
         editor.remove(key)
         editor.commit()
     }
+
+    fun refreshEndToEndEncryptionAvailability() {
+        blockstoreClient.isEndToEndEncryptionAvailable.addOnSuccessListener { isE2EEAvailable ->
+            isEndToEndEncryptionAvailable = isE2EEAvailable
+        }
+    }
 }
