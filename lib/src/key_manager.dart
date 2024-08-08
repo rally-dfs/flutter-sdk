@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/services.dart';
 
 import './key_storage_config.dart';
@@ -65,6 +67,17 @@ class KeyManager {
       "saveToCloud": storageOptions.saveToCloud,
       "rejectOnCloudSaveFailure": storageOptions.rejectOnCloudSaveFailure,
     });
+  }
+
+  Future<bool> refreshEndToEndEncryptionAvailability() async {
+    // There is no need to refresh end-to-end encryption availability on iOS.
+    // The encryption is enabled by default on iOS.
+    if (Platform.isIOS) {
+      return true;
+    }
+
+    return await methodChannel
+        .invokeMethod("refreshEndToEndEncryptionAvailability");
   }
 
   Uint8List _intListToUint8List(List<Object?> intList) {
