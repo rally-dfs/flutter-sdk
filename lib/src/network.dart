@@ -1,3 +1,5 @@
+import 'package:eth_sig_util/model/typed_data.dart';
+
 import './networks/evm_networks.dart';
 
 import 'gsn/meta_tx_method.dart';
@@ -19,10 +21,10 @@ abstract class Network {
   Future<BigInt> getExactBalance({PrefixedHexString? tokenAddress});
   Future<String> transfer(
       String destinationAddress, double amount, MetaTxMethod metaTxMethod,
-      {PrefixedHexString? tokenAddress});
+      {PrefixedHexString? tokenAddress, EIP712Domain? eip712DomainData});
   Future<String> transferExact(
       String destinationAddress, BigInt amount, MetaTxMethod metaTxMethod,
-      {PrefixedHexString? tokenAddress});
+      {PrefixedHexString? tokenAddress, EIP712Domain? eip712DomainData});
   Future<String> simpleTransfer(String destinationAddress, double amount,
       {PrefixedHexString? tokenAddress, MetaTxMethod? metaTxMethod});
   Future<String> claimRly();
