@@ -67,8 +67,8 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
       loading = true;
     });
 
-    await rlyNetwork.transfer(transferAddress, double.parse(transferBalance),
-        MetaTxMethod.ExecuteMetaTransaction);
+    await rlyNetwork.transfer(
+        transferAddress, double.parse(transferBalance), MetaTxMethod.Permit);
 
     fetchBalance();
 
