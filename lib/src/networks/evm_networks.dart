@@ -1,3 +1,4 @@
+import 'package:eth_sig_util/model/typed_data.dart';
 import 'package:rly_network_flutter_sdk/src/gsn/gsn_tx_helpers.dart';
 import 'package:rly_network_flutter_sdk/src/network.dart';
 import 'package:rly_network_flutter_sdk/src/token_helpers.dart';
@@ -101,7 +102,7 @@ class NetworkImpl extends Network {
   @override
   Future<String> transfer(
       String destinationAddress, double amount, MetaTxMethod metaTxMethod,
-      {PrefixedHexString? tokenAddress}) async {
+      {PrefixedHexString? tokenAddress, EIP712Domain? eip712DomainData}) async {
     final account = await WalletManager.getInstance().getWallet();
 
     if (account == null) {
@@ -128,13 +129,13 @@ class NetworkImpl extends Network {
         parseUnits(amount.toString(), int.parse(decimals.first.toString()));
 
     return transferExact(destinationAddress, decimalAmount, metaTxMethod,
-        tokenAddress: tokenAddress);
+        tokenAddress: tokenAddress, eip712DomainData: eip712DomainData);
   }
 
   @override
   Future<String> transferExact(
       String destinationAddress, BigInt amount, MetaTxMethod metaTxMethod,
-      {PrefixedHexString? tokenAddress}) async {
+      {PrefixedHexString? tokenAddress, EIP712Domain? eip712DomainData}) async {
     final account = await WalletManager.getInstance().getWallet();
 
     if (account == null) {
@@ -163,6 +164,8 @@ class NetworkImpl extends Network {
         config,
         tokenAddress,
         provider,
+        eip712Salt: eip712DomainData?.salt,
+        eip712Version: eip712DomainData?.version,
       );
     } else {
       transferTx = await getExecuteMetatransactionTx(
