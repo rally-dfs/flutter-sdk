@@ -128,13 +128,13 @@ Future<Map<String, dynamic>> getPermitEIP712Signature(
 }
 
 Future<GsnTransactionDetails> getPermitTx(
-  Wallet wallet,
-  web3.EthereumAddress destinationAddress,
-  BigInt amount,
-  NetworkConfig config,
-  String contractAddress,
-  web3.Web3Client provider,
-) async {
+    Wallet wallet,
+    web3.EthereumAddress destinationAddress,
+    BigInt amount,
+    NetworkConfig config,
+    String contractAddress,
+    web3.Web3Client provider,
+    {String? eip712Salt}) async {
   final token = erc20(web3.EthereumAddress.fromHex(contractAddress));
   final noncesCallResult = await provider.call(
       contract: token,
@@ -147,10 +147,14 @@ Future<GsnTransactionDetails> getPermitTx(
   final nonce = noncesCallResult[0];
 
   final deadline = await getPermitDeadline(provider);
-  final eip712DomainCallResult = await provider.call(
-      contract: token, function: token.function('eip712Domain'), params: []);
 
-  final salt = "0x${bytesToHex(eip712DomainCallResult[5])}";
+  var salt = eip712Salt;
+
+  if (eip712Salt == null) {
+    final eip712DomainCallResult = await provider.call(
+        contract: token, function: token.function('eip712Domain'), params: []);
+    salt = "0x${bytesToHex(eip712DomainCallResult[5])}";
+  }
 
   final signature = await getPermitEIP712Signature(
     wallet,
@@ -160,7 +164,7 @@ Future<GsnTransactionDetails> getPermitTx(
     nonce.toInt(),
     amount,
     deadline,
-    salt,
+    salt ?? '',
   );
 
   final r = signature['r'];
