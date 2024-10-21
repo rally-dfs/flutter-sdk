@@ -255,13 +255,7 @@ Future<GsnTransactionDetails> getClaimTx(
   //abstract-provider of ethers js library
   //test if it exactly replicates the functions of getFeeData
 
-  web3.BlockInformation blockInformation = await client.getBlockInformation();
-  final BigInt maxPriorityFeePerGas = BigInt.parse("1500000000");
-  BigInt? maxFeePerGas;
-  if (blockInformation.baseFeePerGas != null) {
-    maxFeePerGas = blockInformation.baseFeePerGas!.getInWei * BigInt.from(2) +
-        (maxPriorityFeePerGas);
-  }
+  final feeData = await getFeeData(client);
 
   final gsnTx = GsnTransactionDetails(
     from: wallet.address.toString(),
@@ -269,11 +263,36 @@ Future<GsnTransactionDetails> getClaimTx(
     value: "0",
     to: faucet.address.hex,
     gas: "0x${gas.toRadixString(16)}",
-    maxFeePerGas: maxFeePerGas!.toRadixString(16),
-    maxPriorityFeePerGas: maxPriorityFeePerGas.toRadixString(16),
+    maxFeePerGas: feeData.maxFeePerGas!.toRadixString(16),
+    maxPriorityFeePerGas: feeData.maxPriorityFeePerGas!.toRadixString(16),
   );
 
   return gsnTx;
+}
+
+class FeeData {
+  final BigInt? maxFeePerGas;
+  final BigInt? maxPriorityFeePerGas;
+
+  FeeData({this.maxFeePerGas, this.maxPriorityFeePerGas});
+}
+
+Future<FeeData> getFeeData(web3.Web3Client client) async {
+  web3.BlockInformation blockInformation = await client.getBlockInformation();
+  final BigInt maxPriorityFeePerGas = BigInt.parse("1500000000");
+  BigInt? maxFeePerGas;
+
+  if (blockInformation.baseFeePerGas != null) {
+    maxFeePerGas = (blockInformation.baseFeePerGas!.getInWei * BigInt.from(2)) +
+        maxPriorityFeePerGas;
+  }
+
+  print("Got Fee Data");
+
+  return FeeData(
+    maxFeePerGas: maxFeePerGas,
+    maxPriorityFeePerGas: maxPriorityFeePerGas,
+  );
 }
 
 Future<String> getClientId() async {

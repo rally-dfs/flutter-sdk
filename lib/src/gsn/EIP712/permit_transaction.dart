@@ -1,4 +1,5 @@
 import 'package:eth_sig_util/util/utils.dart';
+import 'package:rly_network_flutter_sdk/src/gsn/gsn_tx_helpers.dart';
 import 'package:web3dart/web3dart.dart' as web3;
 
 import '../../wallet.dart';
@@ -198,13 +199,8 @@ Future<GsnTransactionDetails> getPermitTx(
 
   final paymasterData =
       '0x${token.address.hex.replaceFirst('0x', '')}${bytesToHex(fromTx)}';
-  //following code is inspired from getFeeData method of
-  //abstract-provider of ethers js library
-  final info = await provider.getBlockInformation();
 
-  final BigInt maxPriorityFeePerGas = BigInt.parse("1500000000");
-  final maxFeePerGas =
-      info.baseFeePerGas!.getInWei * BigInt.from(2) + (maxPriorityFeePerGas);
+  final feeData = await getFeeData(provider);
 
   final gsnTx = GsnTransactionDetails(
     from: wallet.address.hex,
@@ -212,8 +208,8 @@ Future<GsnTransactionDetails> getPermitTx(
     value: "0",
     to: tx.to!.hex,
     gas: "0x${gas.toRadixString(16)}",
-    maxFeePerGas: maxFeePerGas.toString(),
-    maxPriorityFeePerGas: maxPriorityFeePerGas.toString(),
+    maxFeePerGas: feeData.maxFeePerGas!.toRadixString(16),
+    maxPriorityFeePerGas: feeData.maxPriorityFeePerGas!.toRadixString(16),
     paymasterData: paymasterData,
   );
 
