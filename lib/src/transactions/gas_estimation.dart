@@ -9,7 +9,7 @@ class FeeData {
   static Future<FeeData> getFeeData(web3.Web3Client client) async {
     web3.BlockInformation blockInformation = await client.getBlockInformation();
 
-    final BigInt maxPriorityFeePerGas =
+    final maxPriorityFeePerGas =
         await computeMaxPriorityFeePerGas(blockInformation, client);
 
     BigInt? maxFeePerGas;
@@ -33,6 +33,12 @@ class FeeData {
     }
 
     final gasPrice = await client.getGasPrice();
-    return gasPrice.getInWei - blockInformation.baseFeePerGas!.getInWei;
+
+    BigInt tenPercentBuffer =
+        (gasPrice.getInWei * BigInt.from((0.1 * 100).toInt())) ~/
+            BigInt.from(100);
+
+    return (gasPrice.getInWei + tenPercentBuffer) -
+        blockInformation.baseFeePerGas!.getInWei;
   }
 }
