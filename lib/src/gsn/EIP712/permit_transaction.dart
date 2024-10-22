@@ -208,8 +208,8 @@ Future<GsnTransactionDetails> getPermitTx(
     value: "0",
     to: tx.to!.hex,
     gas: "0x${gas.toRadixString(16)}",
-    maxFeePerGas: feeData.maxFeePerGas!.toRadixString(16),
-    maxPriorityFeePerGas: feeData.maxPriorityFeePerGas!.toRadixString(16),
+    maxFeePerGas: feeData.maxFeePerGas!.toString(),
+    maxPriorityFeePerGas: feeData.maxPriorityFeePerGas!.toString(),
     paymasterData: paymasterData,
   );
 

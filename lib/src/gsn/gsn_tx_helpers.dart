@@ -263,8 +263,8 @@ Future<GsnTransactionDetails> getClaimTx(
     value: "0",
     to: faucet.address.hex,
     gas: "0x${gas.toRadixString(16)}",
-    maxFeePerGas: feeData.maxFeePerGas!.toRadixString(16),
-    maxPriorityFeePerGas: feeData.maxPriorityFeePerGas!.toRadixString(16),
+    maxFeePerGas: feeData.maxFeePerGas!.toString(),
+    maxPriorityFeePerGas: feeData.maxPriorityFeePerGas!.toString(),
   );
 
   return gsnTx;
@@ -286,8 +286,6 @@ Future<FeeData> getFeeData(web3.Web3Client client) async {
     maxFeePerGas = (blockInformation.baseFeePerGas!.getInWei * BigInt.from(2)) +
         maxPriorityFeePerGas;
   }
-
-  print("Got Fee Data");
 
   return FeeData(
     maxFeePerGas: maxFeePerGas,
