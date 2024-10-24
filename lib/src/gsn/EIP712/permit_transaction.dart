@@ -1,7 +1,7 @@
 import 'package:eth_sig_util/util/utils.dart';
-import 'package:rly_network_flutter_sdk/src/gsn/gsn_tx_helpers.dart';
 import 'package:web3dart/web3dart.dart' as web3;
 
+import '../../transactions/gas_estimation.dart';
 import '../../wallet.dart';
 import '../../contracts/erc20.dart';
 import '../../network_config/network_config.dart';
@@ -200,7 +200,7 @@ Future<GsnTransactionDetails> getPermitTx(
   final paymasterData =
       '0x${token.address.hex.replaceFirst('0x', '')}${bytesToHex(fromTx)}';
 
-  final feeData = await getFeeData(provider);
+  final feeData = await FeeData.getFeeData(provider);
 
   final gsnTx = GsnTransactionDetails(
     from: wallet.address.hex,
@@ -208,8 +208,8 @@ Future<GsnTransactionDetails> getPermitTx(
     value: "0",
     to: tx.to!.hex,
     gas: "0x${gas.toRadixString(16)}",
-    maxFeePerGas: feeData.maxFeePerGas!.toRadixString(16),
-    maxPriorityFeePerGas: feeData.maxPriorityFeePerGas!.toRadixString(16),
+    maxFeePerGas: feeData.maxFeePerGas!.toString(),
+    maxPriorityFeePerGas: feeData.maxPriorityFeePerGas!.toString(),
     paymasterData: paymasterData,
   );
 
