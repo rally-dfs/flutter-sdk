@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:rly_network_flutter_sdk/rly_network_flutter_sdk.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-final rlyNetwork = rlyAmoyNetwork;
+final rlyNetwork = rlyBaseSepoliaNetwork;
 
 class AccountOverviewScreen extends StatefulWidget {
   final String walletAddress;
@@ -49,7 +49,7 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
     getWalletBackupState();
     fetchBalance();
     rlyNetwork.setApiKey(
-        "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOjUxOH0.m8M8gE94u3_wvDV4aQnImTufK6FxNiHoJCUokQbzY6vqeHnFDohnxD2N_HRMhEf_q15WWtM4jPkHJDmB63h1ow");
+        "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOjcyNn0.VPX2UxDyrxQ-4316qI-IsuAfDjCdgAZ094ud6tYTn4KPIPdQkYEld51PGc9DRrvUFRJ7nKnE_y-5QJAhScPqag");
   }
 
   void claimRlyTokens() async {
@@ -67,8 +67,8 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
       loading = true;
     });
 
-    await rlyNetwork.transfer(transferAddress, double.parse(transferBalance),
-        MetaTxMethod.ExecuteMetaTransaction);
+    await rlyNetwork.transfer(
+        transferAddress, double.parse(transferBalance), MetaTxMethod.Permit);
 
     fetchBalance();
 
