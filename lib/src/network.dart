@@ -1,4 +1,5 @@
 import 'package:eth_sig_util/model/typed_data.dart';
+import 'package:rly_network_flutter_sdk/src/network_config/network_config_base_mainnet.dart';
 
 import './networks/evm_networks.dart';
 
@@ -37,3 +38,4 @@ final Network rlyAmoyNetwork = NetworkImpl(amoyNetworkConfig);
 final Network rlyLocalNetwork = NetworkImpl(localNetworkConfig);
 final Network rlyPolygonNetwork = NetworkImpl(polygonNetworkConfig);
 final Network rlyBaseSepoliaNetwork = NetworkImpl(baseSepoliaNetworkConfig);
+final Network rlyBaseMainnetNetwork = NetworkImpl(baseMainnetNetworkConfig);
