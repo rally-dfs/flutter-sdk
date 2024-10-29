@@ -56,3 +56,29 @@ This release addresses an issue where the cloud sync status returned by WalletMa
 
 Migrating from device only storage to cloud sync storage comes with some end user risk if users have multiple wallets on different devices. Therefore, there
 is no auto migration of data. Instead we have exposed a method through WalletManager that allows developers to update the storage config of an existing wallet.
+
+## 0.6.0
+
+### Enhancements
+- **Added support for Base Network** (#61)
+  - Added network configuration for Base mainnet and sepolia (testnet).
+
+- **Updated Example Application to Use Sepolia Base Network by Default** (#60)
+  - Configured the example app to default to Sepolia Base instead of Amoy.
+  - Introduced a new API token and updated network configurations.
+  - Corrected transaction type to support RLY permit token variant.
+
+- **Improved Gas Fee Logic and Estimation** (#60, #59)
+  - Computed actual `maxPriorityFeePerGas` value, inspired by viem, without relying on dedicated RPC calls.
+  - Added a 10% padding to `maxPriorityFeePerGas` for fluctuating gas prices.
+  - Refined gas estimation encoding issues.
+  - Extracted all gas fee computations into a shared code path to eliminate duplication and simplify debugging.
+
+- **Explicit EIP712 Domain Data Support for Better Token Compatibility** (#58)
+  - Enabled explicit passing of EIP712 domain data for improved token compatibility.
+  - Optimized by avoiding dynamic salt determination when explicitly provided, improving performance and reducing unnecessary RPC calls.
+
+### Other Improvements
+- **Helper Extraction for Token Specific Operations** (#49)
+  - Extracted token-specific helper methods (e.g., getting decimals) to simplify usage for third-party developers.
+  - Added RLY exec meta token variant addresses to helper classes for easier reference.
