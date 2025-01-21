@@ -62,6 +62,45 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
     fetchBalance();
   }
 
+  void testZkSyncTx() async {
+    setState(() {
+      loading = true;
+    });
+
+    final wallet = await WalletManager.getInstance().getWallet();
+
+    if (wallet == null) {
+      throw 'Something went wrong, no wallet when there should be one';
+    }
+
+    final transaction = Eip712Transaction(
+      from: wallet.address.hex,
+      to: '0x5205BcC1852c4b626099aa7A2AFf36Ac3e9dE83b',
+      nonce: BigInt.from(0),
+      maxPriorityFeePerGas:BigInt.from(10969902530),
+      maxFeePerGas: BigInt.from(10969902530),
+      gas: BigInt.from(750000),
+      value: BigInt.from(0),
+      data: '0x',
+      chainId: BigInt.from(37111),
+      gasPerPubdata: BigInt.from(0),
+      paymaster: '0x0000000000000000000000000000000000000000',
+      paymasterInput: '0x',
+    );
+
+    final config = ClientConfig(
+      rpcUrl: 'https://rpc.testnet.lens.dev',
+      domainSeperator: Eip712DomainSeparator(
+        name: 'Lens Network Sepolia Testnet',
+        version: '1',
+        chainId: BigInt.from(37111),
+      ),
+    );
+
+    final hash = await wallet.sendEip712Transaction(transaction, config);
+
+  }
+
   void transferTokens() async {
     setState(() {
       loading = true;
@@ -201,6 +240,10 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
                           FullWidthButton(
                             onPressed: transferTokens,
                             child: const Text('Transfer ERC20'),
+                          ),
+                          FullWidthButton(
+                            onPressed: testZkSyncTx,
+                            child: const Text('Test ZKsync Tx'),
                           ),
                         ],
                       ),
