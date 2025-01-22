@@ -97,12 +97,12 @@ class Eip712Transaction {
       'gasPerPubdataByteLimit': gasPerPubdata.toString(),
       'maxFeePerGas': maxFeePerGas.toString(),
       'maxPriorityFeePerGas': maxPriorityFeePerGas.toString(),
-      'paymaster': paymaster,
+      'paymaster': paymaster ?? '0x',
       'nonce': nonce.toString(), 
       'value': value.toString(),
       'data': data,
       'factoryDeps': factoryDeps ?? [],
-      'paymasterInput': paymasterInput,
+      'paymasterInput': paymasterInput ?? '0x',
     };
   }
 
@@ -126,6 +126,8 @@ class Eip712Transaction {
     ];
     if(paymaster != null && paymasterInput != null){
       list.add([EthereumAddress.fromHex(paymaster!).addressBytes, hexToUint8List(paymasterInput!)]);
+    } else {
+      list.add([]);
     }
     return list;
   }
