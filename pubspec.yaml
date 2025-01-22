@@ -21,6 +21,7 @@ dependencies:
   shared_preferences: ^2.0.20
   eth_sig_util: ^0.0.9
   http: ^1.1.0
+  rlp: ^2.0.0
 
 dev_dependencies:
   flutter_test:

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:rly_network_flutter_sdk/rly_network_flutter_sdk.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+
 final rlyNetwork = rlyBaseSepoliaNetwork;
 
 class AccountOverviewScreen extends StatefulWidget {
@@ -74,18 +75,18 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
     }
 
     final transaction = Eip712Transaction(
-      from: wallet.address.hex,
-      to: '0x5205BcC1852c4b626099aa7A2AFf36Ac3e9dE83b',
-      nonce: BigInt.from(0),
-      maxPriorityFeePerGas:BigInt.from(10969902530),
-      maxFeePerGas: BigInt.from(10969902530),
-      gas: BigInt.from(750000),
-      value: BigInt.from(0),
-      data: '0x',
+      from: '0xf760bdd822fccf93c44be68d94c45133002b3037',
+      to: '0x111C3E89Ce80e62EE88318C2804920D4c96f92bb',
+      nonce: BigInt.from(7),
+      maxPriorityFeePerGas:BigInt.from(2),
+      maxFeePerGas: BigInt.from(250000000000000),
+      gas: BigInt.from(158774),
+      value: BigInt.from(1000000000000000000),
+      data: '0xa4136862000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000017900000000000000000000000000000000000000000000000000000000000000',
       chainId: BigInt.from(37111),
-      gasPerPubdata: BigInt.from(0),
-      paymaster: '0x0000000000000000000000000000000000000000',
-      paymasterInput: '0x',
+      gasPerPubdata: BigInt.from(50000),
+      paymaster: '0x4B5DF730c2e6b28E17013A1485E5d9BC41Efe021',
+      paymasterInput: '0x8c5a344500000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000',
     );
 
     final config = ClientConfig(
@@ -97,7 +98,7 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
       ),
     );
 
-    final hash = await wallet.sendEip712Transaction(transaction, config);
+    final hash = await sendEip712Transaction(transaction, wallet, config);
 
   }
 
