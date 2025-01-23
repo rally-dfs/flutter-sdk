@@ -86,7 +86,7 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
       gasPerPubdata: BigInt.from(50000),
     );
 
-    final zkSyncCHain = ZKSyncChain(
+    final lensTestNet = ZKSyncChain(
         eip712domain: EIP712Domain(
           name: 'Lens Network Sepolia Testnet',
           version: '1',
@@ -96,7 +96,7 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
         ),
         rpcUrl: 'https://rpc.testnet.lens.dev');
 
-    await zkSyncCHain.sendTransaction(transaction, wallet);
+    await lensTestNet.sendTransaction(transaction, wallet);
   }
 
   void transferTokens() async {
