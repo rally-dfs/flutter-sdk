@@ -2,36 +2,6 @@ import 'package:web3dart/crypto.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:rly_network_flutter_sdk/src/gsn/utils.dart';
 
-class Eip712DomainSeparator {
-  String name;
-  String version;
-  BigInt chainId;
-
-  Eip712DomainSeparator({
-    required this.name,
-    required this.version,
-    required this.chainId,
-  });
-
-  Map<String, dynamic> toMap() {
-    return {
-      'name': name,
-      'version': version,
-      'chainId': chainId.toString(),
-    };
-  }
-}
-
-class ClientConfig {
-  final String rpcUrl;
-  Eip712DomainSeparator domainSeperator;
-
-  ClientConfig({
-    required this.rpcUrl,
-    required this.domainSeperator,
-  });
-}
-
 class Eip712Transaction {
   String to;
   String from;
