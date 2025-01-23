@@ -12,6 +12,23 @@ import 'eip_712_transaction.dart';
 // ignore: implementation_imports
 import 'package:web3dart/src/utils/rlp.dart' as rlp;
 
+/// A class representing all ZKSync based chains. This class allows
+/// configuration of necessary EIP712 fields required to build transactions
+/// on zksync chains
+
+/// Example usage:
+/// ```dart
+/// final zkSyncChain = ZKSyncChain({
+///  rpcUrl: 'https://rinkeby.infura.io/v3/your_project_id',
+///  eip712domain: EIP712Domain(
+///    name: 'ZKSync',
+///    version: '1',
+///    chainId: 4,
+///    verifyingContract: '0x',
+///    salt: ''
+/// });
+/// ```
+///
 class ZKSyncChain {
   // The RPC URL of the node you are accessing for the given ZKSync chain.
   final String rpcUrl;
@@ -25,6 +42,8 @@ class ZKSyncChain {
 
   ZKSyncChain({required this.rpcUrl, required this.eip712domain});
 
+  /// Sends a transaction to the ZKSync chain.
+  /// The transaction is signed using the provided wallet.
   Future<String> sendTransaction(
       ZKSyncEip712Transaction transaction, rly_wallet.Wallet wallet) async {
     final eip712Data = {
