@@ -5,7 +5,7 @@ import 'package:web3dart/crypto.dart';
 import 'package:web3dart/web3dart.dart';
 
 import '../wallet.dart' as rly_wallet;
-import 'eip712Transaction.dart';
+import 'eip_712_transaction.dart';
 
 class ZKSyncChain {
   // The RPC URL of the node you are accessing for the given ZKSync chain.
