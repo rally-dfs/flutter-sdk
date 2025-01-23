@@ -1,11 +1,16 @@
 import 'package:eth_sig_util/model/typed_data.dart';
-import 'package:rlp/rlp.dart';
 import 'package:rly_network_flutter_sdk/src/gsn/utils.dart';
 import 'package:web3dart/crypto.dart';
 import 'package:web3dart/web3dart.dart';
 
 import '../wallet.dart' as rly_wallet;
 import 'eip_712_transaction.dart';
+
+// The public rlp package does not work with zksync specific chains.
+// For now we are importing a version that does work directly from the source of web3dart.
+// If this changes in the future will be bring the correct encoding inhouse
+// ignore: implementation_imports
+import 'package:web3dart/src/utils/rlp.dart' as rlp;
 
 class ZKSyncChain {
   // The RPC URL of the node you are accessing for the given ZKSync chain.
@@ -32,7 +37,7 @@ class ZKSyncChain {
     final String customSignature = wallet.signTypedData(eip712Data);
     final serializedTx = transaction.toList(customSignature);
     final rawTx = hexToUint8List(
-        concatHex(["0x71", bytesToHex(Rlp.encode(serializedTx))]));
+        concatHex(["0x71", bytesToHex(rlp.encode(serializedTx))]));
     Web3Client client = getEthClient(rpcUrl);
 
     final String hash = await client.sendRawTransaction(rawTx);
