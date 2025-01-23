@@ -62,35 +62,6 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
     fetchBalance();
   }
 
-  void testZkSyncTx() async {
-    setState(() {
-      loading = true;
-    });
-
-    final wallet = await WalletManager.getInstance().getWallet();
-
-    if (wallet == null) {
-      throw 'Something went wrong, no wallet when there should be one';
-    }
-
-    final transaction = ZKSyncEip712Transaction(
-      from: wallet.address.hex,
-      to: '0x111C3E89Ce80e62EE88318C2804920D4c96f92bb',
-      nonce: BigInt.from(0),
-      maxPriorityFeePerGas: BigInt.from(2),
-      maxFeePerGas: BigInt.from(250000000000000),
-      gas: BigInt.from(158774),
-      value: BigInt.from(0),
-      data: '0x',
-      chainId: BigInt.from(37111),
-      gasPerPubdata: BigInt.from(50000),
-    );
-
-    final lensTestNet = ZKSyncLensNetworkSepolia();
-
-    await lensTestNet.sendTransaction(transaction, wallet);
-  }
-
   void transferTokens() async {
     setState(() {
       loading = true;
@@ -230,10 +201,6 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
                           FullWidthButton(
                             onPressed: transferTokens,
                             child: const Text('Transfer ERC20'),
-                          ),
-                          FullWidthButton(
-                            onPressed: testZkSyncTx,
-                            child: const Text('Test ZKsync Tx'),
                           ),
                         ],
                       ),
