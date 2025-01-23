@@ -5,4 +5,5 @@ export 'src/wallet.dart';
 export 'src/gsn/meta_tx_method.dart';
 export 'src/token_helpers.dart';
 export 'src/zksync/eip712Transaction.dart';
-export 'src/zksync/sendEip712Transaction.dart'; 
+export 'src/zksync/zk_sync_chain.dart';
+export 'package:eth_sig_util/model/typed_data.dart';
