@@ -96,7 +96,7 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
         ),
         rpcUrl: 'https://rpc.testnet.lens.dev');
 
-    final hash = await zkSyncCHain.sendTransaction(transaction, wallet);
+    await zkSyncCHain.sendTransaction(transaction, wallet);
   }
 
   void transferTokens() async {
