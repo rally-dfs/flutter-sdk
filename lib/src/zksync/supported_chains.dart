@@ -1,6 +1,7 @@
 import 'package:eth_sig_util/model/typed_data.dart';
 import 'package:rly_network_flutter_sdk/src/zksync/zk_sync_chain.dart';
 
+/// Lens Protocol Network Sepolia Testnet
 class ZKSyncLensNetworkSepolia extends ZKSyncChain {
   ZKSyncLensNetworkSepolia()
       : super(
