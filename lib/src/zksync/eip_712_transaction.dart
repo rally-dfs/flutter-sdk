@@ -2,7 +2,7 @@ import 'package:web3dart/crypto.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:rly_network_flutter_sdk/src/gsn/utils.dart';
 
-class Eip712Transaction {
+class ZKSyncEip712Transaction {
   String to;
   String from;
   BigInt nonce;
@@ -18,7 +18,7 @@ class Eip712Transaction {
   String? paymasterInput;
   List<String>? factoryDeps;
 
-  Eip712Transaction({
+  ZKSyncEip712Transaction({
     required this.from,
     required this.to,
     required this.gas,

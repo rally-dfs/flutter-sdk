@@ -21,11 +21,11 @@ class ZKSyncChain {
   ZKSyncChain({required this.rpcUrl, required this.eip712domain});
 
   Future<String> sendTransaction(
-      Eip712Transaction transaction, rly_wallet.Wallet wallet) async {
+      ZKSyncEip712Transaction transaction, rly_wallet.Wallet wallet) async {
     final eip712Data = {
       'domain': eip712domain.toJson(),
-      'types': Eip712Transaction.types,
-      'primaryType': Eip712Transaction.primaryType,
+      'types': ZKSyncEip712Transaction.types,
+      'primaryType': ZKSyncEip712Transaction.primaryType,
       'message': transaction.toMap(),
     };
 
