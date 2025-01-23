@@ -25,7 +25,7 @@ import 'package:rly_network_flutter_sdk/src/zksync/zk_sync_chain.dart';
 class ZKSyncLensNetworkSepolia extends ZKSyncChain {
   ZKSyncLensNetworkSepolia()
       : super(
-          rpcUrl: 'https://lens.zksync.io/api/v0.1',
+          rpcUrl: 'https://rpc.testnet.lens.dev',
           eip712domain: EIP712Domain(
             name: 'Lens Network Sepolia Testnet',
             version: '1',
