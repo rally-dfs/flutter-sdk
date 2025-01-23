@@ -73,7 +73,7 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
       throw 'Something went wrong, no wallet when there should be one';
     }
 
-    final transaction = Eip712Transaction(
+    final transaction = ZKSyncEip712Transaction(
       from: wallet.address.hex,
       to: '0x111C3E89Ce80e62EE88318C2804920D4c96f92bb',
       nonce: BigInt.from(0),
