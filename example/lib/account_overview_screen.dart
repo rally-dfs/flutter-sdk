@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:rly_network_flutter_sdk/rly_network_flutter_sdk.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-
 final rlyNetwork = rlyBaseSepoliaNetwork;
 
 class AccountOverviewScreen extends StatefulWidget {
@@ -78,7 +77,7 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
       from: wallet.address.hex,
       to: '0x111C3E89Ce80e62EE88318C2804920D4c96f92bb',
       nonce: BigInt.from(0),
-      maxPriorityFeePerGas:BigInt.from(2),
+      maxPriorityFeePerGas: BigInt.from(2),
       maxFeePerGas: BigInt.from(250000000000000),
       gas: BigInt.from(158774),
       value: BigInt.from(0),
@@ -87,17 +86,17 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
       gasPerPubdata: BigInt.from(50000),
     );
 
-    final config = ClientConfig(
-      rpcUrl: 'https://rpc.testnet.lens.dev',
-      domainSeperator: Eip712DomainSeparator(
-        name: 'Lens Network Sepolia Testnet',
-        version: '1',
-        chainId: BigInt.from(37111),
-      ),
-    );
+    final zkSyncCHain = ZKSyncChain(
+        eip712domain: EIP712Domain(
+          name: 'Lens Network Sepolia Testnet',
+          version: '1',
+          chainId: 37111,
+          salt: '',
+          verifyingContract: '',
+        ),
+        rpcUrl: 'https://rpc.testnet.lens.dev');
 
-    final hash = await sendEip712Transaction(transaction, wallet, config);
-
+    final hash = await zkSyncCHain.sendTransaction(transaction, wallet);
   }
 
   void transferTokens() async {
