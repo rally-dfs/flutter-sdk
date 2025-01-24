@@ -69,23 +69,3 @@ String concatHex(List<String> values) {
     String hexWithPrefix = '0x' + concatenatedHex;
   return hexWithPrefix;
 }  
-
-Uint8List hexToUint8List(String hex) {
-  // Ensure the hex string has an even length
-  if (hex.length % 2 != 0) {
-    throw FormatException("Invalid hex string");
-  }
-
-  // Remove the "0x" prefix if present
-  if (hex.startsWith("0x")) {
-    hex = hex.substring(2);
-  }
-
-  // Convert the hex string to a Uint8List
-  final List<int> bytes = [];
-  for (int i = 0; i < hex.length; i += 2) {
-    bytes.add(int.parse(hex.substring(i, i + 2), radix: 16));
-  }
-
-  return Uint8List.fromList(bytes);
-}
