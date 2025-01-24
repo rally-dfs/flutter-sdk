@@ -55,7 +55,7 @@ class ZKSyncChain {
 
     final String customSignature = wallet.signTypedData(eip712Data);
     final serializedTx = transaction.toList(customSignature);
-    final rawTx = hexToUint8List(
+    final rawTx = hexToBytes(
         concatHex(["0x71", bytesToHex(rlp.encode(serializedTx))]));
     Web3Client client = getEthClient(rpcUrl);
 

@@ -1,15 +1,50 @@
+import 'package:eth_sig_util/eth_sig_util.dart';
 import 'package:web3dart/crypto.dart';
 import 'package:web3dart/web3dart.dart';
+import 'dart:convert';
+import 'dart:typed_data';
 import 'package:rly_network_flutter_sdk/src/gsn/utils.dart';
 
-class ZKSyncEip712Transaction {
+
+
+class Eip712DomainSeparator {
+  String name;
+  String version;
+  BigInt chainId;
+
+  Eip712DomainSeparator({
+    required this.name,
+    required this.version,
+    required this.chainId,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'version': version,
+      'chainId': chainId.toString(),
+    };
+  }
+}
+
+class ClientConfig{
+  final String rpcUrl;
+  Eip712DomainSeparator domainSeperator;
+
+  ClientConfig({
+    required this.rpcUrl,
+    required this.domainSeperator,
+  });
+}
+
+class Eip712Transaction {
   String to;
-  String from;
+  String from; 
   BigInt nonce;
   BigInt gas;
   BigInt maxPriorityFeePerGas;
   BigInt maxFeePerGas;
-  String data;
+  String data; 
   BigInt value;
   BigInt chainId;
   BigInt? gasPerPubdata;
@@ -17,8 +52,10 @@ class ZKSyncEip712Transaction {
   String? paymaster;
   String? paymasterInput;
   List<String>? factoryDeps;
-
-  ZKSyncEip712Transaction({
+  
+ 
+  
+  Eip712Transaction({
     required this.from,
     required this.to,
     required this.gas,
@@ -34,7 +71,7 @@ class ZKSyncEip712Transaction {
     this.paymasterInput,
   });
 
-  List<dynamic> toJson() {
+    List<dynamic> toJson() {
     return [
       EthereumAddress.fromHex(from),
       EthereumAddress.fromHex(to),
@@ -42,7 +79,7 @@ class ZKSyncEip712Transaction {
       gasPerPubdata,
       maxFeePerGas,
       maxPriorityFeePerGas,
-      (paymaster != null) ? paymaster : null,
+      (paymaster != null)? paymaster : null,
       nonce,
       value,
       hexToBytes(data),
@@ -61,7 +98,7 @@ class ZKSyncEip712Transaction {
       'maxFeePerGas': maxFeePerGas.toString(),
       'maxPriorityFeePerGas': maxPriorityFeePerGas.toString(),
       'paymaster': paymaster ?? '0x',
-      'nonce': nonce.toString(),
+      'nonce': nonce.toString(), 
       'value': value.toString(),
       'data': data,
       'factoryDeps': factoryDeps ?? [],
@@ -83,15 +120,12 @@ class ZKSyncEip712Transaction {
       hexToBytes("0x"),
       chainId,
       EthereumAddress.fromHex(from).addressBytes,
-      gasPerPubdata ?? 0,
+      gasPerPubdata != null ? gasPerPubdata : 0,
       factoryDeps ?? [],
       customSignature,
     ];
-    if (paymaster != null && paymasterInput != null) {
-      list.add([
-        EthereumAddress.fromHex(paymaster!).addressBytes,
-        hexToBytes(paymasterInput!)
-      ]);
+    if(paymaster != null && paymasterInput != null){
+      list.add([EthereumAddress.fromHex(paymaster!).addressBytes, hexToBytes(paymasterInput!)]);
     } else {
       list.add([]);
     }
@@ -105,21 +139,22 @@ class ZKSyncEip712Transaction {
       {'name': 'chainId', 'type': 'uint256'},
     ],
     'Transaction': [
-      {'name': 'txType', 'type': 'uint256'},
-      {'name': 'from', 'type': 'uint256'},
-      {'name': 'to', 'type': 'uint256'},
-      {'name': 'gasLimit', 'type': 'uint256'},
-      {'name': 'gasPerPubdataByteLimit', 'type': 'uint256'},
-      {'name': 'maxFeePerGas', 'type': 'uint256'},
-      {'name': 'maxPriorityFeePerGas', 'type': 'uint256'},
-      {'name': 'paymaster', 'type': 'uint256'},
-      {'name': 'nonce', 'type': 'uint256'},
-      {'name': 'value', 'type': 'uint256'},
-      {'name': 'data', 'type': 'bytes'},
-      {'name': 'factoryDeps', 'type': 'bytes32[]'},
-      {'name': 'paymasterInput', 'type': 'bytes'},
-    ],
+        { 'name': 'txType', 'type': 'uint256' },
+        { 'name': 'from', 'type': 'uint256' },
+        { 'name': 'to', 'type': 'uint256' },
+        { 'name': 'gasLimit', 'type': 'uint256' },
+        { 'name': 'gasPerPubdataByteLimit', 'type': 'uint256' },
+        { 'name': 'maxFeePerGas', 'type': 'uint256' },
+        { 'name': 'maxPriorityFeePerGas', 'type': 'uint256' },
+        { 'name': 'paymaster', 'type': 'uint256' },
+        { 'name': 'nonce', 'type': 'uint256' },
+        { 'name': 'value', 'type': 'uint256' },
+        { 'name': 'data', 'type': 'bytes' },
+        { 'name': 'factoryDeps', 'type': 'bytes32[]' },
+        { 'name': 'paymasterInput', 'type': 'bytes' },
+      ],
   };
 
   static const primaryType = 'Transaction';
+
 }
