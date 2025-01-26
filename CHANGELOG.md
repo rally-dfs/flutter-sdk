@@ -82,3 +82,11 @@ is no auto migration of data. Instead we have exposed a method through WalletMan
 - **Helper Extraction for Token Specific Operations** (#49)
   - Extracted token-specific helper methods (e.g., getting decimals) to simplify usage for third-party developers.
   - Added RLY exec meta token variant addresses to helper classes for easier reference.
+
+## 0.7.0
+
+### Enhancements
+- **Add support for EIP712 on ZKSync Chains (#63)**
+  - EIP712 is now supported on ZKSync chains, enabling users to sign transactions with our secure Wallet.
+  - Submission of signed transctions to ZKSync chains is now possible through the ZKSyncChain class.
+  - Added pre-built chain support for Lens Network Testnet
