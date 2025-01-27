@@ -57,7 +57,8 @@ class ZKSyncEip712Transaction {
       'from': from,
       'to': to,
       'gasLimit': gas.toString(),
-      'gasPerPubdataByteLimit': gasPerPubdata.toString(),
+      if (gasPerPubdata != null)
+        'gasPerPubdataByteLimit': gasPerPubdata.toString(),
       'maxFeePerGas': maxFeePerGas.toString(),
       'maxPriorityFeePerGas': maxPriorityFeePerGas.toString(),
       'paymaster': paymaster ?? '0x',
