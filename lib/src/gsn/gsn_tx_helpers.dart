@@ -14,6 +14,7 @@ import 'package:rly_network_flutter_sdk/src/gsn/utils.dart';
 import 'package:web3dart/web3dart.dart' as web3;
 
 import '../network_config/network_config.dart';
+import '../transactions/gas_estimation.dart';
 import '../wallet.dart';
 import 'EIP712/forward_request.dart';
 import 'EIP712/relay_data.dart';
@@ -251,17 +252,7 @@ Future<GsnTransactionDetails> getClaimTx(
     to: faucet.address,
   );
 
-  //TODO:-> following code is inspired from getFeeData method of
-  //abstract-provider of ethers js library
-  //test if it exactly replicates the functions of getFeeData
-
-  web3.BlockInformation blockInformation = await client.getBlockInformation();
-  final BigInt maxPriorityFeePerGas = BigInt.parse("1500000000");
-  BigInt? maxFeePerGas;
-  if (blockInformation.baseFeePerGas != null) {
-    maxFeePerGas = blockInformation.baseFeePerGas!.getInWei * BigInt.from(2) +
-        (maxPriorityFeePerGas);
-  }
+  final feeData = await FeeData.getFeeData(client);
 
   final gsnTx = GsnTransactionDetails(
     from: wallet.address.toString(),
@@ -269,8 +260,8 @@ Future<GsnTransactionDetails> getClaimTx(
     value: "0",
     to: faucet.address.hex,
     gas: "0x${gas.toRadixString(16)}",
-    maxFeePerGas: maxFeePerGas!.toRadixString(16),
-    maxPriorityFeePerGas: maxPriorityFeePerGas.toRadixString(16),
+    maxFeePerGas: feeData.maxFeePerGas!.toString(),
+    maxPriorityFeePerGas: feeData.maxPriorityFeePerGas!.toString(),
   );
 
   return gsnTx;

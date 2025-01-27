@@ -19,7 +19,6 @@ Future<Map<String, dynamic>> updateConfig(
   final serverConfigUpdate = GsnServerConfigPayload.fromJson(response.body);
 
   config.gsn.relayWorkerAddress = serverConfigUpdate.relayWorkerAddress;
-  setGasFeesForTransaction(transaction, serverConfigUpdate);
 
   return {'config': config, 'transaction': transaction};
 }
@@ -159,24 +158,6 @@ Map<String, String> authHeader(NetworkConfig config) {
     'Content-Type': 'application/json',
     'Authorization': 'Bearer ${config.relayerApiKey ?? ''}',
   };
-}
-
-void setGasFeesForTransaction(
-  GsnTransactionDetails transaction,
-  GsnServerConfigPayload serverConfigUpdate,
-) {
-  final serverSuggestedMinPriorityFeePerGas =
-      int.parse(serverConfigUpdate.minMaxPriorityFeePerGas, radix: 10);
-
-  final paddedMaxPriority = (serverSuggestedMinPriorityFeePerGas * 1.4).round();
-  transaction.maxPriorityFeePerGas = paddedMaxPriority.toString();
-
-  // Special handling for mumbai because of quirk with gas estimate returned by GSN for mumbai
-  if (serverConfigUpdate.chainId == '80001') {
-    transaction.maxFeePerGas = paddedMaxPriority.toString();
-  } else {
-    transaction.maxFeePerGas = serverConfigUpdate.maxMaxFeePerGas;
-  }
 }
 
 class GsnServerConfigPayload {

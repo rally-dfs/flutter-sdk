@@ -1,3 +1,6 @@
+import 'package:eth_sig_util/model/typed_data.dart';
+import 'package:rly_network_flutter_sdk/src/network_config/network_config_base_mainnet.dart';
+
 import './networks/evm_networks.dart';
 
 import 'gsn/meta_tx_method.dart';
@@ -19,10 +22,10 @@ abstract class Network {
   Future<BigInt> getExactBalance({PrefixedHexString? tokenAddress});
   Future<String> transfer(
       String destinationAddress, double amount, MetaTxMethod metaTxMethod,
-      {PrefixedHexString? tokenAddress});
+      {PrefixedHexString? tokenAddress, EIP712Domain? eip712DomainData});
   Future<String> transferExact(
       String destinationAddress, BigInt amount, MetaTxMethod metaTxMethod,
-      {PrefixedHexString? tokenAddress});
+      {PrefixedHexString? tokenAddress, EIP712Domain? eip712DomainData});
   Future<String> simpleTransfer(String destinationAddress, double amount,
       {PrefixedHexString? tokenAddress, MetaTxMethod? metaTxMethod});
   Future<String> claimRly();
@@ -35,3 +38,4 @@ final Network rlyAmoyNetwork = NetworkImpl(amoyNetworkConfig);
 final Network rlyLocalNetwork = NetworkImpl(localNetworkConfig);
 final Network rlyPolygonNetwork = NetworkImpl(polygonNetworkConfig);
 final Network rlyBaseSepoliaNetwork = NetworkImpl(baseSepoliaNetworkConfig);
+final Network rlyBaseMainnetNetwork = NetworkImpl(baseMainnetNetworkConfig);

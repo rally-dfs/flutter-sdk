@@ -1,5 +1,7 @@
 import 'package:http/http.dart';
 import 'package:web3dart/web3dart.dart';
+import 'dart:convert';
+import 'dart:typed_data';
 
 enum RlyEnv {
   local,
@@ -61,3 +63,9 @@ Web3Client getEthClient(String apiUrl) {
   var httpClient = Client();
   return Web3Client(apiUrl, httpClient);
 }
+
+String concatHex(List<String> values) {
+    String concatenatedHex = values.fold('', (acc, x) => acc + x.replaceAll('0x', ''));
+    String hexWithPrefix = '0x' + concatenatedHex;
+  return hexWithPrefix;
+}  

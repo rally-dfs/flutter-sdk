@@ -1,6 +1,7 @@
 import 'package:eth_sig_util/util/utils.dart';
 import 'package:web3dart/web3dart.dart' as web3;
 
+import '../../transactions/gas_estimation.dart';
 import '../../wallet.dart';
 import '../../contracts/erc20.dart';
 import '../../network_config/network_config.dart';
@@ -82,15 +83,15 @@ Map<String, dynamic> getTypedPermitTransaction(Permit permit) {
 }
 
 Future<Map<String, dynamic>> getPermitEIP712Signature(
-  Wallet wallet,
-  String contractName,
-  String contractAddress,
-  NetworkConfig config,
-  int nonce,
-  BigInt amount,
-  BigInt deadline,
-  String salt,
-) async {
+    Wallet wallet,
+    String contractName,
+    String contractAddress,
+    NetworkConfig config,
+    int nonce,
+    BigInt amount,
+    BigInt deadline,
+    String salt,
+    {String? version}) async {
   // chainId to be used in EIP712
   final chainId = int.parse(config.gsn.chainId);
 
@@ -98,7 +99,7 @@ Future<Map<String, dynamic>> getPermitEIP712Signature(
   final eip712Data = getTypedPermitTransaction(
     Permit(
       name: contractName,
-      version: '1',
+      version: version ?? '1',
       chainId: chainId,
       verifyingContract: contractAddress,
       owner: wallet.address.hex,
@@ -128,13 +129,14 @@ Future<Map<String, dynamic>> getPermitEIP712Signature(
 }
 
 Future<GsnTransactionDetails> getPermitTx(
-  Wallet wallet,
-  web3.EthereumAddress destinationAddress,
-  BigInt amount,
-  NetworkConfig config,
-  String contractAddress,
-  web3.Web3Client provider,
-) async {
+    Wallet wallet,
+    web3.EthereumAddress destinationAddress,
+    BigInt amount,
+    NetworkConfig config,
+    String contractAddress,
+    web3.Web3Client provider,
+    {String? eip712Salt,
+    String? eip712Version}) async {
   final token = erc20(web3.EthereumAddress.fromHex(contractAddress));
   final noncesCallResult = await provider.call(
       contract: token,
@@ -147,10 +149,11 @@ Future<GsnTransactionDetails> getPermitTx(
   final nonce = noncesCallResult[0];
 
   final deadline = await getPermitDeadline(provider);
-  final eip712DomainCallResult = await provider.call(
-      contract: token, function: token.function('eip712Domain'), params: []);
 
-  final salt = "0x${bytesToHex(eip712DomainCallResult[5])}";
+  var salt = eip712Salt;
+  if (eip712Salt == null) {
+    salt = await fetchEip712SaltFromChain(provider, token);
+  }
 
   final signature = await getPermitEIP712Signature(
     wallet,
@@ -160,7 +163,8 @@ Future<GsnTransactionDetails> getPermitTx(
     nonce.toInt(),
     amount,
     deadline,
-    salt,
+    salt ?? '',
+    version: eip712Version,
   );
 
   final r = signature['r'];
@@ -195,13 +199,8 @@ Future<GsnTransactionDetails> getPermitTx(
 
   final paymasterData =
       '0x${token.address.hex.replaceFirst('0x', '')}${bytesToHex(fromTx)}';
-  //following code is inspired from getFeeData method of
-  //abstract-provider of ethers js library
-  final info = await provider.getBlockInformation();
 
-  final BigInt maxPriorityFeePerGas = BigInt.parse("1500000000");
-  final maxFeePerGas =
-      info.baseFeePerGas!.getInWei * BigInt.from(2) + (maxPriorityFeePerGas);
+  final feeData = await FeeData.getFeeData(provider);
 
   final gsnTx = GsnTransactionDetails(
     from: wallet.address.hex,
@@ -209,12 +208,26 @@ Future<GsnTransactionDetails> getPermitTx(
     value: "0",
     to: tx.to!.hex,
     gas: "0x${gas.toRadixString(16)}",
-    maxFeePerGas: maxFeePerGas.toString(),
-    maxPriorityFeePerGas: maxPriorityFeePerGas.toString(),
+    maxFeePerGas: feeData.maxFeePerGas!.toString(),
+    maxPriorityFeePerGas: feeData.maxPriorityFeePerGas!.toString(),
     paymasterData: paymasterData,
   );
 
   return gsnTx;
+}
+
+Future<String> fetchEip712SaltFromChain(
+    web3.Web3Client provider, web3.DeployedContract token) async {
+  try {
+    final eip712DomainCallResult = await provider.call(
+        contract: token, function: token.function('eip712Domain'), params: []);
+    return "0x${bytesToHex(eip712DomainCallResult[5])}";
+  } catch (e) {
+    // ignore: avoid_print
+    print(
+        'Error fetching EIP712 salt, contract is likely missing eip712Domain function: $e');
+    return '';
+  }
 }
 
 // get timestamp that will always be included in the next 3 blocks
