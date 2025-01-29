@@ -57,27 +57,25 @@ class ZKSyncChain {
     };
 
 
-    //final String customSignature = wallet.signTypedData(eip712Data);
-
-
-    final String customSignature = '0xf1a24debed1f4031a0ab827b90236ced3f62c9dcc67ab31acb875e3bbbbee13c2b787931880a07a1ab14e773e2fc172787306b664641f951d0e8667f2015cf851b';
+    final String customSignature = wallet.signTypedData(eip712Data);
     
     final serializedTx = transaction.toList(customSignature);
 
-
+  
     final rawTx = hexToBytes(
         concatHex(["0x71", bytesToHex(rlp.encode(serializedTx))]));
+
     Web3Client client = getEthClient(rpcUrl);
 
 
-    printWrapped(concatHex(["0x71", bytesToHex(rlp.encode(serializedTx))]));
+    //printWrapped(bytesToHex(rlp.encode(serializedTx), include0x: true));
 
-    return "yah";
+    final String hash = await client.sendRawTransaction(rawTx);
 
+    print(hash);
 
-    /*final String hash = await client.sendRawTransaction(rawTx);
+    return hash;
 
-    return hash;*/
   }
 }
 

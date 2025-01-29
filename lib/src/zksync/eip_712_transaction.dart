@@ -87,7 +87,7 @@ class ZKSyncEip712Transaction {
       EthereumAddress.fromHex(from).addressBytes,
       gasPerPubdata ?? 0,
       factoryDeps ?? [],
-      customSignature,
+      hexToBytes(customSignature),
     ];
     if (paymaster != null && paymasterInput != null) {
       list.add([
