@@ -90,3 +90,6 @@ is no auto migration of data. Instead we have exposed a method through WalletMan
   - EIP712 is now supported on ZKSync chains, enabling users to sign transactions with our secure Wallet.
   - Submission of signed transctions to ZKSync chains is now possible through the ZKSyncChain class.
   - Added pre-built chain support for Lens Network Testnet
+
+### 0.7.1
+- Fixed an issues with Lens Network EIP domain data that requires very specific `{"name": "zkSync" ...}` string match. This was causing EIP712 signing to fail on Lens Network.
