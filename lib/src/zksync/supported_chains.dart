@@ -23,10 +23,10 @@ import 'package:rly_network_flutter_sdk/src/zksync/zk_sync_chain.dart';
 /// ```
 ///
 
-///  Example usage with paymaster: 
+///  Example usage with paymaster:
 /// ```dart
 ///   final transaction = ZKSyncEip712Transaction(
-///   from: wallet.address.hex,,     
+///   from: wallet.address.hex,,
 ///   to: '0x111C3E89Ce80e62EE88318C2804920D4c96f92bb',
 ///   nonce: BigInt.from(0),
 ///   maxPriorityFeePerGas: BigInt.from(6522020168),
@@ -45,8 +45,6 @@ import 'package:rly_network_flutter_sdk/src/zksync/zk_sync_chain.dart';
 /// final lensTestNet = ZKSyncLensNetworkSepolia();
 
 /// await lensTestNet.sendTransaction(transaction, wallet);
-
-
 
 class ZKSyncLensNetworkSepolia extends ZKSyncChain {
   ZKSyncLensNetworkSepolia()
