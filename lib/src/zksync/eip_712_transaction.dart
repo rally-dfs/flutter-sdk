@@ -1,6 +1,5 @@
 import 'package:web3dart/crypto.dart';
 import 'package:web3dart/web3dart.dart';
-import 'package:rly_network_flutter_sdk/src/gsn/utils.dart';
 
 class ZKSyncEip712Transaction {
   String to;
@@ -51,16 +50,16 @@ class ZKSyncEip712Transaction {
     ];
   }
 
-  Map<String, dynamic> toMap() {
+  Map<String, dynamic> toTypedData() {
     return {
       'txType': '113',
-      'from': from,
-      'to': to,
+      'from': BigInt.parse(from).toString(),
+      'to': BigInt.parse(to).toString(),
       'gasLimit': gas.toString(),
       'gasPerPubdataByteLimit': gasPerPubdata.toString(),
       'maxFeePerGas': maxFeePerGas.toString(),
       'maxPriorityFeePerGas': maxPriorityFeePerGas.toString(),
-      'paymaster': paymaster ?? '0x',
+      'paymaster': paymaster != null ? BigInt.parse(paymaster!).toString() : 0,
       'nonce': nonce.toString(),
       'value': value.toString(),
       'data': data,
@@ -85,7 +84,7 @@ class ZKSyncEip712Transaction {
       EthereumAddress.fromHex(from).addressBytes,
       gasPerPubdata ?? 0,
       factoryDeps ?? [],
-      customSignature,
+      hexToBytes(customSignature),
     ];
     if (paymaster != null && paymasterInput != null) {
       list.add([
