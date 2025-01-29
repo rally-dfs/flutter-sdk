@@ -77,6 +77,42 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
     });
   }
 
+
+  void sendZkTx() async {
+    setState(() {
+      loading = true;
+    });
+
+    final wallet = await WalletManager.getInstance().getWallet();
+
+    if (wallet == null) {
+      throw 'No Wallet Found';
+    }
+
+    final transaction = ZKSyncEip712Transaction(
+      from: '0x9916e2438299ffAC7042bEb13Ee1C4671acf22E3',   
+      to: '0xfE0E2d77249562A70fc12B12da1f582428FBFf35',
+      nonce: BigInt.from(9),
+      maxPriorityFeePerGas: BigInt.from(4968169131),
+      maxFeePerGas: BigInt.from(4968169131),
+      gas: BigInt.from(158774),
+      value: BigInt.from(0),
+      data: '0x44f765120000000000000000000000008fec8579c658722d47904fe5cc5913e13fb755310000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001',
+      chainId: BigInt.from(37111),
+      gasPerPubdata: BigInt.from(50000),
+      paymasterInput: '0x8c5a3445000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000e00000000000000000000000002c7536e3605d9c16a7a3d7b1898e529396a65c2300000000000000000000000000000000000000000000000000000000679976c10000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000004162c268c3c3ef69bf0aea95178eb1a7ba9626273c631692e77f046267142e90021255e9ecca4038a7b6eaa6e133372986422d9ee2d3163ebdbc80a57dab5e8f741c00000000000000000000000000000000000000000000000000000000000000',
+      paymaster: '0x115B6D4aED14AD0F900a20819ABDAf915111bf50'
+    );
+
+    final lensTestNet = ZKSyncLensNetworkSepolia();
+
+    final hash = await lensTestNet.sendTransaction(transaction, wallet);
+
+    setState(() {
+      loading = false;
+    });
+  } 
+
   void simpleTransferTokens() async {
     setState(() {
       loading = true;
@@ -201,6 +237,10 @@ class AccountOverviewScreenState extends State<AccountOverviewScreen> {
                           FullWidthButton(
                             onPressed: transferTokens,
                             child: const Text('Transfer ERC20'),
+                          ),
+                          FullWidthButton(
+                            onPressed: sendZkTx,
+                            child: const Text('Send ZkSync Tx'),
                           ),
                         ],
                       ),

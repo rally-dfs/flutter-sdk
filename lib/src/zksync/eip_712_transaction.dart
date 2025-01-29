@@ -52,15 +52,17 @@ class ZKSyncEip712Transaction {
   }
 
   Map<String, dynamic> toMap() {
+
+
     return {
       'txType': '113',
-      'from': from,
-      'to': to,
+      'from': BigInt.parse(from).toString(),
+      'to': BigInt.parse(to).toString(), 
       'gasLimit': gas.toString(),
       'gasPerPubdataByteLimit': gasPerPubdata.toString(),
       'maxFeePerGas': maxFeePerGas.toString(),
       'maxPriorityFeePerGas': maxPriorityFeePerGas.toString(),
-      'paymaster': paymaster ?? '0x',
+      'paymaster':  paymaster != null ? BigInt.parse(paymaster!).toString() : 0,
       'nonce': nonce.toString(),
       'value': value.toString(),
       'data': data,

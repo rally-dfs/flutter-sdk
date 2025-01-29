@@ -2,6 +2,8 @@ import 'package:eth_sig_util/model/typed_data.dart';
 import 'package:rly_network_flutter_sdk/src/gsn/utils.dart';
 import 'package:web3dart/crypto.dart';
 import 'package:web3dart/web3dart.dart';
+import 'package:flutter/foundation.dart';
+
 
 import '../wallet.dart' as rly_wallet;
 import 'eip_712_transaction.dart';
@@ -47,20 +49,40 @@ class ZKSyncChain {
   Future<String> sendTransaction(
       ZKSyncEip712Transaction transaction, rly_wallet.Wallet wallet) async {
     final eip712Data = {
-      'domain': eip712domain.toJson(),
-      'types': ZKSyncEip712Transaction.types,
-      'primaryType': ZKSyncEip712Transaction.primaryType,
+      //'domain': eip712domain.toJson(),
+      'domain': {'name': 'zkSync', 'version': '2', 'chainId': '37111'},
       'message': transaction.toMap(),
+      'primaryType': ZKSyncEip712Transaction.primaryType,
+      'types': ZKSyncEip712Transaction.types,
     };
 
-    final String customSignature = wallet.signTypedData(eip712Data);
+
+    //final String customSignature = wallet.signTypedData(eip712Data);
+
+
+    final String customSignature = '0xf1a24debed1f4031a0ab827b90236ced3f62c9dcc67ab31acb875e3bbbbee13c2b787931880a07a1ab14e773e2fc172787306b664641f951d0e8667f2015cf851b';
+    
     final serializedTx = transaction.toList(customSignature);
+
+
     final rawTx = hexToBytes(
         concatHex(["0x71", bytesToHex(rlp.encode(serializedTx))]));
     Web3Client client = getEthClient(rpcUrl);
 
-    final String hash = await client.sendRawTransaction(rawTx);
 
-    return hash;
+    printWrapped(concatHex(["0x71", bytesToHex(rlp.encode(serializedTx))]));
+
+    return "yah";
+
+
+    /*final String hash = await client.sendRawTransaction(rawTx);
+
+    return hash;*/
   }
+}
+
+
+void printWrapped(String text) {
+  final pattern = new RegExp('.{1,800}'); // 800 is the size of each chunk
+  pattern.allMatches(text).forEach((match) => print(match.group(0)));
 }
