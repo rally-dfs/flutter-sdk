@@ -48,15 +48,15 @@ class ZKSyncChain {
       ZKSyncEip712Transaction transaction, rly_wallet.Wallet wallet) async {
     final eip712Data = {
       'domain': eip712domain.toJson(),
-      'message': transaction.toMap(),
+      'message': transaction.toTypedData(),
       'primaryType': ZKSyncEip712Transaction.primaryType,
       'types': ZKSyncEip712Transaction.types,
     };
 
     final String customSignature = wallet.signTypedData(eip712Data);
     final serializedTx = transaction.toList(customSignature);
-    final rawTx = hexToBytes(
-        concatHex(["0x71", bytesToHex(rlp.encode(serializedTx))]));
+    final rawTx =
+        hexToBytes(concatHex(["0x71", bytesToHex(rlp.encode(serializedTx))]));
     Web3Client client = getEthClient(rpcUrl);
 
     final String hash = await client.sendRawTransaction(rawTx);
