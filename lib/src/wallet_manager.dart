@@ -65,6 +65,20 @@ class WalletManager {
     return await _keyManager.walletBackedUpToCloud();
   }
 
+  /// Refreshes the end-to-end encryption availability and returns a boolean
+  /// indicating whether the end-to-end encryption is available.
+  ///
+  /// This method should be called after the user has enabled end-to-end encryption in their phone settings
+  /// (e.g. by enabling a screen lock) and should be called before saving a wallet to cloud.
+  ///
+  /// Check Android requirements for end-to-end encryption availability:
+  /// https://developers.google.com/identity/blockstore/android#end-to-end-encryption
+  ///
+  /// For iOS, the encryption is enabled by default.
+  Future<bool> refreshEndToEndEncryptionAvailability() async {
+    return await _keyManager.refreshEndToEndEncryptionAvailability();
+  }
+
   /// Updates the storage settings for an existing wallet.
   /// Accepts a KeyStorageConfig object to specify the storage options for the wallet, same as when creating the wallet
   ///

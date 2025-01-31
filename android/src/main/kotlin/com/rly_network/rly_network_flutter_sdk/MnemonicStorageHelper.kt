@@ -24,17 +24,17 @@ class MnemonicStorageHelper(context: Context) {
 
     fun getSharedPreferences(): SharedPreferences {
         val masterKey: MasterKey = Builder(localContext)
-            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-            .build()
+                .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+                .build()
 
         var attemptedSharedPreferences: SharedPreferences
         try {
             attemptedSharedPreferences = EncryptedSharedPreferences.create(
-                localContext,
-                ENCRYPTED_PREFERENCE_FILENAME,
-                masterKey,
-                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+                    localContext,
+                    ENCRYPTED_PREFERENCE_FILENAME,
+                    masterKey,
+                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
             )
         } catch (ex: IOException) {
             // If we encounter an IOException, it's likely due to the user restoring from backup and
@@ -44,11 +44,11 @@ class MnemonicStorageHelper(context: Context) {
             localContext.getSharedPreferences(ENCRYPTED_PREFERENCE_FILENAME, Context.MODE_PRIVATE).edit().clear().apply()
 
             attemptedSharedPreferences = EncryptedSharedPreferences.create(
-                localContext,
-                ENCRYPTED_PREFERENCE_FILENAME,
-                masterKey,
-                EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-                EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+                    localContext,
+                    ENCRYPTED_PREFERENCE_FILENAME,
+                    masterKey,
+                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
             )
         }
         return attemptedSharedPreferences
@@ -57,22 +57,22 @@ class MnemonicStorageHelper(context: Context) {
     fun save(key: String, mnemonic: String, useBlockStore: Boolean, forceBlockStore: Boolean, onSuccess: () -> Unit, onFailure: (message: String) -> Unit) {
         if (useBlockStore && isEndToEndEncryptionAvailable) {
             val storeRequest = StoreBytesData.Builder()
-                .setBytes(mnemonic.toByteArray(Charsets.UTF_8))
-                .setKey(key)
+                    .setBytes(mnemonic.toByteArray(Charsets.UTF_8))
+                    .setKey(key)
 
             storeRequest.setShouldBackupToCloud(true)
 
             blockstoreClient.storeBytes(storeRequest.build())
-                .addOnSuccessListener {
-                    onSuccess()
-                }.addOnFailureListener { e ->
-                    if (forceBlockStore) {
-                        onFailure("Failed to save mnemonic to cloud $e")
-                    } else {
-                        saveToSharedPref(key, mnemonic)
+                    .addOnSuccessListener {
                         onSuccess()
+                    }.addOnFailureListener { e ->
+                        if (forceBlockStore) {
+                            onFailure("Failed to save mnemonic to cloud $e")
+                        } else {
+                            saveToSharedPref(key, mnemonic)
+                            onSuccess()
+                        }
                     }
-                }
         } else {
             if (forceBlockStore) {
                 onFailure("Failed to save mnemonic. Android Blockstore is unavailable and force cloud is on");
@@ -92,29 +92,29 @@ class MnemonicStorageHelper(context: Context) {
     fun read(key: String, onSuccess: (mnemonic: String?, fromBlockstore: Boolean) -> Unit) {
 
         val retrieveRequest = RetrieveBytesRequest.Builder()
-            .setKeys(listOf(key))
-            .build()
+                .setKeys(listOf(key))
+                .build()
 
         blockstoreClient.retrieveBytes(retrieveRequest)
-            .addOnSuccessListener { result: RetrieveBytesResponse ->
-                val blockstoreDataMap = result.blockstoreDataMap
+                .addOnSuccessListener { result: RetrieveBytesResponse ->
+                    val blockstoreDataMap = result.blockstoreDataMap
 
-                if (blockstoreDataMap.isEmpty()) {
-                    val mnemonic = readFromSharedPref(key)
-                    onSuccess(mnemonic, false)
-                } else {
-                    val mnemonic = blockstoreDataMap[key]
-                    if (mnemonic !== null) {
-                        onSuccess(mnemonic.bytes.toString(Charsets.UTF_8), true)
+                    if (blockstoreDataMap.isEmpty()) {
+                        val mnemonic = readFromSharedPref(key)
+                        onSuccess(mnemonic, false)
                     } else {
-                        onSuccess(null, true)
+                        val mnemonic = blockstoreDataMap[key]
+                        if (mnemonic !== null) {
+                            onSuccess(mnemonic.bytes.toString(Charsets.UTF_8), true)
+                        } else {
+                            onSuccess(null, true)
+                        }
                     }
                 }
-            }
-            .addOnFailureListener {
-                val mnemonic = readFromSharedPref(key)
-                onSuccess(mnemonic, false)
-            }
+                .addOnFailureListener {
+                    val mnemonic = readFromSharedPref(key)
+                    onSuccess(mnemonic, false)
+                }
     }
 
     private fun readFromSharedPref(key: String): String? {
@@ -128,8 +128,8 @@ class MnemonicStorageHelper(context: Context) {
 
     fun deleteFromCloudKeystore(key: String) {
         val retrieveRequest = DeleteBytesRequest.Builder()
-            .setKeys(listOf(key))
-            .build()
+                .setKeys(listOf(key))
+                .build()
 
         blockstoreClient.deleteBytes(retrieveRequest)
     }
@@ -138,5 +138,14 @@ class MnemonicStorageHelper(context: Context) {
         val editor = getSharedPreferences().edit()
         editor.remove(key)
         editor.commit()
+    }
+
+    fun refreshEndToEndEncryptionAvailability(onSuccess: (isEndToEndEncryptionAvailable: Boolean) -> Unit, onFailure: (message: String) -> Unit) {
+        blockstoreClient.isEndToEndEncryptionAvailable.addOnSuccessListener { isE2EEAvailable ->
+            isEndToEndEncryptionAvailable = isE2EEAvailable
+            onSuccess(isE2EEAvailable)
+        }.addOnFailureListener { e ->
+            onFailure("Failed to get end-to-end encryption availability: $e")
+        }
     }
 }

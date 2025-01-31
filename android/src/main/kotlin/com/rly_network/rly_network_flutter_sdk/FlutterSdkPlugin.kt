@@ -67,6 +67,9 @@ class FlutterSdkPlugin: FlutterPlugin, MethodCallHandler {
         "getPrivateKeyFromMnemonic" -> {
           getPrivateKeyFromMnemonic(call,result)
         }
+        "refreshEndToEndEncryptionAvailability" -> {
+          refreshEndToEndEncryptionAvailability(result)
+        }
         else -> {
           result.notImplemented()
         }
@@ -83,6 +86,14 @@ class FlutterSdkPlugin: FlutterPlugin, MethodCallHandler {
     mnemonicHelper.read(MNEMONIC_STORAGE_KEY) { mnemonic, fromBlockstore ->
       result.success(mnemonic != null && fromBlockstore);
     }
+  }
+
+  private fun refreshEndToEndEncryptionAvailability(result: Result) {
+    mnemonicHelper.refreshEndToEndEncryptionAvailability({ isEndToEndEncryptionAvailable ->
+        result.success(isEndToEndEncryptionAvailable)
+    }, { message: String ->
+        result.error("refresh_end_to_end_encryption_availability_failure", message, null)
+    })
   }
 
   private fun generateNewMnemonic(result: Result){

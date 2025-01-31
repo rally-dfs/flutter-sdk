@@ -93,3 +93,7 @@ is no auto migration of data. Instead we have exposed a method through WalletMan
 
 ### 0.7.1
 - Fixed an issues with Lens Network EIP domain data that requires very specific `{"name": "zkSync" ...}` string match. This was causing EIP712 signing to fail on Lens Network.
+
+### 0.7.2
+
+- Adds `refreshEndToEndEncryptionAvailability` that refreshes end-to-end encryption availability on Android. This should be used before attempting to save the wallet to cloud on Android.
