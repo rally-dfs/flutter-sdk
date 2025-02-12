@@ -77,7 +77,8 @@ public class RlyNetworkMobileSdk: NSObject {
     }
 
     public func getPrivateKeyFromMnemonic(
-      _ mnemonic: String
+      _ mnemonic: String,
+      slot: Int = 0
     ) -> Any{
         if (mnemonic_check(mnemonic) == 0) {
             return "failure";
@@ -97,7 +98,7 @@ public class RlyNetworkMobileSdk: NSObject {
         hdnode_private_ckd(&node, (0x80000000 | (60)));   // 60' - Ethereum (see SLIP 44)
         hdnode_private_ckd(&node, (0x80000000 | (0)));    // 0'  - Account 0
         hdnode_private_ckd(&node, 0);                     // 0   - External
-        hdnode_private_ckd(&node, 0);                     // 0   - Slot #0
+        hdnode_private_ckd(&node, slot);                  // 0   <slot> - Slot (defaults to 0)
 
         var pkey : [UInt8] = []
 
