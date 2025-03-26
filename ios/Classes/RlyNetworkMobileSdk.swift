@@ -4,7 +4,7 @@ import Foundation
 public class RlyNetworkMobileSdk: NSObject {
     let MNEMONIC_STRENGTH = 24
     let SERVICE_KEY = "WALLET_STORAGE"
-    let MNEMONIC_ACCOUNT_KEY = "BIP39_MNEMONIC"
+    let DEFAULT_MNEMONIC_KEY = "BIP39_MNEMONIC"
 
     public func hello() -> String {
         return "Hello World"
@@ -14,8 +14,8 @@ public class RlyNetworkMobileSdk: NSObject {
         return Bundle.main.bundleIdentifier!
     }
 
-    public func getMnemonic() -> String? {
-        let mnemonicData = KeychainHelper.standard.read(service: SERVICE_KEY, account: MNEMONIC_ACCOUNT_KEY)
+    public func getMnemonic(for identifier: String = DEFAULT_MNEMONIC_KEY) -> String? {
+        let mnemonicData = KeychainHelper.standard.read(service: SERVICE_KEY, account: identifier)
 
         if (mnemonicData == nil) {
             return nil
@@ -25,8 +25,8 @@ public class RlyNetworkMobileSdk: NSObject {
         }
     }
 
-    public func mnemonicBackedUpToCloud() -> Bool {
-        let keyFromiCloudKeychain = KeychainHelper.standard.readFromiCloudKeychain(service: SERVICE_KEY, account: MNEMONIC_ACCOUNT_KEY)
+    public func mnemonicBackedUpToCloud(for identifier: String = DEFAULT_MNEMONIC_KEY) -> Bool {
+        let keyFromiCloudKeychain = KeychainHelper.standard.readFromiCloudKeychain(service: SERVICE_KEY, account: identifier)
 
         return keyFromiCloudKeychain != nil
     }
@@ -52,20 +52,21 @@ public class RlyNetworkMobileSdk: NSObject {
 
     public func saveMnemonic(
       _ mnemonic: String,
+      for identifier: String = DEFAULT_MNEMONIC_KEY,
       saveToCloud: Bool,
       rejectOnCloudSaveFailure: Bool
     ) -> Bool {
         KeychainHelper.standard.save(
             mnemonic.data(using: .utf8)!,
             service: SERVICE_KEY,
-            account: MNEMONIC_ACCOUNT_KEY,
+            account: identifier,
             saveToCloud: saveToCloud
         );
         return true
     }
 
-    public func deleteMnemonic() -> Bool {
-        KeychainHelper.standard.delete(service: SERVICE_KEY, account: MNEMONIC_ACCOUNT_KEY)
+    public func deleteMnemonic(for identifier: String = DEFAULT_MNEMONIC_KEY) -> Bool {
+        KeychainHelper.standard.delete(service: SERVICE_KEY, account: identifier)
 
         return true
     }
