@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:eth_sig_util/util/utils.dart';
+import 'package:rly_network_flutter_sdk/src/constants.dart';
 import 'key_storage_config.dart';
 
 import 'mnemonic_manager.dart';
@@ -22,10 +23,10 @@ class WalletManager {
   final String name;
 
   WalletManager(this._mnemonicStorageManager,
-      {this.mnemonicIdentifier = 'defaultMnemonicId',
+      {this.mnemonicIdentifier = SDKConstants.defaultMnemonicId,
       this.keyIndex = 0,
-      this.name = 'default wallet'}) {
-    if (keyIndex != 0 && name == 'default wallet') {
+      this.name = SDKConstants.defaultWalletName}) {
+    if (keyIndex != 0 && name == SDKConstants.defaultWalletName) {
       throw ArgumentError(
           'Must provide a custom name when using a non-zero keyIndex');
     }
