@@ -9,7 +9,7 @@ import 'mnemonic_manager.dart';
 import 'wallet.dart';
 
 class WalletManager {
-  static Wallet? _cachedWallet;
+  Wallet? _cachedWallet;
   final MnemonicManager _mnemonicStorageManager;
 
   /// The identifier for the mnemonic that serves as the basis for the wallet.
