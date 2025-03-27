@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:eth_sig_util/util/utils.dart';
 import 'key_storage_config.dart';
+import 'key_storage_constants.dart';
 
 import 'key_manager.dart';
 
@@ -61,8 +62,8 @@ class WalletManager {
   /// This method should not be used as a check for wallet existence
   /// as it will return false if there is no wallet or if the wallet does exist but is not backed up to cloud.
   ///
-  Future<bool> walletEligibleForCloudSync() async {
-    return await _keyManager.walletBackedUpToCloud();
+  Future<bool> walletEligibleForCloudSync({String label = KeyStorageConstants.defaultMnemonicID}) async {
+    return await _keyManager.walletBackedUpToCloud(mnemonicID: label);
   }
 
   /// Updates the storage settings for an existing wallet.
@@ -90,27 +91,22 @@ class WalletManager {
     }
   }
 
-  Future<Wallet?> getWallet() async {
-    if (_cachedWallet != null) {
-      return _cachedWallet!;
-    }
-
-    String? mnemonic = await _keyManager.getMnemonic();
+  Future<Wallet?> getWallet({String label = KeyStorageConstants.defaultMnemonicID, int index=KeyStorageConstants.defaultWalletIndex}) async {
+  
+    String? mnemonic = await _keyManager.getMnemonicForID(label);
 
     if (mnemonic == null) {
       return null;
     }
 
-    final wallet = await _makeWalletFromMnemonic(mnemonic);
-
-    _cachedWallet = wallet;
+    final wallet = await _makeWalletFromMnemonic(mnemonic, index:index);
     return wallet;
   }
 
   Future<Wallet> importExistingWallet(String existinMnemonic,
-      {bool overwrite = false, KeyStorageConfig? storageOptions}) async {
+      {bool overwrite = false, String label = KeyStorageConstants.defaultMnemonicID, KeyStorageConfig? storageOptions}) async {
     await _saveMnemonic(existinMnemonic,
-        overwrite: overwrite, storageOptions: storageOptions);
+        overwrite: overwrite, label:label, storageOptions: storageOptions);
 
     final wallet = await _makeWalletFromMnemonic(existinMnemonic);
 
@@ -118,30 +114,30 @@ class WalletManager {
     return wallet;
   }
 
-  Future<String?> getPublicAddress() async {
-    final wallet = await getWallet();
+  Future<String?> getPublicAddress({String label = KeyStorageConstants.defaultMnemonicID, int index = KeyStorageConstants.defaultWalletIndex}) async {
+    final wallet = await getWallet(label:label, index:index);
     if (wallet == null) {
       return null;
     }
     return wallet.address.hex;
   }
 
-  Future<void> permanentlyDeleteWallet() async {
-    await _keyManager.deleteMnemonic();
+  Future<void> permanentlyDeleteWallet({String label = KeyStorageConstants.defaultMnemonicID}) async {
+    await _keyManager.deleteCloudMnemonicForId(label);
     _cachedWallet = null;
   }
 
-  Future<String?> getAccountPhrase() async {
+  Future<String?> getAccountPhrase({String label = KeyStorageConstants.defaultMnemonicID}) async {
     try {
-      return await _keyManager.getMnemonic();
+      return await _keyManager.getMnemonicForID(label);
     } catch (error) {
       return null;
     }
   }
 
   Future<void> _saveMnemonic(String mnemonic,
-      {required bool overwrite, KeyStorageConfig? storageOptions}) async {
-    final existingWallet = await getWallet();
+      {required bool overwrite, String label = KeyStorageConstants.defaultMnemonicID, KeyStorageConfig? storageOptions}) async {
+    final existingWallet = await getWallet(label: label);
     if (existingWallet != null && !overwrite) {
       throw 'Wallet already exists. Use overwrite flag to overwrite';
     }
@@ -153,9 +149,9 @@ class WalletManager {
     return;
   }
 
-  Future<Wallet> _makeWalletFromMnemonic(String mnemonic) async {
+  Future<Wallet> _makeWalletFromMnemonic(String mnemonic, {int index = KeyStorageConstants.defaultWalletIndex}) async {
     Uint8List privateKey =
-        await _keyManager.getPrivateKeyFromMnemonic(mnemonic);
+        await _keyManager.getPrivateKeyFromMnemonic(mnemonic, index: index);
     String hexCode = "0x${bytesToHex(privateKey)}";
     return Wallet.fromHex(hexCode);
   }
