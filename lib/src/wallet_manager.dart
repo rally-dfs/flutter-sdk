@@ -11,12 +11,50 @@ class WalletManager {
   static Wallet? _cachedWallet;
   final KeyManager _keyManager;
 
-  WalletManager(this._keyManager);
+  /// The identifier for the mnemonic that serves as the basis for the wallet.
+  /// There is a default value, but you can define a new identifier if you want to be able to have multiple wallets with different mnemonics.
+  final String mnemonicIdentifier;
+
+  /// The key derivation index for the wallet. Defaults to 0, but you can define a different index if you want to have multiple wallets derived from the same mnemonic.
+  final int keyIndex;
+
+  /// The dev defined name for the wallet. Defaults to 'default wallet'. Useful when you have multiple wallets and want an easy way to identify them.
+  final String name;
+
+  WalletManager(this._keyManager,
+      {this.mnemonicIdentifier = 'defaultMnemonicId',
+      this.keyIndex = 0,
+      this.name = 'default wallet'}) {
+    if (keyIndex != 0 && name == 'default wallet') {
+      throw ArgumentError(
+          'Must provide a custom name when using a non-zero keyIndex');
+    }
+  }
 
   static final WalletManager _instance = WalletManager(KeyManager());
+  static final _availableWalletManagers =
+      List<WalletManager>.empty(growable: true);
 
   factory WalletManager.getInstance() {
     return _instance;
+  }
+
+  /// Returns a list of all available wallet managers.
+  /// If a mnemonicIdentifier is provided, it will return only the wallet managers associated with that mnemonicIdentifier.
+  /// For example if you have multiple wallets derived from the same mnemonic, you can provide the mnemonicIdentifier to get a list of all the wallets just for the given mnemonic.
+  ///
+  /// This method is helpful when you have multiple wallets in use with your app and you want to get a
+  /// list of all the wallets you've previously used on this device.
+  ///
+  /// This method is not a true database, just a dev helper. If your product relies on multiple wallets derived from the same mnemonic,
+  /// and you need guaranteed accuracy of mapping wallet names to multiple key indexes, you should maintain your own database off device.
+  static List<WalletManager> allAvailable({String? mnemonicIdentifier}) {
+    if (mnemonicIdentifier == null) {
+      return _availableWalletManagers;
+    }
+    return _availableWalletManagers
+        .where((element) => element.mnemonicIdentifier == mnemonicIdentifier)
+        .toList();
   }
 
   /// Creates a new wallet and saves it to the device based on the storage options provided.
