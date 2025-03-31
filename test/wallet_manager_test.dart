@@ -15,7 +15,7 @@ void main() {
 
   setUp(() {
     mockMnemonicManager = MockMnemonicManager();
-    walletManager = WalletManager(mockMnemonicManager);
+    walletManager = WalletManager(mnemonicManager: mockMnemonicManager);
 
     registerFallbackValue(
         KeyStorageConfig(saveToCloud: true, rejectOnCloudSaveFailure: true));
@@ -197,11 +197,6 @@ void main() {
     final testPrivateKey = Uint8List.fromList(List.generate(32, (i) => i));
     const testMnemonic = 'test mnemonic phrase here';
 
-    setUp(() {
-      // Reset any cached wallet between tests
-      walletManager = WalletManager(mockMnemonicManager);
-    });
-
     test('returns null if no mnemonic exists', () async {
       // Set up the mock behavior - no mnemonic exists
       when(() => mockMnemonicManager.getMnemonic())
@@ -265,11 +260,6 @@ void main() {
   group('getPublicAddress', () {
     final testPrivateKey = Uint8List.fromList(List.generate(32, (i) => i));
     const testMnemonic = 'test mnemonic phrase here';
-
-    setUp(() {
-      // Reset any cached wallet between tests
-      walletManager = WalletManager(mockMnemonicManager);
-    });
 
     test('returns null if no wallet exists', () async {
       // Set up the mock behavior - no wallet exists

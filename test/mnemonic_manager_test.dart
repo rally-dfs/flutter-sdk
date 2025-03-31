@@ -10,13 +10,16 @@ class MockMethodChannel extends Mock implements MethodChannel {}
 class _TestMnemonicManager extends MnemonicManager {
   final MethodChannel _mockMethodChannel;
 
-  _TestMnemonicManager(this._mockMethodChannel);
+  _TestMnemonicManager(this._mockMethodChannel,
+      {required super.mnemonicIdentifier, required super.keyIndex});
 
   @override
   MethodChannel get methodChannel => _mockMethodChannel;
 }
 
 void main() {
+  const testMnemonicIdentifier = 'test_mnemonic_identifier';
+  const testKeyIndex = 1;
   late MnemonicManager mnemonicManager;
   late MockMethodChannel mockMethodChannel;
   const testMnemonic =
@@ -24,7 +27,8 @@ void main() {
 
   setUp(() {
     mockMethodChannel = MockMethodChannel();
-    mnemonicManager = _TestMnemonicManager(mockMethodChannel);
+    mnemonicManager = _TestMnemonicManager(mockMethodChannel,
+        mnemonicIdentifier: testMnemonicIdentifier, keyIndex: testKeyIndex);
   });
 
   group('deleteMnemonic', () {

@@ -4,6 +4,10 @@ import './key_storage_config.dart';
 
 class MnemonicManager {
   final methodChannel = const MethodChannel('rly_network_flutter_sdk');
+  final String mnemonicIdentifier;
+  final int keyIndex;
+
+  MnemonicManager({required this.mnemonicIdentifier, required this.keyIndex});
 
   Future<void> deleteMnemonic() async {
     await methodChannel.invokeMethod<bool>("deleteMnemonic");

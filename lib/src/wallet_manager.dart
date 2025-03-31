@@ -22,17 +22,38 @@ class WalletManager {
   /// The dev defined name for the wallet. Defaults to 'default wallet'. Useful when you have multiple wallets and want an easy way to identify them.
   final String name;
 
-  WalletManager(this._mnemonicStorageManager,
-      {this.mnemonicIdentifier = SDKConstants.defaultMnemonicId,
-      this.keyIndex = 0,
-      this.name = SDKConstants.defaultWalletName}) {
+  WalletManager._internal(
+      {required MnemonicManager mnemonicManager,
+      required this.mnemonicIdentifier,
+      required this.keyIndex,
+      required this.name})
+      : _mnemonicStorageManager = mnemonicManager {
     if (keyIndex != 0 && name == SDKConstants.defaultWalletName) {
       throw ArgumentError(
           'Must provide a custom name when using a non-zero keyIndex');
     }
   }
 
-  static final WalletManager _instance = WalletManager(MnemonicManager());
+  factory WalletManager(
+      {String mnemonicIdentifier = SDKConstants.defaultMnemonicId,
+      int keyIndex = 0,
+      String name = SDKConstants.defaultWalletName,
+      MnemonicManager? mnemonicManager}) {
+    final manager = mnemonicManager ??
+        MnemonicManager(
+          mnemonicIdentifier: mnemonicIdentifier,
+          keyIndex: keyIndex,
+        );
+
+    return WalletManager._internal(
+      mnemonicManager: manager,
+      mnemonicIdentifier: mnemonicIdentifier,
+      keyIndex: keyIndex,
+      name: name,
+    );
+  }
+
+  static final WalletManager _instance = WalletManager();
   static final _availableWalletManagers =
       List<WalletManager>.empty(growable: true);
 
