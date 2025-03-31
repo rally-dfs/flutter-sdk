@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:rly_network_flutter_sdk/src/constants.dart';
 import 'package:rly_network_flutter_sdk/src/wallet_manager.dart';
 import 'package:rly_network_flutter_sdk/src/mnemonic_manager.dart';
 import 'package:rly_network_flutter_sdk/src/key_storage_config.dart';
@@ -19,6 +20,85 @@ void main() {
 
     registerFallbackValue(
         KeyStorageConfig(saveToCloud: true, rejectOnCloudSaveFailure: true));
+  });
+
+  group('WalletManager constructor', () {
+    test('initializes with default values when no parameters provided', () {
+      final walletManager = WalletManager();
+
+      expect(walletManager.mnemonicIdentifier, SDKConstants.defaultMnemonicId);
+      expect(walletManager.keyIndex, 0);
+      expect(walletManager.name, SDKConstants.defaultWalletName);
+    });
+
+    test('initializes with custom values when parameters provided', () {
+      final walletManager = WalletManager(
+          mnemonicIdentifier: 'custom-id', keyIndex: 0, name: 'custom-name');
+
+      expect(walletManager.mnemonicIdentifier, 'custom-id');
+      expect(walletManager.keyIndex, 0);
+      expect(walletManager.name, 'custom-name');
+    });
+
+    test(
+        'initializes MnemonicManager with the default values when no custom values are provided',
+        () {
+      // Create wallet manager without providing a mnemonic manager
+      final walletManager = WalletManager();
+
+      // Access the mnemonic manager through the getter
+      final mnemonicManager = walletManager.mnemonicManager;
+
+      // Verify the mnemonic manager was initialized with the correct values
+      expect(mnemonicManager.mnemonicIdentifier,
+          equals(SDKConstants.defaultMnemonicId));
+      expect(mnemonicManager.keyIndex, equals(0));
+    });
+
+    test(
+        'initializes MnemonicManager with custom mnemonic id and key values when provided',
+        () {
+      // Custom ID and key index for this test
+      const testId = 'test-mnemonic-id';
+      const testKeyIndex = 5;
+
+      // Create wallet manager without providing a mnemonic manager
+      final walletManager = WalletManager(
+          mnemonicIdentifier: testId,
+          keyIndex: testKeyIndex,
+          name: 'test-name');
+
+      // Access the mnemonic manager through the getter
+      final mnemonicManager = walletManager.mnemonicManager;
+
+      // Verify the mnemonic manager was initialized with the correct values
+      expect(mnemonicManager.mnemonicIdentifier, equals(testId));
+      expect(mnemonicManager.keyIndex, equals(testKeyIndex));
+    });
+
+    test('initializes with mock MnemonicManager when provided', () {
+      final mockMnemonicManager = MockMnemonicManager();
+
+      final walletManager = WalletManager(mnemonicManager: mockMnemonicManager);
+
+      expect(walletManager.mnemonicIdentifier, SDKConstants.defaultMnemonicId);
+      expect(walletManager.keyIndex, 0);
+      expect(walletManager.name, SDKConstants.defaultWalletName);
+    });
+
+    test('throws ArgumentError when keyIndex is not 0 and name is default', () {
+      expect(
+          () => WalletManager(keyIndex: 1),
+          throwsA(isA<ArgumentError>().having((e) => e.message, 'message',
+              'Must provide a custom name when using a non-zero keyIndex')));
+    });
+
+    test('accepts non-zero keyIndex when custom name is provided', () {
+      final walletManager = WalletManager(keyIndex: 1, name: 'custom-name');
+
+      expect(walletManager.keyIndex, 1);
+      expect(walletManager.name, 'custom-name');
+    });
   });
 
   group('createWallet', () {

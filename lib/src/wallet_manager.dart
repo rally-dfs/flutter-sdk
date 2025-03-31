@@ -1,6 +1,5 @@
-import 'dart:typed_data';
-
 import 'package:eth_sig_util/util/utils.dart';
+import 'package:flutter/foundation.dart';
 import 'package:rly_network_flutter_sdk/src/constants.dart';
 import 'key_storage_config.dart';
 
@@ -11,6 +10,9 @@ import 'wallet.dart';
 class WalletManager {
   Wallet? _cachedWallet;
   final MnemonicManager _mnemonicStorageManager;
+
+  @visibleForTesting
+  MnemonicManager get mnemonicManager => _mnemonicStorageManager;
 
   /// The identifier for the mnemonic that serves as the basis for the wallet.
   /// There is a default value, but you can define a new identifier if you want to be able to have multiple wallets with different mnemonics.
