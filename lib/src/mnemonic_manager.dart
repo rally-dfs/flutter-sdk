@@ -2,11 +2,17 @@ import 'package:flutter/services.dart';
 
 import './key_storage_config.dart';
 
-class KeyManager {
+class MnemonicManager {
   final methodChannel = const MethodChannel('rly_network_flutter_sdk');
+  final String mnemonicIdentifier;
+  final int keyIndex;
+
+  MnemonicManager({required this.mnemonicIdentifier, required this.keyIndex});
 
   Future<void> deleteMnemonic() async {
-    await methodChannel.invokeMethod<bool>("deleteMnemonic");
+    await methodChannel.invokeMethod<bool>("deleteMnemonic", {
+      'mnemonicIdentifier': mnemonicIdentifier,
+    });
   }
 
   /// Removes the mnemonic from the cloud storage. This is a destructive operation.
@@ -14,7 +20,9 @@ class KeyManager {
   /// This is necessary for the case where dev wants to move user storage from cloud to local only.
   Future<void> deleteCloudMnemonic() async {
     final bool? status =
-        await methodChannel.invokeMethod<bool>("deleteCloudMnemonic");
+        await methodChannel.invokeMethod<bool>("deleteCloudMnemonic", {
+      'mnemonicIdentifier': mnemonicIdentifier,
+    });
 
     if (status == null || status == false) {
       throw Exception(
@@ -24,7 +32,9 @@ class KeyManager {
 
   Future<String> generateMnemonic() async {
     String? mnemonic =
-        await methodChannel.invokeMethod<String>("generateNewMnemonic");
+        await methodChannel.invokeMethod<String>("generateNewMnemonic", {
+      'mnemonicIdentifier': mnemonicIdentifier,
+    });
 
     if (mnemonic == null) {
       throw Exception(
@@ -35,13 +45,17 @@ class KeyManager {
   }
 
   Future<String?> getMnemonic() async {
-    String? mnemonic = await methodChannel.invokeMethod<String>("getMnemonic");
+    String? mnemonic = await methodChannel.invokeMethod<String>("getMnemonic", {
+      'mnemonicIdentifier': mnemonicIdentifier,
+    });
     return mnemonic;
   }
 
   Future<bool> walletBackedUpToCloud() async {
     bool? backedUpToCloud =
-        await methodChannel.invokeMethod<bool>("mnemonicBackedUpToCloud");
+        await methodChannel.invokeMethod<bool>("mnemonicBackedUpToCloud", {
+      'mnemonicIdentifier': mnemonicIdentifier,
+    });
     if (backedUpToCloud == null) {
       throw Exception(
           "Unable to get wallet backup status, something went wrong at native code layer");
@@ -53,6 +67,8 @@ class KeyManager {
     List<Object?>? pvtKey = await methodChannel
         .invokeMethod<List<Object?>>("getPrivateKeyFromMnemonic", {
       'mnemonic': mnemonic,
+      'mnemonicIdentifier': mnemonicIdentifier,
+      'keyIndex': keyIndex,
     });
     Uint8List privateKey = _intListToUint8List(pvtKey!);
     return privateKey;
@@ -62,6 +78,7 @@ class KeyManager {
       {required KeyStorageConfig storageOptions}) async {
     await methodChannel.invokeMethod("saveMnemonic", {
       "mnemonic": mnemonic,
+      "mnemonicIdentifier": mnemonicIdentifier,
       "saveToCloud": storageOptions.saveToCloud,
       "rejectOnCloudSaveFailure": storageOptions.rejectOnCloudSaveFailure,
     });

@@ -1,22 +1,84 @@
-import 'dart:typed_data';
-
 import 'package:eth_sig_util/util/utils.dart';
+import 'package:flutter/foundation.dart';
+import 'package:rly_network_flutter_sdk/src/constants.dart';
 import 'key_storage_config.dart';
 
-import 'key_manager.dart';
+import 'mnemonic_manager.dart';
 
 import 'wallet.dart';
 
 class WalletManager {
-  static Wallet? _cachedWallet;
-  final KeyManager _keyManager;
+  Wallet? _cachedWallet;
+  final MnemonicManager _mnemonicStorageManager;
 
-  WalletManager(this._keyManager);
+  @visibleForTesting
+  MnemonicManager get mnemonicManager => _mnemonicStorageManager;
 
-  static final WalletManager _instance = WalletManager(KeyManager());
+  /// The identifier for the mnemonic that serves as the basis for the wallet.
+  /// There is a default value, but you can define a new identifier if you want to be able to have multiple wallets with different mnemonics.
+  final String mnemonicIdentifier;
+
+  /// The key derivation index for the wallet. Defaults to 0, but you can define a different index if you want to have multiple wallets derived from the same mnemonic.
+  final int keyIndex;
+
+  /// The dev defined name for the wallet. Defaults to 'default wallet'. Useful when you have multiple wallets and want an easy way to identify them.
+  final String name;
+
+  WalletManager._internal(
+      {required MnemonicManager mnemonicManager,
+      required this.mnemonicIdentifier,
+      required this.keyIndex,
+      required this.name})
+      : _mnemonicStorageManager = mnemonicManager {
+    if (keyIndex != 0 && name == SDKConstants.defaultWalletName) {
+      throw ArgumentError(
+          'Must provide a custom name when using a non-zero keyIndex');
+    }
+  }
+
+  factory WalletManager(
+      {String mnemonicIdentifier = SDKConstants.defaultMnemonicId,
+      int keyIndex = 0,
+      String name = SDKConstants.defaultWalletName,
+      MnemonicManager? mnemonicManager}) {
+    final manager = mnemonicManager ??
+        MnemonicManager(
+          mnemonicIdentifier: mnemonicIdentifier,
+          keyIndex: keyIndex,
+        );
+
+    return WalletManager._internal(
+      mnemonicManager: manager,
+      mnemonicIdentifier: mnemonicIdentifier,
+      keyIndex: keyIndex,
+      name: name,
+    );
+  }
+
+  static final WalletManager _instance = WalletManager();
+  static final _availableWalletManagers =
+      List<WalletManager>.empty(growable: true);
 
   factory WalletManager.getInstance() {
     return _instance;
+  }
+
+  /// Returns a list of all available wallet managers.
+  /// If a mnemonicIdentifier is provided, it will return only the wallet managers associated with that mnemonicIdentifier.
+  /// For example if you have multiple wallets derived from the same mnemonic, you can provide the mnemonicIdentifier to get a list of all the wallets just for the given mnemonic.
+  ///
+  /// This method is helpful when you have multiple wallets in use with your app and you want to get a
+  /// list of all the wallets you've previously used on this device.
+  ///
+  /// This method is not a true database, just a dev helper. If your product relies on multiple wallets derived from the same mnemonic,
+  /// and you need guaranteed accuracy of mapping wallet names to multiple key indexes, you should maintain your own database off device.
+  static List<WalletManager> allAvailable({String? mnemonicIdentifier}) {
+    if (mnemonicIdentifier == null) {
+      return _availableWalletManagers;
+    }
+    return _availableWalletManagers
+        .where((element) => element.mnemonicIdentifier == mnemonicIdentifier)
+        .toList();
   }
 
   /// Creates a new wallet and saves it to the device based on the storage options provided.
@@ -30,7 +92,7 @@ class WalletManager {
   /// After the wallet is created, you can check the cloud backup status of the wallet using the walletBackedUpToCloud method.
   Future<Wallet> createWallet(
       {bool overwrite = false, KeyStorageConfig? storageOptions}) async {
-    final mnemonic = await _keyManager.generateMnemonic();
+    final mnemonic = await _mnemonicStorageManager.generateMnemonic();
 
     await _saveMnemonic(mnemonic,
         overwrite: overwrite, storageOptions: storageOptions);
@@ -62,7 +124,7 @@ class WalletManager {
   /// as it will return false if there is no wallet or if the wallet does exist but is not backed up to cloud.
   ///
   Future<bool> walletEligibleForCloudSync() async {
-    return await _keyManager.walletBackedUpToCloud();
+    return await _mnemonicStorageManager.walletBackedUpToCloud();
   }
 
   /// Updates the storage settings for an existing wallet.
@@ -78,15 +140,16 @@ class WalletManager {
   ///
   /// If moving from cloud to device only storage, the wallet will be removed from cloud storage and only stored on device. This will remove the wallet from any other devices.
   Future<void> updateWalletStorage(KeyStorageConfig storageOptions) async {
-    final mnemonic = await _keyManager.getMnemonic();
+    final mnemonic = await _mnemonicStorageManager.getMnemonic();
     if (mnemonic == null) {
       throw 'Unable to update storage settings, no wallet found';
     }
 
-    await _keyManager.saveMnemonic(mnemonic, storageOptions: storageOptions);
+    await _mnemonicStorageManager.saveMnemonic(mnemonic,
+        storageOptions: storageOptions);
 
     if (storageOptions.saveToCloud == false) {
-      await _keyManager.deleteCloudMnemonic();
+      await _mnemonicStorageManager.deleteCloudMnemonic();
     }
   }
 
@@ -95,7 +158,7 @@ class WalletManager {
       return _cachedWallet!;
     }
 
-    String? mnemonic = await _keyManager.getMnemonic();
+    String? mnemonic = await _mnemonicStorageManager.getMnemonic();
 
     if (mnemonic == null) {
       return null;
@@ -127,13 +190,13 @@ class WalletManager {
   }
 
   Future<void> permanentlyDeleteWallet() async {
-    await _keyManager.deleteMnemonic();
+    await _mnemonicStorageManager.deleteMnemonic();
     _cachedWallet = null;
   }
 
   Future<String?> getAccountPhrase() async {
     try {
-      return await _keyManager.getMnemonic();
+      return await _mnemonicStorageManager.getMnemonic();
     } catch (error) {
       return null;
     }
@@ -149,13 +212,14 @@ class WalletManager {
     final storageConfig = storageOptions ??
         KeyStorageConfig(rejectOnCloudSaveFailure: true, saveToCloud: true);
 
-    await _keyManager.saveMnemonic(mnemonic, storageOptions: storageConfig);
+    await _mnemonicStorageManager.saveMnemonic(mnemonic,
+        storageOptions: storageConfig);
     return;
   }
 
   Future<Wallet> _makeWalletFromMnemonic(String mnemonic) async {
     Uint8List privateKey =
-        await _keyManager.getPrivateKeyFromMnemonic(mnemonic);
+        await _mnemonicStorageManager.getPrivateKeyFromMnemonic(mnemonic);
     String hexCode = "0x${bytesToHex(privateKey)}";
     return Wallet.fromHex(hexCode);
   }
